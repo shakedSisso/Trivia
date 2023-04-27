@@ -14,6 +14,7 @@ def client():
     socket_to_server.send("hello".encode())
     msg = socket_to_server.recv(LEN).decode()
     print("Recieved from server:", msg)
+    socket_to_server.close()
 
 def main():
     client()
