@@ -4,7 +4,7 @@
 
 void Server::run()
 {
-	std::thread connectorThread(&Communicator::startHandleRequests(), &this->m_communicator);
+	std::thread connectorThread(&Communicator::startHandleRequests, &this->m_communicator);
 	connectorThread.detach();
 	std::string adminInput;
 	

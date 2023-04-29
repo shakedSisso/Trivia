@@ -8,6 +8,7 @@
 class Communicator
 {
 public:
+	~Communicator();
 	void startHandleRequests();
 private:
 	SOCKET m_serverSocket;

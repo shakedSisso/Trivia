@@ -6,6 +6,17 @@
 #include "LoginRequestHandler.h"
 
 #define PORT 1444
+#define LEN_MSG 5
+
+Communicator::~Communicator()
+{
+	//frees all the client memories
+	for (auto it = this->m_clients.begin(); it != this->m_clients.end(); ++it)
+	{
+		closesocket(it->first); // closes all the open sockets of clients
+		delete(it->second); // the second field in the nap is a pointer to IRequestHandler
+	}
+}
 
 void Communicator::startHandleRequests()
 {
@@ -14,7 +25,9 @@ void Communicator::startHandleRequests()
 	this->m_serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
 	if (this->m_serverSocket == INVALID_SOCKET)
+	{
 		throw std::exception(__FUNCTION__ " - socket");
+	}
 }
 
 void Communicator::bindAndListen()
@@ -27,11 +40,15 @@ void Communicator::bindAndListen()
 
 	// Connects between the socket and the configuration (port and etc..)
 	if (bind(this->m_serverSocket, (struct sockaddr*)&sa, sizeof(sa)) == SOCKET_ERROR)
+	{
 		throw std::exception(__FUNCTION__ " - bind");
+	}
 
 	// Start listening for incoming requests of clients
 	if (listen(this->m_serverSocket, SOMAXCONN) == SOCKET_ERROR)
+	{
 		throw std::exception(__FUNCTION__ " - listen");
+	}
 
 	while (true)
 	{
@@ -39,14 +56,17 @@ void Communicator::bindAndListen()
 		// the process will not continue until a client connects to the server
 		SOCKET client_socket = accept(this->m_serverSocket, NULL, NULL);
 		if (client_socket == INVALID_SOCKET)
+		{
 			throw std::exception(__FUNCTION__);
+		}
 
 		try
 		{
 			// the function that handle the conversation with the client
 			std::thread newClient(&Communicator::handleNewClient, this, client_socket);
 			newClient.detach();
-			this->m_clients.insert(std::pair<SOCKET, IRequestHandler*>(client_socket, LoginRequestHandler*));
+			LoginRequestHandler* requestHandler = new LoginRequestHandler();
+			this->m_clients.insert(std::pair<SOCKET, IRequestHandler*>(client_socket, (IRequestHandler*)requestHandler));
 		}
 		catch (std::exception e)
 		{
@@ -63,9 +83,9 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 		std::string s = "Hello";
 		send(clientSocket, s.c_str(), s.size(), 0);  // last parameter: flag. for us will be 0.
 
-		char msg[6];
-		recv(clientSocket, msg, 5, 0);
-		msg[5] = 0;
+		char msg[LEN_MSG + 1];
+		recv(clientSocket, msg, LEN_MSG, 0);
+		msg[LEN_MSG] = 0;
 		std::cout << "Client message: " << msg << std::endl;
 
 		// Closing the socket (in the level of the TCP protocol)
@@ -77,5 +97,7 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 	}
 
 	//client removed from the map after disconnection
+	auto client = this->m_clients.find(clientSocket);
+	delete(client->second); //the second field in the nap is a pointer to IRequestHandler
 	this->m_clients.erase(clientSocket);
 }
