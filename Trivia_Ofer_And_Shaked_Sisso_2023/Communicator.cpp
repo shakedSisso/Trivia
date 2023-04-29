@@ -28,6 +28,7 @@ void Communicator::startHandleRequests()
 	{
 		throw std::exception(__FUNCTION__ " - socket");
 	}
+	bindAndListen();
 }
 
 void Communicator::bindAndListen()
