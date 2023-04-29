@@ -10,10 +10,11 @@ def client():
     except ConnectionRefusedError:
         print("Couldn't connect to server!")
         return
-    print("Connected to server. sending hello")
-    socket_to_server.send("hello".encode()) # using encode since the sockets need to receive data in binary
+    print("Connected to server on localhost:{}".format(PORT))
     msg = socket_to_server.recv(LEN).decode() # using decode since the sockets returns data received in binary
     print("Recieved from server:", msg)
+    print("Sending hello")
+    socket_to_server.send("hello".encode()) # using encode since the sockets need to receive data in binary
     socket_to_server.close()
 
 def main():
