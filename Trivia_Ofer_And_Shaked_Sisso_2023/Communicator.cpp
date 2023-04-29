@@ -1,3 +1,5 @@
+#pragma comment (lib, "ws2_32.lib")
+
 #include "Communicator.h"
 #include <thread>
 #include <exception>
