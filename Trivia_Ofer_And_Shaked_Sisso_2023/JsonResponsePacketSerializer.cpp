@@ -16,17 +16,17 @@ Buffer JsonResponsePacketSerializer::serializeResponse(const ErrorResponse& resp
     Buffer responseBuffer;
     int jsonLength = 0;
 
-    responseBuffer.push_back((unsigned char)ERROR_RESPONSE_CODE);
+    responseBuffer.push_back((unsigned char)ERROR_RESPONSE_CODE); // adding the response code to the first byte of the buffer
     json responseData;
     responseData["message"] = response.message;
     std::string jsonString = responseData.dump();
-    Buffer jsonBuffer(jsonString.begin(), jsonString.end());
-    jsonLength = jsonString.length();
+    Buffer jsonBuffer(jsonString.begin(), jsonString.end()); // creating a buffer that contains the string in order to connect it to the response buffer
+    jsonLength = jsonString.length(); // getting the length of the data (the JSON) in order to put in the length field of the response
 
     // inserting the value of the length of the json in bytes (and filling the 4 bytes of the length field)
     JsonResponsePacketSerializer::insertIntToBuffer(responseBuffer, jsonLength, LENGTH_FIELD_BYTES);
 
-    responseBuffer.insert(responseBuffer.end(), jsonBuffer.begin(), jsonBuffer.end());
+    responseBuffer.insert(responseBuffer.end(), jsonBuffer.begin(), jsonBuffer.end()); // appending the data (JSON) to the end of the response buffer (that contains the response code and the data length value 
 
 
     return responseBuffer;
@@ -37,17 +37,17 @@ Buffer JsonResponsePacketSerializer::serializeResponse(const LoginResponse& resp
     Buffer responseBuffer;
     int jsonLength = 0;
 
-    responseBuffer.push_back((unsigned char)LOGIN_RESPONSE_CODE);
+    responseBuffer.push_back((unsigned char)LOGIN_RESPONSE_CODE); // adding the response code to the first byte of the buffer
     json responseData;
     responseData["status"] = response.status;
     std::string jsonString = responseData.dump();
-    Buffer jsonBuffer(jsonString.begin(), jsonString.end());
-    jsonLength = jsonString.length();
+    Buffer jsonBuffer(jsonString.begin(), jsonString.end()); // creating a buffer that contains the string in order to connect it to the response buffer
+    jsonLength = jsonString.length(); // getting the length of the data (the JSON) in order to put in the length field of the response
 
     // inserting the value of the length of the json in bytes (and filling the 4 bytes of the length field)
     JsonResponsePacketSerializer::insertIntToBuffer(responseBuffer, jsonLength, LENGTH_FIELD_BYTES);
 
-    responseBuffer.insert(responseBuffer.end(), jsonBuffer.begin(), jsonBuffer.end());
+    responseBuffer.insert(responseBuffer.end(), jsonBuffer.begin(), jsonBuffer.end()); // appending the data (JSON) to the end of the response buffer (that contains the response code and the data length value 
 
 
 
@@ -59,17 +59,17 @@ Buffer JsonResponsePacketSerializer::serializeResponse(const SignupResponse& res
     Buffer responseBuffer;
     int jsonLength = 0;
 
-    responseBuffer.push_back((unsigned char)SIGNUP_RESPONSE_CODE);
+    responseBuffer.push_back((unsigned char)SIGNUP_RESPONSE_CODE); // adding the response code to the first byte of the buffer
     json responseData;
     responseData["status"] = response.status;
     std::string jsonString = responseData.dump();
-    Buffer jsonBuffer(jsonString.begin(), jsonString.end());
-    jsonLength = jsonString.length();
+    Buffer jsonBuffer(jsonString.begin(), jsonString.end()); // creating a buffer that contains the string in order to connect it to the response buffer
+    jsonLength = jsonString.length(); // getting the length of the data (the JSON) in order to put in the length field of the response
 
     // inserting the value of the length of the json in bytes (and filling the 4 bytes of the length field)
-    JsonResponsePacketSerializer::insertIntToBuffer(responseBuffer, jsonLength, LENGTH_FIELD_BYTES);
+    JsonResponsePacketSerializer::insertIntToBuffer(responseBuffer, jsonLength, LENGTH_FIELD_BYTES); 
 
-    responseBuffer.insert(responseBuffer.end(), jsonBuffer.begin(), jsonBuffer.end());
+    responseBuffer.insert(responseBuffer.end(), jsonBuffer.begin(), jsonBuffer.end()); // appending the data (JSON) to the end of the response buffer (that contains the response code and the data length value 
 
     return responseBuffer;
 }
