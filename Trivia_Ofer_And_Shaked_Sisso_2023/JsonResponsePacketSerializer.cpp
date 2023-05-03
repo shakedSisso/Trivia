@@ -7,8 +7,11 @@ using json = nlohmann::json;
 #define LOGIN_RESPONSE_CODE 2
 #define SIGNUP_RESPONSE_CODE 3
 
+#define BYTE_MASK 0xFF
+#define LENGTH_FIELD_BYTES 4
+#define BITS_IN_BYTE 8
 
-Buffer JsonResponsePacketSerializer::serializeResponse(ErrorResponse response)
+Buffer JsonResponsePacketSerializer::serializeResponse(const ErrorResponse& response)
 {
     Buffer responseBuffer;
     int jsonLength = 0;
@@ -21,10 +24,7 @@ Buffer JsonResponsePacketSerializer::serializeResponse(ErrorResponse response)
     jsonLength = jsonString.length();
 
     // inserting the value of the length of the json in bytes (and filling the 4 bytes of the length field)
-    responseBuffer.push_back((jsonLength >> 24) & 0xFF);
-    responseBuffer.push_back((jsonLength >> 16) & 0xFF);
-    responseBuffer.push_back((jsonLength >> 8) & 0xFF);
-    responseBuffer.push_back(jsonLength & 0xFF);
+    JsonResponsePacketSerializer::insertIntToBuffer(responseBuffer, jsonLength, LENGTH_FIELD_BYTES);
 
     responseBuffer.insert(responseBuffer.end(), jsonBuffer.begin(), jsonBuffer.end());
 
@@ -32,7 +32,7 @@ Buffer JsonResponsePacketSerializer::serializeResponse(ErrorResponse response)
     return responseBuffer;
 }
 
-Buffer JsonResponsePacketSerializer::serializeResponse(LoginResponse response)
+Buffer JsonResponsePacketSerializer::serializeResponse(const LoginResponse& response)
 {
     Buffer responseBuffer;
     int jsonLength = 0;
@@ -45,10 +45,7 @@ Buffer JsonResponsePacketSerializer::serializeResponse(LoginResponse response)
     jsonLength = jsonString.length();
 
     // inserting the value of the length of the json in bytes (and filling the 4 bytes of the length field)
-    responseBuffer.push_back((jsonLength >> 24) & 0xFF);
-    responseBuffer.push_back((jsonLength >> 16) & 0xFF);
-    responseBuffer.push_back((jsonLength >> 8) & 0xFF);
-    responseBuffer.push_back(jsonLength & 0xFF);
+    JsonResponsePacketSerializer::insertIntToBuffer(responseBuffer, jsonLength, LENGTH_FIELD_BYTES);
 
     responseBuffer.insert(responseBuffer.end(), jsonBuffer.begin(), jsonBuffer.end());
 
@@ -57,7 +54,7 @@ Buffer JsonResponsePacketSerializer::serializeResponse(LoginResponse response)
     return responseBuffer;
 }
 
-Buffer JsonResponsePacketSerializer::serializeResponse(SignupResponse response)
+Buffer JsonResponsePacketSerializer::serializeResponse(const SignupResponse& response)
 {
     Buffer responseBuffer;
     int jsonLength = 0;
@@ -70,12 +67,20 @@ Buffer JsonResponsePacketSerializer::serializeResponse(SignupResponse response)
     jsonLength = jsonString.length();
 
     // inserting the value of the length of the json in bytes (and filling the 4 bytes of the length field)
-    responseBuffer.push_back((jsonLength >> 24) & 0xFF);
-    responseBuffer.push_back((jsonLength >> 16) & 0xFF);
-    responseBuffer.push_back((jsonLength >> 8) & 0xFF);
-    responseBuffer.push_back(jsonLength & 0xFF);
+    JsonResponsePacketSerializer::insertIntToBuffer(responseBuffer, jsonLength, LENGTH_FIELD_BYTES);
 
     responseBuffer.insert(responseBuffer.end(), jsonBuffer.begin(), jsonBuffer.end());
 
     return responseBuffer;
+}
+
+void JsonResponsePacketSerializer::insertIntToBuffer(Buffer& buffer, const int num, const int bytes)
+{
+    int i = 0;
+    for (int i = bytes - 1; i >= 0; i--)
+    {
+        unsigned char byte = (num >> (BITS_IN_BYTE * i)) & BYTE_MASK; // extract a byte from the int value
+        buffer.push_back(byte); // add the byte to the vector
+    }
+
 }
