@@ -1,14 +1,13 @@
 #pragma once
 #include <vector>
 #include "Responses.h"
-
-using std::vector;
+#include "Globals.h"
 
 class JsonResponsePacketSerializer
 {
 public:
-	static vector<unsigned char> serializeResponse(ErrorResponse response);
-	static vector<unsigned char> serializeResponse(LoginResponse response);
-	static vector<unsigned char> serializeResponse(SignupResponse response);
+	static Buffer serializeResponse(ErrorResponse response);
+	static Buffer serializeResponse(LoginResponse response);
+	static Buffer serializeResponse(SignupResponse response);
 
 };
