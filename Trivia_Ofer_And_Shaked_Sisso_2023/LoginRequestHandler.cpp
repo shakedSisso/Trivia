@@ -4,7 +4,9 @@
 bool LoginRequestHandler::isRequestRelevent(RequestInfo info)
 {
     if (info.id = LOGIN_REQUEST)
+    {
         return true;
+    }
     return false;
 }
 
