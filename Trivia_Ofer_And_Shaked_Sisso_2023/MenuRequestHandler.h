@@ -3,10 +3,10 @@
 #include "IRequestHandler.h"
 #include "Requests.h"
 
-class LoginRequestHandler : public IRequestHandler
+class MenuRequestHandler : public IRequestHandler
 {
 public:
-	LoginRequestHandler() = default;
+	MenuRequestHandler() = default;
 	bool isRequestRelevent(RequestInfo info) override;
 	RequestResult handleRequest(RequestInfo info) override;
 };
