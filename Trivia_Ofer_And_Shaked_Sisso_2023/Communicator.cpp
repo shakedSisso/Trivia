@@ -98,25 +98,29 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 		int sendingResult = 0;
 		while (true)
 		{
-			recv(clientSocket, headers, LEN_MSG_HEADERS, 0);
-			requestHeadersString = std::string(headers, LEN_MSG_HEADERS);
+			recv(clientSocket, headers, LEN_MSG_HEADERS, 0); // the headers of any message are in a fixed size so we are getting them first
+			requestHeadersString = std::string(headers, LEN_MSG_HEADERS); // converting the headers to a string in order to create a buffer out if it
 			requestBuffer = Buffer(requestHeadersString.begin(), requestHeadersString.end());
-			int jsonLength = JsonRequestPacketDeserializer::extractIntFromBuffer(requestBuffer, LENGTH_FIELD_INDEX, JSON_LENGTH_FIELD_LEN);
-			data = new char[jsonLength];
+			int jsonLength = JsonRequestPacketDeserializer::extractIntFromBuffer(requestBuffer, LENGTH_FIELD_INDEX, JSON_LENGTH_FIELD_LEN); // using the private function of the desrializer class to get the length of the json (the json length field is on the second byte (index 1) to the fifth byte (index 4)
+			data = new char[jsonLength]; // creating a new char array to get the json
 			recv(clientSocket, data, jsonLength, 0);
-			reqeustDataString = std::string(data, jsonLength);
-			delete[] data;
+			reqeustDataString = std::string(data, jsonLength); // converting the json char array to a string in order to connect it to the buffer
+			delete[] data; // deallocating the data char array since we no longer need it
 			data = nullptr;
-			requestBuffer.insert(requestBuffer.end(), reqeustDataString.begin(), reqeustDataString.end());
+			requestBuffer.insert(requestBuffer.end(), reqeustDataString.begin(), reqeustDataString.end()); // connecting the json to the headers in the buffer
+			// Creating and setting a requestInfo struct
 			requestInfo.buffer = requestBuffer;
 			requestInfo.id = requestBuffer[0];
 			requestInfo.receivalTime == time(nullptr);
-			auto client = this->m_clients.find(clientSocket);
+
+			// getting the client handler from the clients map
+			auto client = this->m_clients.find(clientSocket); 
 			IRequestHandler* clientHandler = client->second;
+
 			RequestResult result = clientHandler->handleRequest(requestInfo);
-			delete(client->second);
+			delete(client->second); // deleting the current handler of the client since the handlerRequest function gives us a new handler pointer
 			this->m_clients[clientSocket] = result.newHandler;
-			responseString = std::string(result.buffer.begin(), result.buffer.end());
+			responseString = std::string(result.buffer.begin(), result.buffer.end()); // converting the response buffer to a string in order that we'll be able to send it in the socket
 			sendingResult = send(clientSocket, responseString.c_str(), responseString.size(), 0);
 			if (sendingResult == SOCKET_SEND_ERROR)
 			{
