@@ -11,7 +11,6 @@ class JsonRequestPacketDeserializer
 public:
 	static LoginRequest deserializeLoginRequest(const Buffer& buffer);
 	static SignupReqest deserializeSignupRequest(const Buffer& buffer);
-private:
     /*
 	* Function: static extractIntFromBuffer
 	* ----------------------------
