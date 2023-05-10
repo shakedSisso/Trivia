@@ -91,23 +91,24 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 		char headers[LEN_MSG_HEADERS];
 		char* data = nullptr;
 		std::string requestHeadersString;
-		std::string reqeustDataString;
+		std::string requestDataString;
 		Buffer requestBuffer;
 		RequestInfo requestInfo;
 		std::string responseString;
 		int sendingResult = 0;
+		int jsonLength = 0;
 		while (true)
 		{
 			recv(clientSocket, headers, LEN_MSG_HEADERS, 0); // the headers of any message are in a fixed size so we are getting them first
 			requestHeadersString = std::string(headers, LEN_MSG_HEADERS); // converting the headers to a string in order to create a buffer out if it
 			requestBuffer = Buffer(requestHeadersString.begin(), requestHeadersString.end());
-			int jsonLength = JsonRequestPacketDeserializer::extractIntFromBuffer(requestBuffer, LENGTH_FIELD_INDEX, JSON_LENGTH_FIELD_LEN); // using the private function of the desrializer class to get the length of the json (the json length field is on the second byte (index 1) to the fifth byte (index 4)
-			data = new char[jsonLength]; // creating a new char array to get the json
+			jsonLength = JsonRequestPacketDeserializer::extractIntFromBuffer(requestBuffer, LENGTH_FIELD_INDEX, JSON_LENGTH_FIELD_LEN); // using the private function of the desrializer class to get the length of the json (the json length field is on the second byte (index 1) to the fifth byte (index 4)
+			data = new char[jsonLength];
 			recv(clientSocket, data, jsonLength, 0);
-			reqeustDataString = std::string(data, jsonLength); // converting the json char array to a string in order to connect it to the buffer
-			delete[] data; // deallocating the data char array since we no longer need it
+			requestDataString = std::string(data, jsonLength); // converting the json char array to a string in order to connect it to the buffer
+			delete[] data;
 			data = nullptr;
-			requestBuffer.insert(requestBuffer.end(), reqeustDataString.begin(), reqeustDataString.end()); // connecting the json to the headers in the buffer
+			requestBuffer.insert(requestBuffer.end(), requestDataString.begin(), requestDataString.end()); // connecting the json to the headers in the buffer
 			// Creating and setting a requestInfo struct
 			requestInfo.buffer = requestBuffer;
 			requestInfo.id = requestBuffer[0];
