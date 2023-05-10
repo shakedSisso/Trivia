@@ -112,7 +112,7 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 			// Creating and setting a requestInfo struct
 			requestInfo.buffer = requestBuffer;
 			requestInfo.id = requestBuffer[0];
-			requestInfo.receivalTime == time(nullptr);
+			requestInfo.receivalTime = time(nullptr);
 
 			// getting the client handler from the clients map
 			auto client = this->m_clients.find(clientSocket); 
