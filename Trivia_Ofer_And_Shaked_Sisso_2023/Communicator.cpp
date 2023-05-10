@@ -1,12 +1,19 @@
 #pragma comment (lib, "ws2_32.lib")
 
+#include <ctime>
 #include "Communicator.h"
 #include <thread>
 #include <exception>
 #include "LoginRequestHandler.h"
+#include "JsonRequestPacketDeserializer.h"
+#include "IRequestHandler.h"
+#include "Requests.h"
 
 #define PORT 1444
-#define LEN_MSG 5
+#define LEN_MSG_HEADERS 5
+#define LENGTH_FIELD_INDEX 1
+#define JSON_LENGTH_FIELD_LEN 4
+#define SOCKET_SEND_ERROR -1
 
 Communicator::~Communicator()
 {
@@ -81,14 +88,41 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 {
 	try
 	{
-		std::string s = "Hello";
-		send(clientSocket, s.c_str(), s.size(), 0);  // last parameter: flag. for us will be 0.
-
-		char msg[LEN_MSG + 1];
-		recv(clientSocket, msg, LEN_MSG, 0);
-		msg[LEN_MSG] = 0;
-		std::cout << "Client message: " << msg << std::endl;
-
+		char headers[LEN_MSG_HEADERS];
+		char* data = nullptr;
+		std::string requestHeadersString;
+		std::string reqeustDataString;
+		Buffer requestBuffer;
+		RequestInfo requestInfo;
+		std::string responseString;
+		int sendingResult = 0;
+		while (true)
+		{
+			recv(clientSocket, headers, LEN_MSG_HEADERS, 0);
+			requestHeadersString = std::string(headers, LEN_MSG_HEADERS);
+			requestBuffer = Buffer(requestHeadersString.begin(), requestHeadersString.end());
+			int jsonLength = JsonRequestPacketDeserializer::extractIntFromBuffer(requestBuffer, LENGTH_FIELD_INDEX, JSON_LENGTH_FIELD_LEN);
+			data = new char[jsonLength];
+			recv(clientSocket, data, jsonLength, 0);
+			reqeustDataString = std::string(data, jsonLength);
+			delete[] data;
+			data = nullptr;
+			requestBuffer.insert(requestBuffer.end(), reqeustDataString.begin(), reqeustDataString.end());
+			requestInfo.buffer = requestBuffer;
+			requestInfo.id = requestBuffer[0];
+			requestInfo.receivalTime == time(nullptr);
+			auto client = this->m_clients.find(clientSocket);
+			IRequestHandler* clientHandler = client->second;
+			RequestResult result = clientHandler->handleRequest(requestInfo);
+			delete(client->second);
+			this->m_clients[clientSocket] = result.newHandler;
+			responseString = std::string(result.buffer.begin(), result.buffer.end());
+			sendingResult = send(clientSocket, responseString.c_str(), responseString.size(), 0);
+			if (sendingResult == SOCKET_SEND_ERROR)
+			{
+				throw std::exception();
+			}
+		}
 		// Closing the socket (in the level of the TCP protocol)
 		closesocket(clientSocket);
 	}
