@@ -1,12 +1,19 @@
 #pragma comment (lib, "ws2_32.lib")
 
+#include <ctime>
 #include "Communicator.h"
 #include <thread>
 #include <exception>
 #include "LoginRequestHandler.h"
+#include "JsonRequestPacketDeserializer.h"
+#include "IRequestHandler.h"
+#include "Requests.h"
 
 #define PORT 1444
-#define LEN_MSG 5
+#define LEN_MSG_HEADERS 5
+#define LENGTH_FIELD_INDEX 1
+#define JSON_LENGTH_FIELD_LEN 4
+#define SOCKET_SEND_ERROR -1
 
 Communicator::~Communicator()
 {
@@ -81,20 +88,68 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 {
 	try
 	{
-		std::string s = "Hello";
-		send(clientSocket, s.c_str(), s.size(), 0);  // last parameter: flag. for us will be 0.
+		char headers[LEN_MSG_HEADERS];
+		char* data = nullptr;
+		std::string requestHeadersString;
+		std::string requestDataString;
+		Buffer requestBuffer;
+		RequestInfo requestInfo;
+		std::string responseString;
+		int sendingResult = 0;
+		int jsonLength = 0;
+		int bytesReceived = 0;
+		while (true)
+		{
+			bytesReceived = recv(clientSocket, headers, LEN_MSG_HEADERS, 0); // the headers of any message are in a fixed size so we are getting them first
+			if (!bytesReceived)
+			{
+				throw std::exception("Error: client disconnected");
+			}
+			else if (bytesReceived == SOCKET_ERROR)
+			{
+				int lastErr = WSAGetLastError();
+				std::string error = "Error: " + std::to_string(lastErr);
+				throw std::exception(error.c_str());
+			}
+			requestHeadersString = std::string(headers, LEN_MSG_HEADERS); // converting the headers to a string in order to create a buffer out if it
+			requestBuffer = Buffer(requestHeadersString.begin(), requestHeadersString.end());
+			jsonLength = JsonRequestPacketDeserializer::extractIntFromBuffer(requestBuffer, LENGTH_FIELD_INDEX, JSON_LENGTH_FIELD_LEN); // using function of the desrializer class to get the length of the json
+			data = new char[jsonLength];
 
-		char msg[LEN_MSG + 1];
-		recv(clientSocket, msg, LEN_MSG, 0);
-		msg[LEN_MSG] = 0;
-		std::cout << "Client message: " << msg << std::endl;
+			recv(clientSocket, data, jsonLength, 0);
+			requestDataString = std::string(data, jsonLength); // converting the json char array to a string in order to connect it to the buffer
+			delete[] data;
+			data = nullptr;
+			requestBuffer.insert(requestBuffer.end(), requestDataString.begin(), requestDataString.end()); // connecting the json to the headers in the buffer
+			
+			// Creating and setting a requestInfo struct
+			requestInfo.buffer = requestBuffer;
+			requestInfo.id = requestBuffer[0];
+			requestInfo.receivalTime = time(nullptr);
 
-		// Closing the socket (in the level of the TCP protocol)
-		closesocket(clientSocket);
+			// getting the client handler from the clients map
+			auto client = this->m_clients.find(clientSocket);
+			IRequestHandler* clientHandler = client->second;
+
+			RequestResult result = clientHandler->handleRequest(requestInfo);
+			if (result.newHandler != clientHandler) //if request fails, the newHandler is the same as the original
+			{
+				delete(client->second); // deleting the current handler of the client since the handlerRequest function gives us a new handler pointer
+				this->m_clients[clientSocket] = result.newHandler;
+			}
+			responseString = std::string(result.buffer.begin(), result.buffer.end()); // converting the response buffer to a string in order that we'll be able to send it in the socket
+			sendingResult = send(clientSocket, responseString.c_str(), responseString.size(), 0);
+			if (sendingResult == SOCKET_SEND_ERROR)
+			{
+				std::string error = "Error sending message to client- " + std::to_string(clientSocket);
+				throw std::exception(error.c_str());
+			}
+		}
 	}
 	catch (const std::exception& e)
 	{
-		closesocket(clientSocket);
+		std::cerr << e.what() << std::endl;
+		closesocket(clientSocket); // Closing the socket (in the level of the TCP protocol)
 	}
 
 	//client removed from the map after disconnection
