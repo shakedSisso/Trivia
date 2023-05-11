@@ -22,7 +22,7 @@ RequestResult LoginRequestHandler::handleRequest(RequestInfo info)
     {
         MenuRequestHandler* menuHandler = new MenuRequestHandler();
         result.newHandler = (IRequestHandler*)menuHandler;
-        if (info.id == LOGIN_REQUEST)
+            if (info.id == SIGN_UP_REQUEST)
         {
             SignupResponse response;
             response.status = RESPONSE_STATUS_SIGN_UP;
