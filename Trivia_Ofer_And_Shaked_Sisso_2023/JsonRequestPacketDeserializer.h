@@ -10,7 +10,7 @@ class JsonRequestPacketDeserializer
 {
 public:
 	static LoginRequest deserializeLoginRequest(const Buffer& buffer);
-	static SignupReqest deserializeSignupRequest(const Buffer& buffer);
+	static SignupRequest deserializeSignupRequest(const Buffer& buffer);
     /*
 	* Function: static extractIntFromBuffer
 	* ----------------------------
