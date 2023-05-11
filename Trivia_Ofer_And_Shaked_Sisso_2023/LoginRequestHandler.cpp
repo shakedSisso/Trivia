@@ -24,12 +24,14 @@ RequestResult LoginRequestHandler::handleRequest(RequestInfo info)
         result.newHandler = (IRequestHandler*)menuHandler;
             if (info.id == SIGN_UP_REQUEST)
         {
+                SignupRequest signUp = JsonRequestPacketDeserializer::deserializeSignupRequest(info.buffer);
             SignupResponse response;
             response.status = RESPONSE_STATUS_SIGN_UP;
             buffer = JsonResponsePacketSerializer::serializeResponse(response);
         }
         else
         {
+                LoginRequest login = JsonRequestPacketDeserializer::deserializeLoginRequest(info.buffer);
             LoginResponse response;
             response.status = RESPONSE_STATUS_LOGIN;
             buffer = JsonResponsePacketSerializer::serializeResponse(response);
