@@ -18,17 +18,17 @@ LoginRequest JsonRequestPacketDeserializer::deserializeLoginRequest(const Buffer
     return request;
 }
 
-SignupReqest JsonRequestPacketDeserializer::deserializeSignupRequest(const Buffer& buffer)
+SignupRequest JsonRequestPacketDeserializer::deserializeSignupRequest(const Buffer& buffer)
 {
     int jsonLength = extractIntFromBuffer(buffer, 1, LENGTH_FIELD_BYTES); //get the length of the json in the buffer
     std::string jsonString(buffer.begin() + LENGTH_FIELD_BYTES + 1, buffer.begin() + LENGTH_FIELD_BYTES + 1 + jsonLength); //get the values of the json into a string
 
-    SignupReqest request;
+    SignupRequest request;
     json jsonData = json::parse(jsonString); //converting the string with the json data into json type variable
 
     request.username = jsonData["username"];
     request.password = jsonData["password"];
-    request.email = jsonData["email"];
+    request.email = jsonData["mail"];
 
     return request;
 }

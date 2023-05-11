@@ -11,12 +11,12 @@ typedef struct LoginRequest
 	std::string password;
 }LoginRequest;
 
-typedef struct SignupReqest
+typedef struct SignupRequest
 {
 	std::string username;
 	std::string password;
 	std::string email;
-}SignupReqest;
+}SignupRequest;
 
 typedef struct RequestResult
 {
