@@ -28,7 +28,7 @@ SignupRequest JsonRequestPacketDeserializer::deserializeSignupRequest(const Buff
 
     request.username = jsonData["username"];
     request.password = jsonData["password"];
-    request.email = jsonData["email"];
+    request.email = jsonData["mail"];
 
     return request;
 }
