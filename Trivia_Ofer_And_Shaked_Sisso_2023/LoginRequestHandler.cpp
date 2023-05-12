@@ -9,6 +9,10 @@
 
 bool LoginRequestHandler::isRequestRelevent(RequestInfo info)
 {
+}
+
+bool LoginRequestHandler::isRequestRelevent(const RequestInfo& info)
+{
     if (info.id == LOGIN_REQUEST || info.id == SIGN_UP_REQUEST)
     {
         return true;
@@ -16,11 +20,11 @@ bool LoginRequestHandler::isRequestRelevent(RequestInfo info)
     return false;
 }
 
-RequestResult LoginRequestHandler::handleRequest(RequestInfo info)
+RequestResult LoginRequestHandler::handleRequest(const RequestInfo& info)
 {
     RequestResult result;
-    Buffer buffer;
-    try {
+    try
+    {
         if (isRequestRelevent(info))
         {
             MenuRequestHandler* menuHandler = new MenuRequestHandler();
@@ -51,7 +55,10 @@ RequestResult LoginRequestHandler::handleRequest(RequestInfo info)
         result.newHandler = this;
         ErrorResponse response;
         response.message = "ERROR";
-        buffer = JsonResponsePacketSerializer::serializeResponse(response);
+        result.buffer = JsonResponsePacketSerializer::serializeResponse(response);
+    }
+    return result;
+}
     }
 
     result.buffer = buffer;
