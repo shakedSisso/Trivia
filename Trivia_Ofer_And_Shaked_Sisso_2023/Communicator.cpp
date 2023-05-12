@@ -15,6 +15,10 @@
 #define JSON_LENGTH_FIELD_LEN 4
 #define SOCKET_SEND_ERROR -1
 
+Communicator::Communicator(RequestHandlerFactory& handlerFactory) : m_clients(), m_serverSocket(), m_handlerFactory(handlerFactory)
+{
+}
+
 Communicator::~Communicator()
 {
 	//frees all the client memories
@@ -73,8 +77,7 @@ void Communicator::bindAndListen()
 			// the function that handle the conversation with the client
 			std::thread newClient(&Communicator::handleNewClient, this, client_socket);
 			newClient.detach();
-			LoginRequestHandler* requestHandler = new LoginRequestHandler();
-			this->m_clients.insert(std::pair<SOCKET, IRequestHandler*>(client_socket, (IRequestHandler*)requestHandler));
+			this->m_clients.insert(std::pair<SOCKET, IRequestHandler*>(client_socket, (IRequestHandler*)this->m_handlerFactory.createLoginRequestHandler()));
 		}
 		catch (std::exception e)
 		{
