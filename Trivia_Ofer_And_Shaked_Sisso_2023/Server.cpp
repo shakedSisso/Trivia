@@ -20,4 +20,7 @@ void Server::run()
 	{
 		std::cin >> adminInput;
 	} while (adminInput != "EXIT");
+
+	this->m_database->close();
+	delete(this->m_database);
 }
