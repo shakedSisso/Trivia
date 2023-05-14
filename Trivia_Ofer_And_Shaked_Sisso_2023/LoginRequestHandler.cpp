@@ -66,6 +66,8 @@ RequestResult LoginRequestHandler::login(const RequestInfo& info)
     }
     catch (const std::exception& e)
     {
+        delete(menuHandler);
+        result.newHandler = nullptr;
         throw std::exception(e.what());
     }
     LoginResponse response;
@@ -87,6 +89,8 @@ RequestResult LoginRequestHandler::signup(const RequestInfo& info)
     }
     catch (const std::exception& e)
     {
+        delete(menuHandler);
+        result.newHandler = nullptr;
         throw std::exception(e.what());
     }
     SignupResponse response;
