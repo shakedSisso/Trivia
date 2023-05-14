@@ -18,5 +18,6 @@ private:
 	sqlite3* _db;
 	std::string _dbFileName;
 
+	bool createTables(int& res);
 	static int callbackString(void* list, int argc, char** argv, char** azColName);
 };

@@ -1,9 +1,35 @@
 #include "SqliteDatabase.h"
 #include <list>
 #include <map>
+#include <io.h>
 
 SqliteDatabase::SqliteDatabase() : _db(), _dbFileName("triviaDB.sqlite")
 {
+}
+
+bool SqliteDatabase::createTables(int& res)
+{
+	std::string sqlStatemant = "CREATE TABLE t_users ( username text primarykey NOT NULL, password text NOT NULL, email text NOT NULL, address TEXT NOT NULL, phone_number TEXT NOT NULL, birth_date TEXT NOT NULL);";
+	char** errMessage = nullptr;
+	res = sqlite3_exec(this->_db, sqlStatemant.c_str(), nullptr, nullptr, errMessage);
+	if (res != SQLITE_OK)
+		return false;
+	sqlStatemant = "CREATE TABLE t_questions (question_id integer NOT NULL, question text NOT NULL, correct_ans text NOT NULL, ans2 text NOT NULL, ans3 text NOT NULL, ans4 text NOT NULL, PRIMARY KEY(question_id AUTOINCREMENT));";
+	errMessage = nullptr;
+	res = sqlite3_exec(this->_db, sqlStatemant.c_str(), nullptr, nullptr, errMessage);
+	if (res != SQLITE_OK)
+		return false;
+	sqlStatemant = "CREATE TABLE t_players_answers ( game_id integer NOT NULL, username text NOT NULL, question_id integer NOT NULL, player_answer text NOT NULL, is_correct integer NOT NULL, answer_time integer NOT NULL, PRIMARY KEY(game_id,username,question_id), FOREIGN KEY(game_id) REFERENCES t_games(game_id), FOREIGN KEY(username) REFERENCES t_users(username), FOREIGN KEY(question_id) REFERENCES t_questions(question_id));";
+	errMessage = nullptr;
+	res = sqlite3_exec(this->_db, sqlStatemant.c_str(), nullptr, nullptr, errMessage);
+	if (res != SQLITE_OK)
+		return false;
+	sqlStatemant = "CREATE TABLE t_games(game_id integer NOT NULL, status integer NOT NULL, start_time DATETIME NOT NULL, end_time DATETIME, PRIMARY KEY(game_id AUTOINCREMENT));";
+	errMessage = nullptr;
+	res = sqlite3_exec(this->_db, sqlStatemant.c_str(), nullptr, nullptr, errMessage);
+	if (res != SQLITE_OK)
+		return false;
+	return true;
 }
 
 int SqliteDatabase::callbackString(void* list, int argc, char** argv, char** azColName)
@@ -18,12 +44,19 @@ int SqliteDatabase::callbackString(void* list, int argc, char** argv, char** azC
 
 bool SqliteDatabase::open()
 {
+	int fileExist = _access(this->_dbFileName.c_str(), 0);
 	int res = sqlite3_open(this->_dbFileName.c_str(), &this->_db);
 	if (res != SQLITE_OK)
 	{
 		this->_db = nullptr;
 		std::cout << "Failed to open DB" << std::endl;
 		return false;
+	}
+
+	if (fileExist != 0)
+	{
+		if (!createTables(res))
+			return false;
 	}
 	return true;
 }
