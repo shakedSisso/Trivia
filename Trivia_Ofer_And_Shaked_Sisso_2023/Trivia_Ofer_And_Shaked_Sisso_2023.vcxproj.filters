@@ -59,7 +59,6 @@
     <ClCompile Include="Communicator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-<<<<<<< Trivia_Ofer_And_Shaked_Sisso_2023/Trivia_Ofer_And_Shaked_Sisso_2023.vcxproj.filters
     <ClCompile Include="JsonRequestPacketDeserializer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

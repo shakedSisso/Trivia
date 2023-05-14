@@ -1,11 +1,11 @@
 #include "MenuRequestHandler.h"
 
-bool MenuRequestHandler::isRequestRelevent(RequestInfo info)
+bool MenuRequestHandler::isRequestRelevent(const RequestInfo& info)
 {
     return false;
 }
 
-RequestResult MenuRequestHandler::handleRequest(RequestInfo info)
+RequestResult MenuRequestHandler::handleRequest(const RequestInfo& info)
 {
     return RequestResult();
 }
