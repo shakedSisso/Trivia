@@ -1,6 +1,7 @@
 import socket
 import json
 import struct
+import time
 
 PORT = 1444
 CODE_LEN = 1
@@ -21,9 +22,10 @@ def client():
         data = {'username': "user1", 'password': "1234", "mail": "test@gmail.com"}
         request = bytes([SIGNUP_REQUEST])
     elif selection == 'l': #login
-        data = {'username': "user1", 'password': "1234"}
+        data = {'username': "user", 'password': "Aa12"}
         request = bytes([LOGIN_REQUEST])
     elif selection == 'e': #error
+        # sending login message with a sign up code
         data = {'username': "user1", 'password': "1234"}
         request = bytes([SIGNUP_REQUEST])
     elif selection == 'f': #finish
@@ -36,11 +38,12 @@ def client():
     print("Sending request:")
     print(request)
     socket_to_server.send(request)
-    response_code = socket_to_server.recv(CODE_LEN) # using decode since the sockets returns data received in binary
+    response_code = socket_to_server.recv(CODE_LEN)
     response_json_length_bytes = socket_to_server.recv(JSON_LENGTH)
     response_json_length = struct.unpack('!I', response_json_length_bytes)[0]
     response_json = socket_to_server.recv(response_json_length).decode()
     print("Received from server:", response_json)
+    time.sleep(75)
     socket_to_server.close()
 
 def main():
