@@ -85,7 +85,7 @@ RequestResult LoginRequestHandler::signup(const RequestInfo& info)
     try
     {
         SignupRequest signUp = JsonRequestPacketDeserializer::deserializeSignupRequest(info.buffer);
-        manager->signup(signUp.username, signUp.password, signUp.email);
+        manager->signup(signUp.username, signUp.password, signUp.email, signUp.address, signUp.phoneNumber, signUp.birthDate);
     }
     catch (const std::exception& e)
     {

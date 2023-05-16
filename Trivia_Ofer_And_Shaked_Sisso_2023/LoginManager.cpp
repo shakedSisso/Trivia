@@ -4,11 +4,11 @@ LoginManager::LoginManager(IDatabase* database) : m_database(database)
 {
 }
 
-void LoginManager::signup(const std::string username, const std::string password, const std::string mail)
+void LoginManager::signup(const std::string username, const std::string password, const std::string mail, const std::string address, const std::string phoneNumber, const std::string birthDate)
 {
 	if (this->m_database->doesUserExist(username) == ERROR_RESPONSE_CODE)
 	{
-		this->m_database->addNewUser(username, password, mail);
+		this->m_database->addNewUser(username, password, mail, address, phoneNumber, birthDate);
 	}
 	else
 	{
