@@ -19,16 +19,16 @@ def client():
     print("Connected to server on localhost:{}".format(PORT))
     selection = input("Enter s for signup and l for login: ")
     if selection == "s": #signup
-        data = {'username': "user1", 'password': "1234", "mail": "test@gmail.com"}
+        data = {'username': "user1", 'password': "Pass123#", "mail": "test@gmail.com", "address": "(Sesame, 10, Tel Aviv)", "phone_number": "0519876532", "birth_date": "01.01.2023"}
         request = bytes([SIGNUP_REQUEST])
     elif selection == 'l': #login
-        data = {'username': "user", 'password': "Aa12"}
+        data = {'username': "user1", 'password': "Pass123#"}
         request = bytes([LOGIN_REQUEST])
     elif selection == 'e': #error
         # sending login message with a sign up code
         data = {'username': "user1", 'password': "1234"}
         request = bytes([SIGNUP_REQUEST])
-    elif selection == 'f': #finish
+    else: #finish
         return
     dataJson = json.dumps(data)
 
@@ -43,7 +43,6 @@ def client():
     response_json_length = struct.unpack('!I', response_json_length_bytes)[0]
     response_json = socket_to_server.recv(response_json_length).decode()
     print("Received from server:", response_json)
-    time.sleep(75)
     socket_to_server.close()
 
 def main():
