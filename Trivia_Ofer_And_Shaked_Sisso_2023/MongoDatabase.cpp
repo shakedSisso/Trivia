@@ -7,6 +7,7 @@ constexpr char DATABASE_NAME[] = "triviaDB";
 using mongocxx::collection;
 using bsoncxx::builder::basic::kvp;
 using bsoncxx::builder::stream::finalize;
+using bsoncxx::builder::stream::document;
 
 typedef bsoncxx::builder::basic::document basicDocument;
 typedef bsoncxx::builder::stream::document streamDocument;
