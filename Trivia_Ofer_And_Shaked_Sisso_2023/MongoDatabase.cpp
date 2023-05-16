@@ -7,6 +7,7 @@ constexpr char DATABASE_NAME[] = "triviaDB";
 using mongocxx::collection;
 using bsoncxx::builder::basic::kvp;
 using bsoncxx::builder::stream::finalize;
+using bsoncxx::builder::stream::document;
 
 typedef bsoncxx::builder::basic::document basicDocument;
 typedef bsoncxx::builder::stream::document streamDocument;
@@ -36,7 +37,7 @@ bool MongoDatabase::open()
 bool MongoDatabase::close()
 {
 	mongocxx::instance::current().~instance();
-	return false;
+	return true;
 }
 
 int MongoDatabase::doesUserExist(const std::string username)
@@ -54,7 +55,6 @@ int MongoDatabase::doesUserExist(const std::string username)
 		return FOUND_RESPONSE_CODE;
 	}
 	return ERROR_RESPONSE_CODE;
-	return 0;
 }
 
 int MongoDatabase::doesPasswordMatch(const std::string username, const std::string password)
@@ -73,7 +73,6 @@ int MongoDatabase::doesPasswordMatch(const std::string username, const std::stri
 		return FOUND_RESPONSE_CODE;
 	}
 	return ERROR_RESPONSE_CODE;
-	return 0;
 }
 
 int MongoDatabase::addNewUser(const std::string username, const std::string password, const std::string mail, const std::string address, const std::string phoneNumber, const std::string birthDate)
