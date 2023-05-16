@@ -1,4 +1,5 @@
 #pragma once
+#define NOMIMMAX
 #include "sqlite3.h"
 #include "IDatabase.h"
 
