@@ -1,11 +1,6 @@
 #pragma once
 #include <regex>
 
-#define PREFIX_ARR_LEN 16
-#define DOMAIN_ARR_LEN 4
-#define SPECIAL_CHAR_ARR_LEN 8
-#define EMAIL_SYMBOL "@"
-
 class RegexValidation
 {
 public:

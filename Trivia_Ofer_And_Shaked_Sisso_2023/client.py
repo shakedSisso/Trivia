@@ -43,7 +43,6 @@ def client():
     response_json_length = struct.unpack('!I', response_json_length_bytes)[0]
     response_json = socket_to_server.recv(response_json_length).decode()
     print("Received from server:", response_json)
-    #time.sleep(75)
     socket_to_server.close()
 
 def main():
