@@ -1,4 +1,5 @@
 #pragma once
+#include "MongoDatabase.h"
 #include "Communicator.h"
 #include "WSAInitializer.h"
 #include "RequestHandlerFactory.h"
