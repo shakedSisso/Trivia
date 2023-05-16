@@ -5,7 +5,7 @@
 Server::Server() : m_communicator(this->m_handlerFactory), m_handlerFactory(nullptr)
 //putting null in the the database variable because the database doesn't exist yet
 {
-	this->m_database = new SqliteDatabase();
+	this->m_database = new MongoDatabase();
 	this->m_database->open();
 	this->m_handlerFactory = RequestHandlerFactory(this->m_database);
 }

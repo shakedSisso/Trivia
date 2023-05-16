@@ -3,6 +3,7 @@
 #include "WSAInitializer.h"
 #include "RequestHandlerFactory.h"
 #include "SqliteDatabase.h"
+#include "MongoDatabase.h"
 
 class Server
 {
