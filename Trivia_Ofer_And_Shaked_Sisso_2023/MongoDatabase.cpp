@@ -1,10 +1,5 @@
 #include "MongoDatabase.h"
 
-#include <bsoncxx/builder/stream/document.hpp>
-#include <bsoncxx/json.hpp>
-#include <bsoncxx/oid.hpp>
-#include <bsoncxx/stdx/string_view.hpp>
-
 constexpr char MONGO_DB_URI[] = "mongodb://localhost:27017";
 constexpr char DATABASE_NAME[] = "triviaDB";
 #define USERS_COLLECTION_NAME "users"
@@ -12,6 +7,7 @@ constexpr char DATABASE_NAME[] = "triviaDB";
 using mongocxx::collection;
 using bsoncxx::builder::basic::kvp;
 using bsoncxx::builder::stream::finalize;
+using bsoncxx::builder::stream::document;
 
 typedef bsoncxx::builder::basic::document basicDocument;
 typedef bsoncxx::builder::stream::document streamDocument;
@@ -22,21 +18,30 @@ MongoDatabase::MongoDatabase()
 
 bool MongoDatabase::open()
 {
+	mongocxx::instance mongoInstance{};
 	this->_uri = mongocxx::uri();
 	this->_client = mongocxx::client(this->_uri);
+
+	mongocxx::database db = this->_client[DATABASE_NAME];
+	bool db_exists = db.run_command(document{} << "ping" << 1 << finalize).view().empty();
+	if (!db_exists) {
+		this->_client.database(DATABASE_NAME).create_collection("mycollection");
+	}
 	bsoncxx::string::view_or_value database_name{ "triviaDB" };
 	this->_db = this->_client[database_name];
+
 	return true;
 }
 
 bool MongoDatabase::close()
 {
+	mongocxx::instance::current().~instance();
 	return false;
 }
 
 int MongoDatabase::doesUserExist(const std::string username)
 {
-	collection usersCollections = this->_db[USERS_COLLECTION_NAME];
+	mongocxx::collection usersCollections = this->_db[USERS_COLLECTION_NAME];
 	auto builder = streamDocument{};
 	bsoncxx::document::value queryDocument =
 		builder << "username" << username
@@ -47,15 +52,14 @@ int MongoDatabase::doesUserExist(const std::string username)
 	if (cursor.begin() != cursor.end()) 
 	{
 		return FOUND_RESPONSE_CODE;
-		std::cout << "Document exists!\n";
 	}
 	return ERROR_RESPONSE_CODE;
-	std::cout << "Document does not exist.\n";
+	return 0;
 }
 
 int MongoDatabase::doesPasswordMatch(const std::string username, const std::string password)
 {
-	collection usersCollections = this->_db[USERS_COLLECTION_NAME];
+	mongocxx::collection usersCollections = this->_db[USERS_COLLECTION_NAME];
 	auto builder = streamDocument{};
 	bsoncxx::document::value queryDocument =
 		builder << "username" << username
@@ -67,16 +71,14 @@ int MongoDatabase::doesPasswordMatch(const std::string username, const std::stri
 	if (cursor.begin() != cursor.end())
 	{
 		return FOUND_RESPONSE_CODE;
-		std::cout << "Document exists!\n";
 	}
 	return ERROR_RESPONSE_CODE;
-	std::cout << "Document does not exist.\n";
 	return 0;
 }
 
 int MongoDatabase::addNewUser(const std::string username, const std::string password, const std::string mail, const std::string address, const std::string phoneNumber, const std::string birthDate)
 {
-	collection usersCollections = this->_db[USERS_COLLECTION_NAME];
+	mongocxx::collection usersCollections = this->_db[USERS_COLLECTION_NAME];
 
 	basicDocument documentBuilder{};
 	documentBuilder.append(kvp("username", username));

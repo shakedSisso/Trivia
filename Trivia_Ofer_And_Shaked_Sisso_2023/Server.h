@@ -1,9 +1,9 @@
 #pragma once
+#include "MongoDatabase.h"
 #include "Communicator.h"
 #include "WSAInitializer.h"
 #include "RequestHandlerFactory.h"
 #include "SqliteDatabase.h"
-#include "MongoDatabase.h"
 
 class Server
 {
