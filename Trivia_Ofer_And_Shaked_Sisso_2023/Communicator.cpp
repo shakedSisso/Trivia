@@ -14,8 +14,15 @@
 #define JSON_LENGTH_FIELD_LEN 4
 #define SOCKET_SEND_ERROR -1
 
+int Communicator::instanceCount = 0;
+
 Communicator::Communicator(RequestHandlerFactory& handlerFactory) : m_clients(), m_serverSocket(), m_handlerFactory(handlerFactory)
 {
+	if (Communicator::instanceCount != 0)
+	{
+		throw std::exception("Communicator was already created once.");
+	}
+	instanceCount++;
 }
 
 Communicator::~Communicator()
@@ -40,6 +47,8 @@ void Communicator::startHandleRequests()
 	}
 	bindAndListen();
 }
+
+
 
 void Communicator::bindAndListen()
 {

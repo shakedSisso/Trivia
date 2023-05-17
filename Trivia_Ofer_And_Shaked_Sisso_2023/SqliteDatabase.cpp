@@ -75,7 +75,7 @@ int SqliteDatabase::doesUserExist(const std::string username)
 	int res = sqlite3_exec(this->_db, sqlStatement.c_str(), callbackString, &list, nullptr);
 	if (res != SQLITE_OK)
 	{
-		throw std::exception("Error\n");
+		throw std::exception("Error- sqlite3_exec functions failed");
 	}
 	if (list.empty())
 	{
@@ -93,7 +93,7 @@ int SqliteDatabase::doesPasswordMatch(const std::string username, const std::str
 		int res = sqlite3_exec(this->_db, sqlStatement.c_str(), callbackString, &list, nullptr);
 		if (res != SQLITE_OK)
 		{
-			throw std::exception("Error\n");
+			throw std::exception("Error- sqlite3_exec functions failed");
 		}
 		if (!list.empty())
 		{
@@ -104,13 +104,13 @@ int SqliteDatabase::doesPasswordMatch(const std::string username, const std::str
 
 }
 
-int SqliteDatabase::addNewUser(const std::string username, const std::string password, const std::string mail)
+int SqliteDatabase::addNewUser(const std::string username, const std::string password, const std::string mail, const std::string address, const std::string phoneNumber, const std::string birthDate)
 {
-	std::string sqlStatement = "INSERT INTO t_users VALUES ('" + username + "', '" + password + "', '" + mail + "') ;";
+	std::string sqlStatement = "INSERT INTO t_users VALUES ('" + username + "', '" + password + "', '" + mail + "', '" + address + "', '" + phoneNumber + "', '" + birthDate + "');";
 	int res = sqlite3_exec(this->_db, sqlStatement.c_str(), nullptr, nullptr, nullptr);
 	if (res != SQLITE_OK)
 	{
-		throw std::exception("Error\n");
+		throw std::exception("Error- sqlite3_exec functions failed");
 	}
     return 0;
 }

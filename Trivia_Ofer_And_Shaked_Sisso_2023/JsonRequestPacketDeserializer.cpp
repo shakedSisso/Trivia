@@ -1,6 +1,7 @@
 #include "JsonRequestPacketDeserializer.h"
 #include "json.hpp"
 #include "LoginRequestHandler.h"
+#include "RegexValidation.h"
 
 using json = nlohmann::json;
 
@@ -29,6 +30,11 @@ SignupRequest JsonRequestPacketDeserializer::deserializeSignupRequest(const Buff
     request.username = jsonData["username"];
     request.password = jsonData["password"];
     request.email = jsonData["mail"];
+    request.address = jsonData["address"];
+    request.phoneNumber = jsonData["phone_number"];
+    request.birthDate = jsonData["birth_date"];
+
+    JsonRequestPacketDeserializer::checkForInputValidtion(request);
 
     return request;
 }
@@ -41,5 +47,29 @@ int JsonRequestPacketDeserializer::extractIntFromBuffer(const Buffer& buffer, co
         result = (result << BITS_IN_BYTE) | buffer[i];
     }
     return result;
+}
+
+void JsonRequestPacketDeserializer::checkForInputValidtion(const SignupRequest& request)
+{
+    if (!RegexValidation::isPasswordVaild(request.password))
+    {
+        throw std::exception("Password is invalid");
+    }
+    if (!RegexValidation::isEmailVlaid(request.email))
+    {
+        throw std::exception("Email is invalid");
+    }
+    if (!RegexValidation::isAddressVaild(request.address))
+    {
+        throw std::exception("Address is invalid");
+    }
+    if (!RegexValidation::isPhoneNumberValid(request.phoneNumber))
+    {
+        throw std::exception("Phone number is invalid");
+    }
+    if (!RegexValidation::isDataOfBirthValid(request.birthDate))
+    {
+        throw std::exception("Birth date is invalid");
+    }
 }
 
