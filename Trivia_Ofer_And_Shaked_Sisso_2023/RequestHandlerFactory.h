@@ -12,6 +12,7 @@ public:
 	LoginRequestHandler* createLoginRequestHandler();
 	LoginManager* getLoginManager();
 private:
+	static int instanceCount;
 	LoginManager m_loginManager;
 	IDatabase* m_database;
 };
