@@ -8,10 +8,11 @@
 class Server
 {
 public:
-	Server();
 	void run();
+	Server();
 	
 private:
+	static int instanceCount;
 	WSAInitializer _wasInitializer;
 	Communicator m_communicator;
 	RequestHandlerFactory m_handlerFactory;

@@ -4,6 +4,7 @@
 class IDatabase
 {
 public:
+	IDatabase();
 	virtual bool open() = 0;
 	virtual bool close() = 0;
 	virtual int doesUserExist(const std::string username) = 0;

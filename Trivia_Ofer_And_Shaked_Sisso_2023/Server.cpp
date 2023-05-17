@@ -2,12 +2,19 @@
 #include <thread>
 #include <iostream>
 
-Server::Server() : m_communicator(this->m_handlerFactory), m_handlerFactory(nullptr)
+int Server::instanceCount = 0;
+
+Server::Server() : m_handlerFactory(nullptr), m_communicator(m_handlerFactory)
 //putting null in the the database variable because the database doesn't exist yet
 {
-	this->m_database = new MongoDatabase();
+	if (instanceCount != 0)
+	{
+		throw std::exception("Server was already created once.");
+	}
+	this->m_database = new SqliteDatabase();
 	this->m_database->open();
-	this->m_handlerFactory = RequestHandlerFactory(this->m_database);
+	this->m_handlerFactory.setDatabase(this->m_database);
+	instanceCount++;
 }
 
 void Server::run()

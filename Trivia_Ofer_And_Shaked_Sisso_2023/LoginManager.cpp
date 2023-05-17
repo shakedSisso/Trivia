@@ -1,7 +1,14 @@
 #include "LoginManager.h"
 
+int LoginManager::instanceCount = 0;
+
 LoginManager::LoginManager(IDatabase* database) : m_database(database)
 {
+	if (instanceCount != 0)
+	{
+		throw std::exception("Login manager was already created once.");
+	}
+	instanceCount++;
 }
 
 void LoginManager::signup(const std::string username, const std::string password, const std::string mail, const std::string address, const std::string phoneNumber, const std::string birthDate)
@@ -41,6 +48,11 @@ void LoginManager::logout(const std::string username)
 			return;
 		}
 	}
+}
+
+void LoginManager::setDatabase(IDatabase* database)
+{
+	this->m_database = database;
 }
 
 bool LoginManager::isUserLoggedIn(const std::string username)
