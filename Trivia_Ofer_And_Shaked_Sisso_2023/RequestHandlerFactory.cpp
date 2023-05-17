@@ -21,3 +21,9 @@ LoginManager* RequestHandlerFactory::getLoginManager()
 {
     return &this->m_loginManager;
 }
+
+void RequestHandlerFactory::setDatabase(IDatabase* db)
+{
+    this->m_database = db;
+    this->m_loginManager.setDatabase(db);
+}

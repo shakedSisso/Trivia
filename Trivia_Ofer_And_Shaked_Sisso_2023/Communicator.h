@@ -12,7 +12,6 @@ public:
 	~Communicator();
 	void startHandleRequests();
 	Communicator(RequestHandlerFactory& handlerFactory);
-	
 
 
 private:

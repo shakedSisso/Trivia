@@ -11,6 +11,7 @@ public:
 	void signup(const std::string username, const std::string password, const std::string mail);
 	void login(const std::string username, const std::string password);
 	void logout(const std::string username);
+	void setDatabase(IDatabase* database);
 private:
 	static int instanceCount;
 	std::vector<LoggedUser> m_loggedUsers;
