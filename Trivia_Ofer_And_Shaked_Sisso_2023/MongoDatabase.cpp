@@ -22,12 +22,19 @@ bool MongoDatabase::open()
 	this->_uri = mongocxx::uri();
 	this->_client = mongocxx::client(this->_uri);
 
-	mongocxx::database db = this->_client[DATABASE_NAME];
-	bool db_exists = db.run_command(streamDocument{} << "ping" << 1 << finalize).view().empty(); // using this command to check if the database already exists
-	if (!db_exists) 
-	{
-		this->_client.database(DATABASE_NAME).create_collection(USERS_COLLECTION_NAME);
+
+	if (!this->_client[DATABASE_NAME]) {
+		this->_client.database(DATABASE_NAME).create_collection({}); // Empty options
+		std::cout << "Created database: " << DATABASE_NAME << std::endl;
 	}
+
+	// Create the collection if it does not exist
+	if (!this->_client[DATABASE_NAME][USERS_COLLECTION_NAME]) {
+		this->_client[DATABASE_NAME].create_collection(USERS_COLLECTION_NAME);
+		std::cout << "Created collection: " << USERS_COLLECTION_NAME << std::endl;
+	}
+
+	mongocxx::database db = this->_client[DATABASE_NAME];
 	bsoncxx::string::view_or_value database_name{ "triviaDB" };
 	this->_db = this->_client[database_name];
 
@@ -36,7 +43,6 @@ bool MongoDatabase::open()
 
 bool MongoDatabase::close()
 {
-	mongocxx::instance::current().~instance();
 	return true;
 }
 
@@ -50,7 +56,7 @@ int MongoDatabase::doesUserExist(const std::string username)
 
 	mongocxx::cursor cursor = usersCollections.find(queryDocument.view());
 
-	if (cursor.begin() != cursor.end()) 
+	if (cursor.begin() != cursor.end())
 	{
 		return FOUND_RESPONSE_CODE;
 	}
