@@ -12,6 +12,7 @@ public:
 	void login(const std::string username, const std::string password);
 	void logout(const std::string username);
 private:
+	static int instanceCount;
 	std::vector<LoggedUser> m_loggedUsers;
 	IDatabase* m_database;
 
