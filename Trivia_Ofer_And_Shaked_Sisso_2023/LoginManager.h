@@ -8,7 +8,7 @@ class LoginManager
 {
 public:
 	LoginManager(IDatabase* database);
-	void signup(const std::string username, const std::string password, const std::string mail);
+	void signup(const std::string username, const std::string password, const std::string mail, const std::string address, const std::string phoneNumber, const std::string birthDate);
 	void login(const std::string username, const std::string password);
 	void logout(const std::string username);
 	void setDatabase(IDatabase* database);
