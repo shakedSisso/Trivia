@@ -29,6 +29,11 @@ bool SqliteDatabase::createTables(int& res)
 	res = sqlite3_exec(this->_db, sqlStatemant.c_str(), nullptr, nullptr, errMessage);
 	if (res != SQLITE_OK)
 		return false;
+	sqlStatemant = "CREATE TABLE t_statistics(games_count integer NOT NULL, correct_answers integer NOT NULL, sum_time DATETIME NOT NULL, total_ansers integer NOT NULL);";
+	errMessage = nullptr;
+	res = sqlite3_exec(this->_db, sqlStatemant.c_str(), nullptr, nullptr, errMessage);
+	if (res != SQLITE_OK)
+		return false;
 	return true;
 }
 
