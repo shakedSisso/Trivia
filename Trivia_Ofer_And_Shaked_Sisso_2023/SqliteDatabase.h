@@ -2,6 +2,7 @@
 #define NOMIMMAX
 #include "sqlite3.h"
 #include "IDatabase.h"
+#include "AutoQuestions.h"
 
 #define ERROR_RESPONSE_CODE 1
 #define FOUND_RESPONSE_CODE 2
@@ -18,6 +19,9 @@ public:
 private:
 	sqlite3* _db;
 	std::string _dbFileName;
+
+	int addTenAutoQuestions();
+	int addQuestion(const Question& q);
 
 	bool createTables(int& res);
 	static int callbackString(void* list, int argc, char** argv, char** azColName);

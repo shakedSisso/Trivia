@@ -9,22 +9,22 @@ SqliteDatabase::SqliteDatabase() : _db(), _dbFileName("triviaDB.sqlite")
 
 bool SqliteDatabase::createTables(int& res)
 {
-	std::string sqlStatemant = "CREATE TABLE t_users ( username text primarykey NOT NULL, password text NOT NULL, email text NOT NULL, address TEXT NOT NULL, phone_number TEXT NOT NULL, birth_date TEXT NOT NULL);";
+	std::string sqlStatemant = "CREATE TABLE t_users ( username text primarykey NOT NULL UNIQUE, password text NOT NULL, email text NOT NULL, address TEXT NOT NULL, phone_number TEXT NOT NULL, birth_date TEXT NOT NULL);";
 	char** errMessage = nullptr;
 	res = sqlite3_exec(this->_db, sqlStatemant.c_str(), nullptr, nullptr, errMessage);
 	if (res != SQLITE_OK)
 		return false;
-	sqlStatemant = "CREATE TABLE t_questions (question_id integer NOT NULL, question text NOT NULL, correct_ans text NOT NULL, ans2 text NOT NULL, ans3 text NOT NULL, ans4 text NOT NULL, PRIMARY KEY(question_id AUTOINCREMENT));";
+	sqlStatemant = "CREATE TABLE t_questions (question_id integer NOT NULL UNIQUE, question text NOT NULL, correct_ans text NOT NULL, ans2 text NOT NULL, ans3 text NOT NULL, ans4 text NOT NULL, PRIMARY KEY(question_id AUTOINCREMENT));";
 	errMessage = nullptr;
 	res = sqlite3_exec(this->_db, sqlStatemant.c_str(), nullptr, nullptr, errMessage);
 	if (res != SQLITE_OK)
 		return false;
-	sqlStatemant = "CREATE TABLE t_players_answers ( game_id integer NOT NULL, username text NOT NULL, question_id integer NOT NULL, player_answer text NOT NULL, is_correct integer NOT NULL, answer_time integer NOT NULL, PRIMARY KEY(game_id,username,question_id), FOREIGN KEY(game_id) REFERENCES t_games(game_id), FOREIGN KEY(username) REFERENCES t_users(username), FOREIGN KEY(question_id) REFERENCES t_questions(question_id));";
+	sqlStatemant = "CREATE TABLE t_players_answers ( game_id integer NOT NULL UNIQUE, username text NOT NULL, question_id integer NOT NULL, player_answer text NOT NULL, is_correct integer NOT NULL, answer_time integer NOT NULL, PRIMARY KEY(game_id,username,question_id), FOREIGN KEY(game_id) REFERENCES t_games(game_id), FOREIGN KEY(username) REFERENCES t_users(username), FOREIGN KEY(question_id) REFERENCES t_questions(question_id));";
 	errMessage = nullptr;
 	res = sqlite3_exec(this->_db, sqlStatemant.c_str(), nullptr, nullptr, errMessage);
 	if (res != SQLITE_OK)
 		return false;
-	sqlStatemant = "CREATE TABLE t_games(game_id integer NOT NULL, status integer NOT NULL, start_time DATETIME NOT NULL, end_time DATETIME, PRIMARY KEY(game_id AUTOINCREMENT));";
+	sqlStatemant = "CREATE TABLE t_games(game_id integer NOT NULL UNIQUE, status integer NOT NULL, start_time DATETIME NOT NULL, end_time DATETIME, PRIMARY KEY(game_id AUTOINCREMENT));";
 	errMessage = nullptr;
 	res = sqlite3_exec(this->_db, sqlStatemant.c_str(), nullptr, nullptr, errMessage);
 	if (res != SQLITE_OK)
@@ -58,6 +58,7 @@ bool SqliteDatabase::open()
 		if (!createTables(res))
 			return false;
 	}
+	addTenAutoQuestions();
 	return true;
 }
 
@@ -113,4 +114,43 @@ int SqliteDatabase::addNewUser(const std::string username, const std::string pas
 		throw std::exception("Error- sqlite3_exec functions failed");
 	}
     return 0;
+}
+
+int SqliteDatabase::addTenAutoQuestions()
+{
+	std::list<std::string> list;
+	std::string sqlStatement = "SELECT * FROM t_questions";
+	int res = sqlite3_exec(this->_db, sqlStatement.c_str(), callbackString, &list, nullptr);
+	if (res != SQLITE_OK)
+	{
+		throw std::exception("Error- sqlite3_exec functions failed");
+	}
+	if (!list.empty())
+	{
+		std::cout << "questions already in the database" << std::endl;
+		return 0;
+	}
+
+	std::list<Question> questions = AutoQuestions::getQuestionsFromFile();
+	if (questions.front().id == FILE_NOT_OPEN)
+	{
+		return ERROR_RESPONSE_CODE;
+	}
+
+	for (auto q : questions)
+	{
+		addQuestion(q);
+	}
+	return 0;
+}
+
+int SqliteDatabase::addQuestion(const Question& q)
+{
+	std::string sqlStatement = "INSERT INTO t_questions VALUES (" + std::to_string(q.id) + ", '" + q.question + "', '" + q.correct_ans + "', '" + q.ans2 + "', '" + q.ans3 + "', '" + q.ans4 + "');";
+	int res = sqlite3_exec(this->_db, sqlStatement.c_str(), nullptr, nullptr, nullptr);
+	if (res != SQLITE_OK)
+	{
+		throw std::exception("Error- sqlite3_exec functions failed");
+	}
+	return 0;
 }
