@@ -1,5 +1,6 @@
 #pragma once
 #include "IDatabase.h"
+#include "AutoQuestions.h"
 
 
 #include <bsoncxx/builder/stream/document.hpp>
@@ -31,4 +32,6 @@ private:
 	mongocxx::client _client;
 	mongocxx::database _db;
 
+	int addTenAutoQuestions();
+	int addQuestion(const Question& q);
 };
