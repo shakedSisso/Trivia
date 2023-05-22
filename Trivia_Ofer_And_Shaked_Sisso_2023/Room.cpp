@@ -34,3 +34,8 @@ vector<string> Room::getAllUsers() const
 	}
 	return usersUsernames;
 }
+
+RoomData Room::getRoomData() const
+{
+	return this->m_metadata;
+}
