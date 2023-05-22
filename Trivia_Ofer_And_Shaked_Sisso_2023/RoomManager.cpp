@@ -9,7 +9,7 @@ void RoomManager::createRoom(const LoggedUser& loggedUser, RoomData roomMetadata
 void RoomManager::deleteRoom(RoomID roomId)
 {
 	auto iter = this->m_rooms.find(roomId);
-	if (iter != this->m_rooms.end())
+	if (iter != this->m_rooms.end()) // checking that the room was found in the map
 	{
 		this->m_rooms.erase(iter);
 	}

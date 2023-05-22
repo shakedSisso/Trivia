@@ -13,11 +13,13 @@ void Room::addUser(const LoggedUser& userToAdd)
 void Room::removeUser(const LoggedUser& userToRemove)
 {
 	auto iter = std::find_if(m_users.begin(), m_users.end(),
-		[&userToRemove](const LoggedUser& user) {
+		[&userToRemove](const LoggedUser& user) 
+		{
 			return user.getUsename() == userToRemove.getUsename();
-		});
+		}); // checking if there is a user with the same username as the given user
 
-	if (iter != m_users.end()) {
+	if (iter != m_users.end()) // checking if the user was found on the vector
+	{
 		m_users.erase(iter);
 	}
 
