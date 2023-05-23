@@ -178,6 +178,8 @@
     <ClCompile Include="RegexValidation.cpp" />
     <ClCompile Include="MongoDatabase.cpp" />
     <ClCompile Include="RequestHandlerFactory.cpp" />
+    <ClCompile Include="Room.cpp" />
+    <ClCompile Include="RoomManager.cpp" />
     <ClCompile Include="sqlite3.c" />
     <ClCompile Include="SqliteDatabase.cpp" />
     <ClCompile Include="test.cpp" />
@@ -200,6 +202,8 @@
     <ClInclude Include="Requests.h" />
     <ClInclude Include="JsonResponsePacketSerializer.h" />
     <ClInclude Include="Responses.h" />
+    <ClInclude Include="Room.h" />
+    <ClInclude Include="RoomManager.h" />
     <ClInclude Include="Server.h" />
     <ClInclude Include="sqlite3.h" />
     <ClInclude Include="SqliteDatabase.h" />
