@@ -42,5 +42,5 @@ private:
 
 	json getUserStatisticsJson(std::string& username);
 	int addTenAutoQuestions();
-	int addQuestion(const Question& q);
+	int addQuestion(const QuestionStruct& q);
 };

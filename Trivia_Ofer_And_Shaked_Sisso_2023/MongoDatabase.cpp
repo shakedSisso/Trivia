@@ -144,20 +144,18 @@ std::list<Question> MongoDatabase::getQuestions(int amountOfQuestions)
 	mongocxx::cursor cursor = collection.aggregate(pipe);
 
 	std::list<Question> questions;
+	std::vector<std::string> answers;
 	std::string jsonString;
 	json jsonData;
 	for (auto& doc : cursor)
 	{
 		jsonString = bsoncxx::to_json(doc);
 		jsonData = json::parse(jsonString);
-		Question question;
-		question.id = jsonData["question_id"];
-		question.question = jsonData["question"];
-		question.correct_ans = jsonData["correct_ans"];
-		question.ans2 = jsonData["ans2"];
-		question.ans3 = jsonData["ans3"];
-		question.ans4 = jsonData["ans4"];
-		questions.push_back(question);
+		answers.push_back(jsonData["ans1"]);
+		answers.push_back(jsonData["ans2"]);
+		answers.push_back(jsonData["ans3"]);
+		answers.push_back(jsonData["ans4"]);
+		questions.push_back(Question(jsonData["question"], answers, jsonData["correct_answer_id"]));
 	}
 
 	return questions;
@@ -235,7 +233,7 @@ int MongoDatabase::addTenAutoQuestions()
 		return 0;
 	}
 
-	std::list<Question> questions = AutoQuestions::getQuestionsFromFile();
+	std::list<QuestionStruct> questions = AutoQuestions::getQuestionsFromFile();
 	if (questions.front().id == FILE_NOT_OPEN)
 	{
 		return ERROR_RESPONSE_CODE;
@@ -249,14 +247,15 @@ int MongoDatabase::addTenAutoQuestions()
 	return 0;
 }
 
-int MongoDatabase::addQuestion(const Question& q)
+int MongoDatabase::addQuestion(const QuestionStruct& q)
 {
 	mongocxx::collection questionsCollections = this->_db[QUESTIONS_COLLECTION_NAME];
 
 	basicDocument documentBuilder{};
 	documentBuilder.append(kvp("question_id", q.id));
 	documentBuilder.append(kvp("question", q.question));
-	documentBuilder.append(kvp("correct_ans", q.correct_ans));
+	documentBuilder.append(kvp("correct_answer_id", q.correctAnsId));
+	documentBuilder.append(kvp("ans1", q.ans1));
 	documentBuilder.append(kvp("ans2", q.ans2));
 	documentBuilder.append(kvp("ans3", q.ans3));
 	documentBuilder.append(kvp("ans4", q.ans4));

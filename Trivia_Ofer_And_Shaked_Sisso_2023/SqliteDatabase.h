@@ -27,7 +27,7 @@ private:
 	std::string _dbFileName;
 
 	int addTenAutoQuestions();
-	int addQuestion(const Question& q);
+	int addQuestion(const QuestionStruct& q);
 
 	bool createTables(int& res);
 	static int callbackString(void* list, int argc, char** argv, char** azColName);

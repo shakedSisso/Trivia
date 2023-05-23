@@ -1,6 +1,6 @@
 #pragma once
 #include <iostream>
-#include "Globals.h"
+#include "Question.h"
 #include <list>
 #include <vector>
 
