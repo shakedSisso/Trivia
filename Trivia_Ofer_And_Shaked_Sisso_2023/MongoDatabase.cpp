@@ -23,7 +23,6 @@ MongoDatabase::MongoDatabase()
 
 bool MongoDatabase::open()
 {
-	mongocxx::instance mongoInstance{};
 	this->_uri = mongocxx::uri();
 	this->_client = mongocxx::client(this->_uri);
 
