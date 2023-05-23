@@ -11,6 +11,9 @@ class JsonRequestPacketDeserializer
 public:
 	static LoginRequest deserializeLoginRequest(const Buffer& buffer);
 	static SignupRequest deserializeSignupRequest(const Buffer& buffer);
+	static GetPlayersInRoomRequest deserializeGetPlayersInRoomRequest(const Buffer& buffer);
+	static JoinRoomRequest deserializeJoinRoomRequest(const Buffer& buffer);
+	static CreateRoomRequest deserializeCreateRoomRequest(const Buffer& buffer);
 	/*
 	* Function: static extractIntFromBuffer
 	* ----------------------------
