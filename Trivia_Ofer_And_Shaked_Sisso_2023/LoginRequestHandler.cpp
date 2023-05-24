@@ -1,14 +1,12 @@
 #include "LoginRequestHandler.h"
 #include "MenuRequestHandler.h"
-#include "JsonResponsePacketSerializer.h"
-#include "JsonRequestPacketDeserializer.h"
 #include <exception>
 
 #define RESPONSE_STATUS_LOGIN 1
 #define RESPONSE_STATUS_SIGN_UP 2
 
-LoginRequestHandler::LoginRequestHandler(RequestHandlerFactory& handlerFactory)
-    : m_handlerFactory(handlerFactory)
+LoginRequestHandler::LoginRequestHandler(RequestHandlerFactory& handlerFactory, LoginManager& loginManager)
+    : m_handlerFactory(handlerFactory), m_loginManager(loginManager)
 {
 }
 
@@ -55,18 +53,17 @@ RequestResult LoginRequestHandler::handleRequest(const RequestInfo& info)
 
 RequestResult LoginRequestHandler::login(const RequestInfo& info)
 {
-    LoginManager* manager = this->m_handlerFactory.getLoginManager();
     RequestResult result;
-    MenuRequestHandler* menuHandler = new MenuRequestHandler();
-    result.newHandler = (IRequestHandler*)menuHandler;
     try
     {
         LoginRequest login = JsonRequestPacketDeserializer::deserializeLoginRequest(info.buffer);
-        manager->login(login.username, login.password);
+        this->m_loginManager.login(login.username, login.password);
+        LoggedUser user(login.username);
+        result.newHandler = (IRequestHandler*)this->m_handlerFactory.createMenuRequestHandler(user);
     }
     catch (const std::exception& e)
     {
-        delete(menuHandler);
+        delete(result.newHandler);
         result.newHandler = nullptr;
         throw std::exception(e.what());
     }
@@ -78,18 +75,19 @@ RequestResult LoginRequestHandler::login(const RequestInfo& info)
 
 RequestResult LoginRequestHandler::signup(const RequestInfo& info)
 {
-    LoginManager* manager = this->m_handlerFactory.getLoginManager();
+    LoginManager manager = this->m_handlerFactory.getLoginManager();
     RequestResult result;
-    MenuRequestHandler* menuHandler = new MenuRequestHandler();
-    result.newHandler = (IRequestHandler*)menuHandler;
     try
     {
         SignupRequest signUp = JsonRequestPacketDeserializer::deserializeSignupRequest(info.buffer);
-        manager->signup(signUp.username, signUp.password, signUp.email, signUp.address, signUp.phoneNumber, signUp.birthDate);
+        this->m_loginManager.signup(signUp.username, signUp.password, signUp.email, signUp.address, signUp.phoneNumber, signUp.birthDate);
+        LoggedUser user(signUp.username);
+        result.newHandler = (IRequestHandler*)this->m_handlerFactory.createMenuRequestHandler(user);
+
     }
     catch (const std::exception& e)
     {
-        delete(menuHandler);
+        delete(result.newHandler);
         result.newHandler = nullptr;
         throw std::exception(e.what());
     }
