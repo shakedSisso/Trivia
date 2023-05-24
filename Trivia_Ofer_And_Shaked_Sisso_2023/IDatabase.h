@@ -4,7 +4,7 @@
 #include <list>
 #include <vector>
 
-#define HIGH_SCORES_COUNT 3
+#define HIGH_SCORES_COUNT 5
 
 class IDatabase
 {
