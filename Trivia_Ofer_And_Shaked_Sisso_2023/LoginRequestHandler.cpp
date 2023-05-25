@@ -63,7 +63,10 @@ RequestResult LoginRequestHandler::login(const RequestInfo& info)
     }
     catch (const std::exception& e)
     {
-        delete(result.newHandler);
+        if (result.newHandler != nullptr)
+        {
+            delete(result.newHandler);
+        }
         result.newHandler = nullptr;
         throw std::exception(e.what());
     }
@@ -87,7 +90,10 @@ RequestResult LoginRequestHandler::signup(const RequestInfo& info)
     }
     catch (const std::exception& e)
     {
-        delete(result.newHandler);
+        if (result.newHandler != nullptr)
+        {
+            delete(result.newHandler);
+        }
         result.newHandler = nullptr;
         throw std::exception(e.what());
     }

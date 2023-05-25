@@ -79,13 +79,16 @@ RequestResult MenuRequestHandler::signout(const RequestInfo& info)
     RequestResult result;
     try
     {
-        LoginManager manager = this->m_handlerFactory.getLoginManager();
+        LoginManager& manager = this->m_handlerFactory.getLoginManager();
         manager.logout(this->m_user.getUsename()); 
-        result.newHandler = (IRequestHandler*)(this); //needs to be replaced with the correct handler
+        result.newHandler = nullptr; //the client is signing out 
     }
     catch (const std::exception& e)
     {
-        delete(result.newHandler);
+        if (result.newHandler != nullptr)
+        {
+            delete(result.newHandler);
+        }
         result.newHandler = nullptr;
         throw std::exception(e.what());
     }
@@ -102,11 +105,14 @@ RequestResult MenuRequestHandler::getRooms(const RequestInfo& info)
     try
     {
         rooms = this->m_roomManager.getRooms();
-        result.newHandler = (IRequestHandler*)(this); //needs to be replaced with the correct handler
+        result.newHandler = (IRequestHandler*)(this);
     }
     catch (const std::exception& e)
     {
-        delete(result.newHandler);
+        if (result.newHandler != nullptr)
+        {
+            delete(result.newHandler);
+        }
         result.newHandler = nullptr;
         throw std::exception(e.what());
     }
@@ -125,11 +131,14 @@ RequestResult MenuRequestHandler::getPlayersInRoom(const RequestInfo& info)
     {
         GetPlayersInRoomRequest request = JsonRequestPacketDeserializer::deserializeGetPlayersInRoomRequest(info.buffer);
         players = this->m_roomManager.getRoom(request.roomId).getAllUsers();
-        result.newHandler = (IRequestHandler*)(this); //needs to be replaced with the correct handler
+        result.newHandler = (IRequestHandler*)(this);
     }
     catch (const std::exception& e)
     {
-        delete(result.newHandler);
+        if (result.newHandler != nullptr)
+        {
+            delete(result.newHandler);
+        }
         result.newHandler = nullptr;
         throw std::exception(e.what());
     }
@@ -146,11 +155,14 @@ RequestResult MenuRequestHandler::getPersonalStats(const RequestInfo& info)
     try
     {
         stats = this->m_statisticsManager.getUserStatistics(this->m_user.getUsename());
-        result.newHandler = (IRequestHandler*)(this); //needs to be replaced with the correct handler
+        result.newHandler = (IRequestHandler*)(this);
     }
     catch (const std::exception& e)
     {
-        delete(result.newHandler);
+        if (result.newHandler != nullptr)
+        {
+            delete(result.newHandler);
+        }
         result.newHandler = nullptr;
         throw std::exception(e.what());
     }
@@ -168,11 +180,14 @@ RequestResult MenuRequestHandler::getHighScore(const RequestInfo& info)
     try
     {
         highScore = this->m_statisticsManager.getHighScore();
-        result.newHandler = (IRequestHandler*)(this); //needs to be replaced with the correct handler
+        result.newHandler = (IRequestHandler*)(this);
     }
     catch (const std::exception& e)
     {
-        delete(result.newHandler);
+        if (result.newHandler != nullptr)
+        {
+            delete(result.newHandler);
+        }
         result.newHandler = nullptr;
         throw std::exception(e.what());
     }
@@ -194,7 +209,10 @@ RequestResult MenuRequestHandler::joinRoom(const RequestInfo& info)
     }
     catch (const std::exception& e)
     {
-        delete(result.newHandler);
+        if (result.newHandler != nullptr)
+        {
+            delete(result.newHandler);
+        }
         result.newHandler = nullptr;
         throw std::exception(e.what());
     }
@@ -206,16 +224,20 @@ RequestResult MenuRequestHandler::joinRoom(const RequestInfo& info)
 RequestResult MenuRequestHandler::createRoom(const RequestInfo& info)
 {
     RequestResult result;
+    unsigned int id = 0;
     try
     {
         CreateRoomRequest request = JsonRequestPacketDeserializer::deserializeCreateRoomRequest(info.buffer);
-        unsigned int id = this->m_roomManager.getRooms().size();
+        id = this->m_roomManager.getRooms().size();
         this->m_roomManager.createRoom(this->m_user, RoomData{id, request.roomName, request.maxUsers, request.questionCount, request.answerTimeout, FALSE});
         result.newHandler = (IRequestHandler*)(this); //needs to be replaced with the correct handler
     }
     catch (const std::exception& e)
     {
-        delete(result.newHandler);
+        if (result.newHandler != nullptr)
+        {
+            delete(result.newHandler);
+        }
         result.newHandler = nullptr;
         throw std::exception(e.what());
     }
