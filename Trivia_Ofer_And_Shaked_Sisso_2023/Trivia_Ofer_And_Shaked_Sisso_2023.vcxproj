@@ -184,6 +184,7 @@
     <ClCompile Include="RoomManager.cpp" />
     <ClCompile Include="sqlite3.c" />
     <ClCompile Include="SqliteDatabase.cpp" />
+    <ClCompile Include="StatisticsManager.cpp" />
     <ClCompile Include="test.cpp" />
     <ClCompile Include="WSAInitializer.cpp" />
   </ItemGroup>
@@ -211,6 +212,7 @@
     <ClInclude Include="Server.h" />
     <ClInclude Include="sqlite3.h" />
     <ClInclude Include="SqliteDatabase.h" />
+    <ClInclude Include="StatisticsManager.h" />
     <ClInclude Include="WSAInitializer.h" />
   </ItemGroup>
   <ItemGroup>
