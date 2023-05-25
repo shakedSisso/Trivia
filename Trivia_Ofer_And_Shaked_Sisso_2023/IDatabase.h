@@ -5,6 +5,17 @@
 #include <vector>
 
 #define HIGH_SCORES_COUNT 5
+#define API_URL "https://opentdb.com/api.php?amount=50&type=multiple"
+
+typedef struct QuestionStruct
+{
+	int id;
+	std::string question;
+	std::string correct_ans;
+	std::string ans2;
+	std::string ans3;
+	std::string ans4;
+}QuestionStruct;
 
 class IDatabase
 {
