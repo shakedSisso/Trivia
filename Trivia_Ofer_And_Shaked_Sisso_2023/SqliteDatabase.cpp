@@ -2,11 +2,67 @@
 #include <map>
 #include <string>
 #include <io.h>
+#include <ctime>
 
-#define FIELDS_OF_QUESTION 7
+#include <curlpp/cURLpp.hpp>
+#include <curlpp/Easy.hpp>
+#include <curlpp/Options.hpp>
+#include "json.hpp"
+
+using namespace curlpp::options;
+using json = nlohmann::json;
+
+#define FIELDS_OF_QUESTION 6
 
 SqliteDatabase::SqliteDatabase() : _db(), _dbFileName("triviaDB.sqlite")
 {
+}
+
+void SqliteDatabase::addQuestionsToDatabase()
+{
+	curlpp::Cleanup cleaner;
+	curlpp::Easy request;
+	request.setOpt(Url(API_URL));
+
+	std::string response;
+	request.setOpt(WriteFunction([&response](char* ptr, size_t size, size_t nmemb) {
+		response.append(ptr, size * nmemb);
+		return size * nmemb;
+		}));
+
+	// Perform the request
+	request.perform();
+
+	// Parse the JSON response
+	QuestionStruct q;
+	json jsonData = json::parse(response);
+	if (jsonData.contains("results") && jsonData["results"].is_array()) {
+		const auto& results = jsonData["results"];
+		for (size_t i = 0; i < results.size(); i++) {
+			const auto& questionObj = results[i];
+
+			// Extract question details
+			q.id = i + 1;
+			q.question = questionObj["question"].get<std::string>();
+			q.correct_ans = questionObj["correct_answer"].get<std::string>();
+			q.ans2 = questionObj["incorrect_answers"].get<std::vector<std::string>>()[0];
+			q.ans3 = questionObj["incorrect_answers"].get<std::vector<std::string>>()[1];
+			q.ans4 = questionObj["incorrect_answers"].get<std::vector<std::string>>()[2];
+
+			addQuestion(q);
+		}
+	}
+}
+
+int SqliteDatabase::addQuestion(const QuestionStruct& q)
+{
+	std::string sqlStatement = "INSERT INTO t_questions VALUES (" + std::to_string(q.id) + ", '" + q.question + "', '" + q.correct_ans + "', '" + q.ans2 + "', '" + q.ans3 + "', '" + q.ans4 + "'); ";
+	int res = sqlite3_exec(this->_db, sqlStatement.c_str(), nullptr, nullptr, nullptr);
+	if (res != SQLITE_OK)
+	{
+		throw std::exception("Error- sqlite3_exec functions failed");
+	}
+	return 0;
 }
 
 bool SqliteDatabase::createTables(int& res)
@@ -16,7 +72,7 @@ bool SqliteDatabase::createTables(int& res)
 	res = sqlite3_exec(this->_db, sqlStatemant.c_str(), nullptr, nullptr, errMessage);
 	if (res != SQLITE_OK)
 		return false;
-	sqlStatemant = "CREATE TABLE IF NOT EXISTS t_questions (question_id integer NOT NULL UNIQUE, question text NOT NULL, correct_answer_id integer NOT NULL, ans1 text NOT NULL, ans2 text NOT NULL, ans3 text NOT NULL, ans4 text NOT NULL, PRIMARY KEY(question_id AUTOINCREMENT));";
+	sqlStatemant = "CREATE TABLE IF NOT EXISTS t_questions (question_id integer NOT NULL UNIQUE, question text NOT NULL, correct_ans text NOT NULL, ans2 text NOT NULL, ans3 text NOT NULL, ans4 text NOT NULL, PRIMARY KEY(question_id AUTOINCREMENT));";
 	errMessage = nullptr;
 	res = sqlite3_exec(this->_db, sqlStatemant.c_str(), nullptr, nullptr, errMessage);
 	if (res != SQLITE_OK)
@@ -36,6 +92,9 @@ bool SqliteDatabase::createTables(int& res)
 	res = sqlite3_exec(this->_db, sqlStatemant.c_str(), nullptr, nullptr, errMessage);
 	if (res != SQLITE_OK)
 		return false;
+
+	addQuestionsToDatabase();
+
 	return true;
 }
 
@@ -51,6 +110,7 @@ int SqliteDatabase::callbackString(void* list, int argc, char** argv, char** azC
 
 int SqliteDatabase::callbackQuestions(void* list, int argc, char** argv, char** azColName)
 {
+	std::srand(static_cast<unsigned int>(std::time(nullptr)));
 	QuestionStruct q;
 	int i = 0; 
 	int currentPlace = 0;
@@ -59,12 +119,11 @@ int SqliteDatabase::callbackQuestions(void* list, int argc, char** argv, char** 
 		currentPlace = i * FIELDS_OF_QUESTION;
 		q.id = std::atoi(argv[currentPlace]);
 		q.question = argv[currentPlace + 1];
-		q.correctAnsId = std::atoi(argv[currentPlace + 2]);
-		q.ans1 = argv[currentPlace + 3];
-		q.ans2 = argv[currentPlace + 4];
-		q.ans3 = argv[currentPlace + 5];
-		q.ans4 = argv[currentPlace + 6];
-		((std::list<Question>*)list)->push_back(Question(q.question, std::vector<std::string>{q.ans1, q.ans2, q.ans3, q.ans4}, q.correctAnsId));
+		q.correct_ans = argv[currentPlace + 2];
+		q.ans2 = argv[currentPlace + 3];
+		q.ans3 = argv[currentPlace + 4];
+		q.ans4 = argv[currentPlace + 5];
+		((std::list<Question>*)list)->push_back(Question(q.question, std::vector<std::string>{q.correct_ans, q.ans2, q.ans3, q.ans4}, std::rand() % 4 + 1));
 	}
 	return 0;
 }
@@ -85,7 +144,6 @@ bool SqliteDatabase::open()
 		if (!createTables(res))
 			return false;
 	}
-	addTenAutoQuestions();
 	return true;
 }
 
@@ -233,43 +291,4 @@ std::vector<std::string> SqliteDatabase::getHighScores()
 		highScores.push_back(user);
 	}
 	return highScores;
-}
-
-int SqliteDatabase::addTenAutoQuestions()
-{
-	std::list<std::string> list;
-	std::string sqlStatement = "SELECT * FROM t_questions";
-	int res = sqlite3_exec(this->_db, sqlStatement.c_str(), callbackString, &list, nullptr);
-	if (res != SQLITE_OK)
-	{
-		throw std::exception("Error- sqlite3_exec functions failed");
-	}
-	if (!list.empty())
-	{
-		std::cout << "questions already in the database" << std::endl;
-		return 0;
-	}
-
-	std::list<QuestionStruct> questions = AutoQuestions::getQuestionsFromFile();
-	if (questions.front().id == FILE_NOT_OPEN)
-	{
-		return ERROR_RESPONSE_CODE;
-	}
-
-	for (auto q : questions)
-	{
-		addQuestion(q);
-	}
-	return 0;
-}
-
-int SqliteDatabase::addQuestion(const QuestionStruct& q)
-{
-	std::string sqlStatement = "INSERT INTO t_questions VALUES (" + std::to_string(q.id) + ", '" + q.question + "', " + std::to_string(q.correctAnsId) + ", '" + q.ans1 + "', '" + q.ans2 + "', '" + q.ans3 + "', '" + q.ans4 + "'); ";
-	int res = sqlite3_exec(this->_db, sqlStatement.c_str(), nullptr, nullptr, nullptr);
-	if (res != SQLITE_OK)
-	{
-		throw std::exception("Error- sqlite3_exec functions failed");
-	}
-	return 0;
 }
