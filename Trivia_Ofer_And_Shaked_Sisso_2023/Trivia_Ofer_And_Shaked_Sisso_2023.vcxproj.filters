@@ -93,7 +93,7 @@
     <ClInclude Include="WSAInitializer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AutoQuestions.h">
+    <ClInclude Include="StatisticsManager.h">
     <ClInclude Include="Room.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -168,12 +168,7 @@
     <ClCompile Include="JsonResponsePacketSerializer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AutoQuestions.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="autoQuestions.txt" />
+    <ClCompile Include="StatisticsManager.cpp">
     <ClCompile Include="Room.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
