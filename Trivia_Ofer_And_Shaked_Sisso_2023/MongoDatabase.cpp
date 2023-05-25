@@ -161,7 +161,7 @@ std::list<Question> MongoDatabase::getQuestions(int amountOfQuestions)
 		answers.push_back(jsonData["ans2"]);
 		answers.push_back(jsonData["ans3"]);
 		answers.push_back(jsonData["ans4"]);
-		questions.push_back(Question(jsonData["question"], answers, std::rand() % 4 + 1));
+		questions.push_back(Question(jsonData["question"], answers, std::rand() % ANSWER_COUNT + 1));
 	}
 
 	return questions;
@@ -197,7 +197,7 @@ std::vector<std::string> MongoDatabase::getHighScores()
 	mongocxx::collection statisticsColl = this->_db[STATISTICS_COLLECTION_NAME];
 	mongocxx::options::find options;
 	options.sort(streamDocument{} << "correct_answers" << -1 << bsoncxx::builder::stream::finalize);  // Sort in descending order of "score" field
-	options.limit(3);
+	options.limit(HIGH_SCORES_COUNT);
 
 	mongocxx::cursor cursor = statisticsColl.find({}, options);  // Retrieve all documents from the collection with the specified sort order
 	json jsonData;

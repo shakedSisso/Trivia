@@ -6,6 +6,7 @@
 
 #define HIGH_SCORES_COUNT 5
 #define API_URL "https://opentdb.com/api.php?amount=50&type=multiple"
+#define ANSWER_COUNT 4
 
 typedef struct QuestionStruct
 {

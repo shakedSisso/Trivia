@@ -117,13 +117,16 @@ int SqliteDatabase::callbackQuestions(void* list, int argc, char** argv, char** 
 	for (i = 0; i < argc/FIELDS_OF_QUESTION; i++)
 	{
 		currentPlace = i * FIELDS_OF_QUESTION;
+
+		//Accessing all the fields of each question
 		q.id = std::atoi(argv[currentPlace]);
 		q.question = argv[currentPlace + 1];
 		q.correct_ans = argv[currentPlace + 2];
 		q.ans2 = argv[currentPlace + 3];
 		q.ans3 = argv[currentPlace + 4];
 		q.ans4 = argv[currentPlace + 5];
-		((std::list<Question>*)list)->push_back(Question(q.question, std::vector<std::string>{q.correct_ans, q.ans2, q.ans3, q.ans4}, std::rand() % 4 + 1));
+
+		((std::list<Question>*)list)->push_back(Question(q.question, std::vector<std::string>{q.correct_ans, q.ans2, q.ans3, q.ans4}, std::rand() % ANSWER_COUNT + 1));
 	}
 	return 0;
 }
