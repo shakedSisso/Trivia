@@ -1,5 +1,12 @@
 #include "MongoDatabase.h"
 #include "Globals.h"
+#include <ctime>
+
+#include <curlpp/cURLpp.hpp>
+#include <curlpp/Easy.hpp>
+#include <curlpp/Options.hpp>
+
+using namespace curlpp::options;
 
 constexpr char MONGO_DB_URI[] = "mongodb://localhost:27017";
 constexpr char DATABASE_NAME[] = "triviaDB";
@@ -45,14 +52,13 @@ bool MongoDatabase::open()
 	{
 		this->_client[DATABASE_NAME].create_collection(QUESTIONS_COLLECTION_NAME);
 		std::cout << "Created collection: " << QUESTIONS_COLLECTION_NAME << std::endl;
+		addQuestionsToDatabase();
 	}
 	if (!this->_db.has_collection(STATISTICS_COLLECTION_NAME))
 	{
 		this->_client[DATABASE_NAME].create_collection(STATISTICS_COLLECTION_NAME);
 		std::cout << "Created collection: " << STATISTICS_COLLECTION_NAME << std::endl;
 	}
-
-	addTenAutoQuestions();
 
 	return true;
 }
@@ -151,11 +157,11 @@ std::list<Question> MongoDatabase::getQuestions(int amountOfQuestions)
 	{
 		jsonString = bsoncxx::to_json(doc);
 		jsonData = json::parse(jsonString);
-		answers.push_back(jsonData["ans1"]);
+		answers.push_back(jsonData["correct_ans"]);
 		answers.push_back(jsonData["ans2"]);
 		answers.push_back(jsonData["ans3"]);
 		answers.push_back(jsonData["ans4"]);
-		questions.push_back(Question(jsonData["question"], answers, jsonData["correct_answer_id"]));
+		questions.push_back(Question(jsonData["question"], answers, std::rand() % 4 + 1));
 	}
 
 	return questions;
@@ -206,6 +212,59 @@ std::vector<std::string> MongoDatabase::getHighScores()
 }
 
 
+void MongoDatabase::addQuestionsToDatabase()
+{
+	curlpp::Cleanup cleaner;
+	curlpp::Easy request;
+	request.setOpt(Url(API_URL));
+
+	std::string response;
+	request.setOpt(WriteFunction([&response](char* ptr, size_t size, size_t nmemb) {
+		response.append(ptr, size * nmemb);
+		return size * nmemb;
+		}));
+
+	// Perform the request
+	request.perform();
+
+	// Parse the JSON response
+	QuestionStruct q;
+	json jsonData = json::parse(response);
+	if (jsonData.contains("results") && jsonData["results"].is_array()) {
+		const auto& results = jsonData["results"];
+		for (size_t i = 0; i < results.size(); i++) {
+			const auto& questionObj = results[i];
+
+			// Extract question details
+			q.id = i + 1;
+			q.question = questionObj["question"].get<std::string>();
+			q.correct_ans = questionObj["correct_answer"].get<std::string>();
+			q.ans2 = questionObj["incorrect_answers"].get<std::vector<std::string>>()[0];
+			q.ans3 = questionObj["incorrect_answers"].get<std::vector<std::string>>()[1];
+			q.ans4 = questionObj["incorrect_answers"].get<std::vector<std::string>>()[2];
+
+			addQuestion(q);
+		}
+	}
+}
+
+int MongoDatabase::addQuestion(const QuestionStruct& q)
+{
+	mongocxx::collection questionsCollections = this->_db[QUESTIONS_COLLECTION_NAME];
+
+	basicDocument documentBuilder{};
+	documentBuilder.append(kvp("question_id", q.id));
+	documentBuilder.append(kvp("question", q.question));
+	documentBuilder.append(kvp("correct_ans", q.correct_ans));
+	documentBuilder.append(kvp("ans2", q.ans2));
+	documentBuilder.append(kvp("ans3", q.ans3));
+	documentBuilder.append(kvp("ans4", q.ans4));
+	bsoncxx::document::value doc = documentBuilder.extract();
+
+	questionsCollections.insert_one(doc.view());
+	return 0;
+}
+
 json MongoDatabase::getUserStatisticsJson(std::string& username)
 {
 	if (!doesUserExist(username))
@@ -222,45 +281,4 @@ json MongoDatabase::getUserStatisticsJson(std::string& username)
 	
 	std::string jsonString = bsoncxx::to_json(doc);
 	return json::parse(jsonString);
-}
-
-int MongoDatabase::addTenAutoQuestions()
-{
-	auto questionsColl = this->_db.collection(QUESTIONS_COLLECTION_NAME);
-	if (questionsColl.count_documents({}) != 0)
-	{
-		std::cout << "questions already in the database" << std::endl;
-		return 0;
-	}
-
-	std::list<QuestionStruct> questions = AutoQuestions::getQuestionsFromFile();
-	if (questions.front().id == FILE_NOT_OPEN)
-	{
-		return ERROR_RESPONSE_CODE;
-	}
-
-	for (auto q : questions)
-	{
-		addQuestion(q);
-	}
-
-	return 0;
-}
-
-int MongoDatabase::addQuestion(const QuestionStruct& q)
-{
-	mongocxx::collection questionsCollections = this->_db[QUESTIONS_COLLECTION_NAME];
-
-	basicDocument documentBuilder{};
-	documentBuilder.append(kvp("question_id", q.id));
-	documentBuilder.append(kvp("question", q.question));
-	documentBuilder.append(kvp("correct_answer_id", q.correctAnsId));
-	documentBuilder.append(kvp("ans1", q.ans1));
-	documentBuilder.append(kvp("ans2", q.ans2));
-	documentBuilder.append(kvp("ans3", q.ans3));
-	documentBuilder.append(kvp("ans4", q.ans4));
-	bsoncxx::document::value doc = documentBuilder.extract();
-
-	questionsCollections.insert_one(doc.view());
-	return 0;
 }

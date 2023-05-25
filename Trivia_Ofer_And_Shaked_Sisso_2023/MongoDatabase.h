@@ -11,7 +11,6 @@
 
 
 #include "IDatabase.h"
-#include "AutoQuestions.h"
 #include "json.hpp"
 
 using json = nlohmann::json;
@@ -40,7 +39,8 @@ private:
 	mongocxx::client _client;
 	mongocxx::database _db;
 
-	json getUserStatisticsJson(std::string& username);
-	int addTenAutoQuestions();
+	void addQuestionsToDatabase();
 	int addQuestion(const QuestionStruct& q);
+
+	json getUserStatisticsJson(std::string& username);
 };
