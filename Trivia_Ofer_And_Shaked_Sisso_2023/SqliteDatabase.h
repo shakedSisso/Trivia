@@ -18,6 +18,7 @@ public:
 	std::list<Question> getQuestions(int amountOfQuestions) override;
 	float getPlayerAverageAnswerTime(std::string username) override;
 	int getNumOfCorrectAnswers(std::string username) override;
+	int getNumOfTotalAnswers(std::string username) override;
 	int getNumOfPlayerGames(std::string username) override;
 	int getPlayerScore(std::string username) override;
 	std::vector<std::string> getHighScores() override;

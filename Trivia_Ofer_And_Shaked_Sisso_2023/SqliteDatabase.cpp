@@ -258,6 +258,22 @@ int SqliteDatabase::getNumOfCorrectAnswers(std::string username)
 	return std::atoi(list.front().c_str());
 }
 
+int SqliteDatabase::getNumOfTotalAnswers(std::string username)
+{
+	if (!doesUserExist(username))
+	{
+		throw std::exception("user doesn't exist");
+	}
+	std::list<std::string> list;
+	std::string sqlStatement = "SELECT total_answers FROM t_statistics WHERE username = '" + username + "';";
+	int res = sqlite3_exec(this->_db, sqlStatement.c_str(), callbackString, &list, nullptr);
+	if (res != SQLITE_OK)
+	{
+		throw std::exception("Error- sqlite3_exec functions failed");
+	}
+	return std::atoi(list.front().c_str());
+}
+
 int SqliteDatabase::getNumOfPlayerGames(std::string username)
 {
 	if (!doesUserExist(username))

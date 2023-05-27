@@ -19,6 +19,7 @@ typedef struct RoomData
 class Room
 {
 public:
+	Room() = default;
 	Room(const RoomData metadata);
 	void addUser(const LoggedUser& userToAdd);
 	void removeUser(const LoggedUser& userToRemove);
