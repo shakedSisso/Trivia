@@ -11,7 +11,8 @@ Server::Server() : m_handlerFactory(nullptr), m_communicator(m_handlerFactory)
 	{
 		throw std::exception("Server was already created once.");
 	}
-	this->m_database = new SqliteDatabase();
+	this->m_database = new MongoDatabase();
+	mongocxx::instance mongoInstance{};
 	this->m_database->open();
 	this->m_handlerFactory.setDatabase(this->m_database);
 	instanceCount++;
