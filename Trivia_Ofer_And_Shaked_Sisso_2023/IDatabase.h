@@ -30,6 +30,7 @@ public:
 	virtual std::list<Question> getQuestions(int amountOfQuestions) = 0;
 	virtual float getPlayerAverageAnswerTime(std::string username) = 0;
 	virtual int getNumOfCorrectAnswers(std::string username) = 0;
+	virtual int getNumOfTotalAnswers(std::string username) = 0;
 	virtual int getNumOfPlayerGames(std::string username) = 0;
 	virtual int getPlayerScore(std::string username) = 0;
 	virtual std::vector<std::string> getHighScores() = 0;

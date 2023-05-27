@@ -182,6 +182,11 @@ int MongoDatabase::getNumOfCorrectAnswers(std::string username)
 	return getUserStatisticsJson(username)["correct_answers"];
 }
 
+int MongoDatabase::getNumOfTotalAnswers(std::string username)
+{
+	return getUserStatisticsJson(username)["total_answers"];
+}
+
 int MongoDatabase::getNumOfPlayerGames(std::string username)
 {
 	return getUserStatisticsJson(username)["games_count"];
