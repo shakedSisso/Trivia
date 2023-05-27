@@ -220,6 +220,7 @@ RequestResult MenuRequestHandler::joinRoom(const RequestInfo& info)
     }
     JoinRoomResponse response;
     response.status = JOIN_ROOM_RESPONSE_CODE;
+    result.buffer = JsonResponsePacketSerializer::serializeResponse(response);
     return result;
 }
 
@@ -245,5 +246,6 @@ RequestResult MenuRequestHandler::createRoom(const RequestInfo& info)
     }
     CreateRoomResponse response;
     response.status = CREATE_ROOM_RESPONSE_CODE;
+    result.buffer = JsonResponsePacketSerializer::serializeResponse(response);
     return result;
 }
