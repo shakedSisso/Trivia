@@ -111,10 +111,6 @@ RequestResult MenuRequestHandler::getRooms(const RequestInfo& info)
     }
     catch (const std::exception& e)
     {
-        if (result.newHandler != nullptr)
-        {
-            delete(result.newHandler);
-        }
         result.newHandler = nullptr;
         throw std::exception(e.what());
     }
@@ -137,10 +133,6 @@ RequestResult MenuRequestHandler::getPlayersInRoom(const RequestInfo& info)
     }
     catch (const std::exception& e)
     {
-        if (result.newHandler != nullptr)
-        {
-            delete(result.newHandler);
-        }
         result.newHandler = nullptr;
         throw std::exception(e.what());
     }
@@ -161,10 +153,6 @@ RequestResult MenuRequestHandler::getPersonalStats(const RequestInfo& info)
     }
     catch (const std::exception& e)
     {
-        if (result.newHandler != nullptr)
-        {
-            delete(result.newHandler);
-        }
         result.newHandler = nullptr;
         throw std::exception(e.what());
     }
@@ -186,10 +174,6 @@ RequestResult MenuRequestHandler::getHighScore(const RequestInfo& info)
     }
     catch (const std::exception& e)
     {
-        if (result.newHandler != nullptr)
-        {
-            delete(result.newHandler);
-        }
         result.newHandler = nullptr;
         throw std::exception(e.what());
     }
