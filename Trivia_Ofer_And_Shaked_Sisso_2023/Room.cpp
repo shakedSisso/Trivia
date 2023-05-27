@@ -1,5 +1,9 @@
 #include "Room.h"
 
+Room::Room()
+{
+}
+
 Room::Room(const RoomData metadata)
 	:m_metadata(metadata)
 {
