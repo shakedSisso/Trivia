@@ -90,6 +90,8 @@ RequestResult MenuRequestHandler::signout(const RequestInfo& info)
             delete(result.newHandler);
         }
         result.newHandler = nullptr;
+        LoginManager& loginManager = m_handlerFactory.getLoginManager();
+        loginManager.logout(this->m_user.getUsename());
         throw std::exception(e.what());
     }
     LogoutResponse response;

@@ -7,6 +7,7 @@
 #include "JsonRequestPacketDeserializer.h"
 #include "IRequestHandler.h"
 #include "Requests.h"
+#include "LoginManager.h"
 
 #define PORT 1444
 #define LEN_MSG_HEADERS 5
@@ -143,7 +144,11 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 			IRequestHandler* clientHandler = client->second;
 
 			RequestResult result = clientHandler->handleRequest(requestInfo);
-			if (result.newHandler != clientHandler) //if request fails, the newHandler is the same as the original
+			if (result.newHandler == nullptr)
+			{
+				throw std::exception("Disconnecting from client");
+			}
+			else if (result.newHandler != clientHandler) //if request fails, the newHandler is the same as the original
 			{
 				delete(client->second); // deleting the current handler of the client since the handlerRequest function gives us a new handler pointer
 				this->m_clients[clientSocket] = result.newHandler;
