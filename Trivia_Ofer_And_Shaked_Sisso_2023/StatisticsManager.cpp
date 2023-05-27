@@ -22,6 +22,7 @@ vector<string> StatisticsManager::getUserStatistics(const string username) const
     stats.push_back(std::to_string(this->m_database->getNumOfTotalAnswers(username) - correctAnswers));
     stats.push_back(std::to_string(this->m_database->getNumOfPlayerGames(username)));
     
+    return stats;
 }
 
 void StatisticsManager::setDatabase(IDatabase* database)
