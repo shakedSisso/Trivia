@@ -90,6 +90,8 @@ RequestResult MenuRequestHandler::signout(const RequestInfo& info)
             delete(result.newHandler);
         }
         result.newHandler = nullptr;
+        LoginManager& loginManager = m_handlerFactory.getLoginManager();
+        loginManager.logout(this->m_user.getUsename());
         throw std::exception(e.what());
     }
     LogoutResponse response;
@@ -109,10 +111,6 @@ RequestResult MenuRequestHandler::getRooms(const RequestInfo& info)
     }
     catch (const std::exception& e)
     {
-        if (result.newHandler != nullptr)
-        {
-            delete(result.newHandler);
-        }
         result.newHandler = nullptr;
         throw std::exception(e.what());
     }
@@ -135,10 +133,6 @@ RequestResult MenuRequestHandler::getPlayersInRoom(const RequestInfo& info)
     }
     catch (const std::exception& e)
     {
-        if (result.newHandler != nullptr)
-        {
-            delete(result.newHandler);
-        }
         result.newHandler = nullptr;
         throw std::exception(e.what());
     }
@@ -159,10 +153,6 @@ RequestResult MenuRequestHandler::getPersonalStats(const RequestInfo& info)
     }
     catch (const std::exception& e)
     {
-        if (result.newHandler != nullptr)
-        {
-            delete(result.newHandler);
-        }
         result.newHandler = nullptr;
         throw std::exception(e.what());
     }
@@ -184,10 +174,6 @@ RequestResult MenuRequestHandler::getHighScore(const RequestInfo& info)
     }
     catch (const std::exception& e)
     {
-        if (result.newHandler != nullptr)
-        {
-            delete(result.newHandler);
-        }
         result.newHandler = nullptr;
         throw std::exception(e.what());
     }
@@ -218,6 +204,7 @@ RequestResult MenuRequestHandler::joinRoom(const RequestInfo& info)
     }
     JoinRoomResponse response;
     response.status = JOIN_ROOM_RESPONSE_CODE;
+    result.buffer = JsonResponsePacketSerializer::serializeResponse(response);
     return result;
 }
 
@@ -228,7 +215,7 @@ RequestResult MenuRequestHandler::createRoom(const RequestInfo& info)
     try
     {
         CreateRoomRequest request = JsonRequestPacketDeserializer::deserializeCreateRoomRequest(info.buffer);
-        id = this->m_roomManager.getRooms().size();
+        id = this->m_roomManager.getRooms().size() + 1;
         this->m_roomManager.createRoom(this->m_user, RoomData{id, request.roomName, request.maxUsers, request.questionCount, request.answerTimeout, FALSE});
         result.newHandler = (IRequestHandler*)(this); //needs to be replaced with the correct handler
     }
@@ -243,5 +230,6 @@ RequestResult MenuRequestHandler::createRoom(const RequestInfo& info)
     }
     CreateRoomResponse response;
     response.status = CREATE_ROOM_RESPONSE_CODE;
+    result.buffer = JsonResponsePacketSerializer::serializeResponse(response);
     return result;
 }

@@ -175,6 +175,7 @@
     <ClCompile Include="LoginRequestHandler.cpp" />
     <ClCompile Include="MenuRequestHandler.cpp" />
     <ClCompile Include="JsonResponsePacketSerializer.cpp" />
+    <ClCompile Include="Question.cpp" />
     <ClCompile Include="RegexValidation.cpp" />
     <ClCompile Include="MongoDatabase.cpp" />
     <ClCompile Include="RequestHandlerFactory.cpp" />
@@ -197,6 +198,7 @@
     <ClInclude Include="LoginManager.h" />
     <ClInclude Include="LoginRequestHandler.h" />
     <ClInclude Include="MenuRequestHandler.h" />
+    <ClInclude Include="Question.h" />
     <ClInclude Include="RegexValidation.h" />
     <ClInclude Include="MongoDatabase.h" />
     <ClInclude Include="RequestHandlerFactory.h" />
