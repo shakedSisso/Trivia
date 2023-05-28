@@ -3,14 +3,6 @@
 #define FALSE 0
 #define TRUE !FALSE
 
-#define LOGOUT_RESPONSE_CODE 4
-#define GET_ROOMS_RESPONSE_CODE 5
-#define GET_PLAYERS_IN_ROOM_RESPONSE_CODE 6
-#define JOIN_ROOM_RESPONSE_CODE 7
-#define CREATE_ROOM_RESPONSE_CODE 8
-#define GET_HIGH_SCORE_RESPONSE_CODE 9
-#define GET_PERSONAL_STATS_RESPONSE_CODE 10
-
 MenuRequestHandler::MenuRequestHandler(RequestHandlerFactory& handlerFactory, LoggedUser& user, RoomManager& roomManager, StatisticsManager& statisticsManager)
     : m_handlerFactory(handlerFactory), m_user(user), m_roomManager(roomManager), m_statisticsManager(statisticsManager)
 {
@@ -95,7 +87,7 @@ RequestResult MenuRequestHandler::signout(const RequestInfo& info)
         throw std::exception(e.what());
     }
     LogoutResponse response;
-    response.status = LOGOUT_RESPONSE_CODE;
+    response.status = Logout;
     result.buffer = JsonResponsePacketSerializer::serializeResponse(response);
     return result;
 }
@@ -116,7 +108,7 @@ RequestResult MenuRequestHandler::getRooms(const RequestInfo& info)
     }
     GetRoomsResponse response;
     response.rooms = rooms;
-    response.status = GET_ROOMS_RESPONSE_CODE;
+    response.status = GetRooms;
     result.buffer = JsonResponsePacketSerializer::serializeResponse(response);
     return result;
 }
@@ -157,7 +149,7 @@ RequestResult MenuRequestHandler::getPersonalStats(const RequestInfo& info)
         throw std::exception(e.what());
     }
     GetPersonalStatsResponse response;
-    response.status = GET_PERSONAL_STATS_RESPONSE_CODE;
+    response.status = Statistics;
     response.statistics = stats;
     result.buffer = JsonResponsePacketSerializer::serializeResponse(response);
     return result;
@@ -178,7 +170,7 @@ RequestResult MenuRequestHandler::getHighScore(const RequestInfo& info)
         throw std::exception(e.what());
     }
     GetHighScoreResponse response;
-    response.status = GET_HIGH_SCORE_RESPONSE_CODE;
+    response.status = HighScore;
     response.statistics = highScore;
     result.buffer = JsonResponsePacketSerializer::serializeResponse(response);
     return result;
@@ -203,7 +195,7 @@ RequestResult MenuRequestHandler::joinRoom(const RequestInfo& info)
         throw std::exception(e.what());
     }
     JoinRoomResponse response;
-    response.status = JOIN_ROOM_RESPONSE_CODE;
+    response.status = JoinRoom;
     result.buffer = JsonResponsePacketSerializer::serializeResponse(response);
     return result;
 }
@@ -229,7 +221,7 @@ RequestResult MenuRequestHandler::createRoom(const RequestInfo& info)
         throw std::exception(e.what());
     }
     CreateRoomResponse response;
-    response.status = CREATE_ROOM_RESPONSE_CODE;
+    response.status = CreateRoom;
     result.buffer = JsonResponsePacketSerializer::serializeResponse(response);
     return result;
 }

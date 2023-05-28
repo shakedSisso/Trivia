@@ -2,9 +2,6 @@
 #include "MenuRequestHandler.h"
 #include <exception>
 
-#define RESPONSE_STATUS_LOGIN 1
-#define RESPONSE_STATUS_SIGN_UP 2
-
 LoginRequestHandler::LoginRequestHandler(RequestHandlerFactory& handlerFactory, LoginManager& loginManager)
     : m_handlerFactory(handlerFactory), m_loginManager(loginManager)
 {
@@ -71,7 +68,7 @@ RequestResult LoginRequestHandler::login(const RequestInfo& info)
         throw std::exception(e.what());
     }
     LoginResponse response;
-    response.status = RESPONSE_STATUS_LOGIN;
+    response.status = Login;
     result.buffer = JsonResponsePacketSerializer::serializeResponse(response);
     return result;
 }
@@ -98,7 +95,7 @@ RequestResult LoginRequestHandler::signup(const RequestInfo& info)
         throw std::exception(e.what());
     }
     SignupResponse response;
-    response.status = RESPONSE_STATUS_SIGN_UP;
+    response.status = Signup;
     result.buffer = JsonResponsePacketSerializer::serializeResponse(response);
     return result;
 }
