@@ -5,8 +5,6 @@
 
 class IRequestHandler;
 
-enum requestCodes{ Login = 1, Signup, GetPlayersInRoom, JoinRoom, CreateRoom, HighScore, Logout, GetRooms, Statistics, CloseRoom, StartRoom, GetRoomState, LeaveRoom };
-
 typedef struct LoginRequest
 {
 	std::string username;
