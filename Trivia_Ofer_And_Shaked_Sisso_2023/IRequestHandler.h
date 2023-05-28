@@ -18,6 +18,10 @@ struct RequestInfo;
 #define LOGOUT_REQUEST 7
 #define GET_ROOMS_REQUEST 8
 #define GET_STATISTICS 9
+#define CLOSE_ROOM_REQUEST 10
+#define START_GAME_REQUEST 11
+#define GET_ROOM_STATE_REQUEST 12
+#define LEAVE_ROOM_REQUEST 13
 
 
 class IRequestHandler
