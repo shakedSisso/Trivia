@@ -9,20 +9,6 @@
 struct RequestResult;
 struct RequestInfo;
 
-#define LOGIN_REQUEST 1
-#define SIGN_UP_REQUEST 2
-#define GET_PLAYERS_IN_ROOM_REQUEST 3
-#define JOIN_ROOM_REQUEST 4
-#define CREATE_ROOM_REQUEST 5
-#define HIGH_SCORE_REQUEST 6
-#define LOGOUT_REQUEST 7
-#define GET_ROOMS_REQUEST 8
-#define GET_STATISTICS 9
-#define CLOSE_ROOM_REQUEST 10
-#define START_GAME_REQUEST 11
-#define GET_ROOM_STATE_REQUEST 12
-#define LEAVE_ROOM_REQUEST 13
-
 
 class IRequestHandler
 {

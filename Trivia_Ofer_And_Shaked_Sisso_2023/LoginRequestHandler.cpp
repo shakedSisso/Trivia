@@ -12,7 +12,7 @@ LoginRequestHandler::LoginRequestHandler(RequestHandlerFactory& handlerFactory, 
 
 bool LoginRequestHandler::isRequestRelevent(const RequestInfo& info)
 {
-    if (info.id == LOGIN_REQUEST || info.id == SIGN_UP_REQUEST)
+    if (info.id == Login || info.id == Signup)
     {
         return true;
     }
@@ -26,7 +26,7 @@ RequestResult LoginRequestHandler::handleRequest(const RequestInfo& info)
     {
         if (isRequestRelevent(info))
         {
-            if (info.id == SIGN_UP_REQUEST)
+            if (info.id == Signup)
             {
                 result = signup(info);
             }
