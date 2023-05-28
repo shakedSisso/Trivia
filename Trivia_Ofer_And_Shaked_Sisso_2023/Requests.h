@@ -21,6 +21,24 @@ typedef struct SignupRequest
 	std::string birthDate;
 }SignupRequest;
 
+typedef struct GetPlayersInRoomRequest
+{
+	RoomID roomId;
+}GetPlayersInRoomRequest;
+
+typedef struct JoinRoomRequest
+{
+	RoomID roomId;
+}JoinRoomRequest;
+
+typedef struct CreateRoomRequest
+{
+	std::string roomName;
+	unsigned int maxUsers;
+	unsigned int questionCount;
+	unsigned int answerTimeout;
+}CreateRoomRequest;
+
 typedef struct RequestResult
 {
 	Buffer buffer;
