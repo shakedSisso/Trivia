@@ -2,6 +2,9 @@
 #include <iostream>
 #include "Globals.h"
 #include "Requests.h"
+#include "Responses.h"
+#include "JsonResponsePacketSerializer.h"
+#include "JsonRequestPacketDeserializer.h"
 
 struct RequestResult;
 struct RequestInfo;
@@ -13,7 +16,9 @@ struct RequestInfo;
 #define CREATE_ROOM_REQUEST 5
 #define HIGH_SCORE_REQUEST 6
 #define LOGOUT_REQUEST 7
-#define GET_ROOM_REQUEST 8
+#define GET_ROOMS_REQUEST 8
+#define GET_STATISTICS 9
+
 
 class IRequestHandler
 {
