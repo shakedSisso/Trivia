@@ -1,22 +1,22 @@
-#include "RoomMemberRequestHandler.h"
+#include "RoomAdminRequestHandler.h"
 
-RoomMemberRequestHandler::RoomMemberRequestHandler(RequestHandlerFactory& handlerFactory, Room& room, LoggedUser& user, RoomManager& roomManager)
-	: m_room(room), m_user(user), m_handlerFactory(handlerFactory), m_roomManager(roomManager)
+RoomAdminRequestHandler::RoomAdminRequestHandler(RequestHandlerFactory& handlerFactory, Room* room, LoggedUser& user, RoomManager& roomManager)
+    : m_room(room), m_user(user), m_handlerFactory(handlerFactory), m_roomManager(roomManager)
 {
 }
 
-bool RoomMemberRequestHandler::isRequestRelevent(const RequestInfo& info)
+bool RoomAdminRequestHandler::isRequestRelevent(const RequestInfo& info)
 {
-	if (info.id == CloseRoom || info.id == StartGame || info.id == GetRoomState)
-	{
-		return true;
-	}
-	return false;
+    if (info.id == CloseRoom || info.id == StartGame || info.id == GetRoomState)
+    {
+        return true;
+    }
+    return false;
 }
 
-RequestResult RoomMemberRequestHandler::handleRequest(const RequestInfo& info)
+RequestResult RoomAdminRequestHandler::handleRequest(const RequestInfo& info)
 {
-	RequestResult result;
+    RequestResult result;
     try
     {
         if (isRequestRelevent(info))
@@ -33,7 +33,6 @@ RequestResult RoomMemberRequestHandler::handleRequest(const RequestInfo& info)
                 result = getRoomState(info);
                 break;
             default:
-
                 throw std::exception("irrelevent request");
                 break;
             }
@@ -51,15 +50,15 @@ RequestResult RoomMemberRequestHandler::handleRequest(const RequestInfo& info)
         response.message = "ERROR";
         result.buffer = JsonResponsePacketSerializer::serializeResponse(response);
     }
-	return result;
+    return result;
 }
 
-RequestResult RoomMemberRequestHandler::closeRoom(const RequestInfo& info)
+RequestResult RoomAdminRequestHandler::closeRoom(const RequestInfo& info)
 {
     RequestResult result;
     try
     {
-        this->m_handlerFactory.getRoomManager().deleteRoom(this->m_room.getRoomData().id);
+        this->m_handlerFactory.getRoomManager().deleteRoom(this->m_room->getRoomData().id);
         result.newHandler = this->m_handlerFactory.createMenuRequestHandler(this->m_user);
     }
     catch (const std::exception& e)
@@ -77,11 +76,12 @@ RequestResult RoomMemberRequestHandler::closeRoom(const RequestInfo& info)
     return result;
 }
 
-RequestResult RoomMemberRequestHandler::startGame(const RequestInfo& info)
+RequestResult RoomAdminRequestHandler::startGame(const RequestInfo& info)
 {
     RequestResult result;
     try
     {
+
         result.newHandler = nullptr; //this needs to be replace by GameRequestHandler
     }
     catch (const std::exception& e)
@@ -99,18 +99,19 @@ RequestResult RoomMemberRequestHandler::startGame(const RequestInfo& info)
     return result;
 }
 
-RequestResult RoomMemberRequestHandler::getRoomState(const RequestInfo& info)
+RequestResult RoomAdminRequestHandler::getRoomState(const RequestInfo& info)
 {
     RequestResult result;
     GetRoomStateResponse response;
     response.status = GetRoomState;
     try
     {
-        RoomData data = this->m_room.getRoomData();
-        response.players = this->m_room.getAllUsers();
+        RoomData data = this->m_room->getRoomData();
+        response.players = this->m_room->getAllUsers();
         response.questionCount = data.numOfQuestionsInGame;
         response.answerTimeout == data.timePerQuestion;
         response.hasGameBegun = data.isActive;
+        result.newHandler = (IRequestHandler*)this;
     }
     catch (const std::exception& e)
     {

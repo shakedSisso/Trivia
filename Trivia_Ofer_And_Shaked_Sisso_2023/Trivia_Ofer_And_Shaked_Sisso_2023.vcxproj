@@ -180,9 +180,9 @@
     <ClCompile Include="MongoDatabase.cpp" />
     <ClCompile Include="RequestHandlerFactory.cpp" />
     <ClCompile Include="Room.cpp" />
-    <ClCompile Include="RoomMemberRequestHandler.cpp" />
-    <ClCompile Include="RoomManager.cpp" />
     <ClCompile Include="RoomAdminRequestHandler.cpp" />
+    <ClCompile Include="RoomManager.cpp" />
+    <ClCompile Include="RoomMemberRequestHandler.cpp" />
     <ClCompile Include="sqlite3.c" />
     <ClCompile Include="SqliteDatabase.cpp" />
     <ClCompile Include="StatisticsManager.cpp" />

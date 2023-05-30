@@ -5,14 +5,14 @@
 
 class RequestHandlerFactory;
 
-class RoomMemberRequestHandler : public IRequestHandler
+class RoomAdminRequestHandler : public IRequestHandler
 {
 public:
-	RoomMemberRequestHandler(RequestHandlerFactory& handlerFactory, Room& room, LoggedUser& user, RoomManager& roomManager);
+	RoomAdminRequestHandler(RequestHandlerFactory& handlerFactory, Room* room, LoggedUser& user, RoomManager& roomManager);
 	bool isRequestRelevent(const RequestInfo& info) override;
 	RequestResult handleRequest(const RequestInfo& info) override;
 private:
-	Room m_room;
+	Room* m_room;
 	LoggedUser m_user;
 	RoomManager& m_roomManager;
 	RequestHandlerFactory& m_handlerFactory;

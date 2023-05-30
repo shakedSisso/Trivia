@@ -190,8 +190,8 @@ RequestResult MenuRequestHandler::joinRoom(const RequestInfo& info)
     try
     {
         JoinRoomRequest request = JsonRequestPacketDeserializer::deserializeJoinRoomRequest(info.buffer);
-        Room room = this->m_roomManager.getRoom(request.roomId);
-        room.addUser(this->m_user);
+        Room* room = &this->m_roomManager.getRoom(request.roomId);
+        room->addUser(this->m_user);
         result.newHandler = (IRequestHandler*)this->m_handlerFactory.createRoomMemberRequestHandler(this->m_user, room);
     }
     catch (const std::exception& e)
@@ -219,7 +219,7 @@ RequestResult MenuRequestHandler::createRoom(const RequestInfo& info)
         id = this->m_roomManager.getRooms().size() + 1;
         RoomData data = { id, request.roomName, request.maxUsers, request.questionCount, request.answerTimeout, FALSE };
         this->m_roomManager.createRoom(this->m_user, data);
-        result.newHandler = (IRequestHandler*)this->m_handlerFactory.createRoomAdminRequestHandler(this->m_user, this->m_roomManager.getRoom(id));
+        result.newHandler = (IRequestHandler*)this->m_handlerFactory.createRoomAdminRequestHandler(this->m_user, &this->m_roomManager.getRoom(id));
     }
     catch (const std::exception& e)
     {

@@ -191,10 +191,10 @@
     <ClCompile Include="StatisticsManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RoomMemberRequestHandler.cpp">
+    <ClCompile Include="RoomAdminRequestHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RoomAdminRequestHandler.cpp">
+    <ClCompile Include="RoomMemberRequestHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
