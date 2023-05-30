@@ -1,5 +1,8 @@
 #include "Room.h"
 
+#define FALSE 0
+#define TRUE !FALSE
+
 Room::Room(const RoomData metadata)
 	:m_metadata(metadata)
 {
@@ -40,4 +43,9 @@ vector<string> Room::getAllUsers() const
 RoomData Room::getRoomData() const
 {
 	return this->m_metadata;
+}
+
+void Room::activate()
+{
+	this->m_metadata.isActive = TRUE;
 }

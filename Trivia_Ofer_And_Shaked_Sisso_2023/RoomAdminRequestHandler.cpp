@@ -81,7 +81,7 @@ RequestResult RoomAdminRequestHandler::startGame(const RequestInfo& info)
     RequestResult result;
     try
     {
-
+        this->m_room->activate();
         result.newHandler = nullptr; //this needs to be replace by GameRequestHandler
     }
     catch (const std::exception& e)
