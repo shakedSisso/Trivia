@@ -20,6 +20,12 @@ public:
 	static Buffer serializeResponse(const CreateRoomResponse& response);
 	static Buffer serializeResponse(const GetHighScoreResponse& response);
 	static Buffer serializeResponse(const GetPersonalStatsResponse& response);
+
+    static Buffer serializeResponse(const CloseRoomResponse& response);
+    static Buffer serializeResponse(const StartGameResponse& response);
+    static Buffer serializeResponse(const GetRoomStateResponse& response);
+    static Buffer serializeResponse(const LeaveRoomResponse& response);
+    
 private:
     /*
     * Function: static insertIntToBuffer
