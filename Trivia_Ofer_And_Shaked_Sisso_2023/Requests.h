@@ -43,6 +43,8 @@ typedef struct RequestResult
 {
 	Buffer buffer;
 	IRequestHandler* newHandler;
+
+	RequestResult() : newHandler(nullptr) {}
 }RequestResult;
 
 typedef struct RequestInfo

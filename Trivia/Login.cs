@@ -19,6 +19,16 @@ namespace Trivia
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
+            string username = this.tbUsername.Text;
+            string password = this.tbPassword.Text;
+            try
+            {
+                Program.GetCommunicator().Login(username, password);
+            }
+            catch (Exception ex)
+            {
+                return;
+            }
             Form fMenu = new Menu();
             this.Hide();
             fMenu.ShowDialog();

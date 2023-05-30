@@ -28,76 +28,79 @@
         /// </summary>
         private void InitializeComponent()
         {
-            btnJoinRoom = new Button();
-            btnCreateRoom = new Button();
-            btnStatus = new Button();
-            btnBestScores = new Button();
-            btnQuit = new Button();
-            SuspendLayout();
+            this.btnJoinRoom = new System.Windows.Forms.Button();
+            this.btnCreateRoom = new System.Windows.Forms.Button();
+            this.btnStatus = new System.Windows.Forms.Button();
+            this.btnBestScores = new System.Windows.Forms.Button();
+            this.btnQuit = new System.Windows.Forms.Button();
+            this.SuspendLayout();
             // 
             // btnJoinRoom
             // 
-            btnJoinRoom.Location = new Point(12, 25);
-            btnJoinRoom.Name = "btnJoinRoom";
-            btnJoinRoom.Size = new Size(216, 40);
-            btnJoinRoom.TabIndex = 0;
-            btnJoinRoom.Text = "Join room";
-            btnJoinRoom.UseVisualStyleBackColor = true;
-            btnJoinRoom.Click += btnJoinRoom_Click;
+            this.btnJoinRoom.Location = new System.Drawing.Point(10, 19);
+            this.btnJoinRoom.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btnJoinRoom.Name = "btnJoinRoom";
+            this.btnJoinRoom.Size = new System.Drawing.Size(189, 30);
+            this.btnJoinRoom.TabIndex = 0;
+            this.btnJoinRoom.Text = "Join room";
+            this.btnJoinRoom.UseVisualStyleBackColor = true;
             // 
             // btnCreateRoom
             // 
-            btnCreateRoom.Location = new Point(12, 71);
-            btnCreateRoom.Name = "btnCreateRoom";
-            btnCreateRoom.Size = new Size(216, 40);
-            btnCreateRoom.TabIndex = 1;
-            btnCreateRoom.Text = "Create room";
-            btnCreateRoom.UseVisualStyleBackColor = true;
-            btnCreateRoom.Click += btnCreateRoom_Click;
+            this.btnCreateRoom.Location = new System.Drawing.Point(10, 53);
+            this.btnCreateRoom.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btnCreateRoom.Name = "btnCreateRoom";
+            this.btnCreateRoom.Size = new System.Drawing.Size(189, 30);
+            this.btnCreateRoom.TabIndex = 1;
+            this.btnCreateRoom.Text = "Create room";
+            this.btnCreateRoom.UseVisualStyleBackColor = true;
             // 
             // btnStatus
             // 
-            btnStatus.Location = new Point(12, 117);
-            btnStatus.Name = "btnStatus";
-            btnStatus.Size = new Size(216, 40);
-            btnStatus.TabIndex = 2;
-            btnStatus.Text = "My status";
-            btnStatus.UseVisualStyleBackColor = true;
-            btnStatus.Click += btnStatus_Click;
+            this.btnStatus.Location = new System.Drawing.Point(10, 88);
+            this.btnStatus.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btnStatus.Name = "btnStatus";
+            this.btnStatus.Size = new System.Drawing.Size(189, 30);
+            this.btnStatus.TabIndex = 2;
+            this.btnStatus.Text = "My status";
+            this.btnStatus.UseVisualStyleBackColor = true;
             // 
             // btnBestScores
             // 
-            btnBestScores.Location = new Point(12, 163);
-            btnBestScores.Name = "btnBestScores";
-            btnBestScores.Size = new Size(216, 40);
-            btnBestScores.TabIndex = 3;
-            btnBestScores.Text = "Best Scores";
-            btnBestScores.UseVisualStyleBackColor = true;
-            btnBestScores.Click += btnBestScores_Click;
+            this.btnBestScores.Location = new System.Drawing.Point(10, 122);
+            this.btnBestScores.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btnBestScores.Name = "btnBestScores";
+            this.btnBestScores.Size = new System.Drawing.Size(189, 30);
+            this.btnBestScores.TabIndex = 3;
+            this.btnBestScores.Text = "Best Scores";
+            this.btnBestScores.UseVisualStyleBackColor = true;
             // 
             // btnQuit
             // 
-            btnQuit.Location = new Point(76, 249);
-            btnQuit.Name = "btnQuit";
-            btnQuit.Size = new Size(76, 29);
-            btnQuit.TabIndex = 4;
-            btnQuit.Text = "quit";
-            btnQuit.UseVisualStyleBackColor = true;
-            btnQuit.Click += btnQuit_Click;
+            this.btnQuit.Location = new System.Drawing.Point(66, 187);
+            this.btnQuit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btnQuit.Name = "btnQuit";
+            this.btnQuit.Size = new System.Drawing.Size(66, 22);
+            this.btnQuit.TabIndex = 4;
+            this.btnQuit.Text = "quit";
+            this.btnQuit.UseVisualStyleBackColor = true;
+            this.btnQuit.Click += new System.EventHandler(this.btnQuit_Click);
             // 
             // Menu
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
-            AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(240, 290);
-            Controls.Add(btnQuit);
-            Controls.Add(btnBestScores);
-            Controls.Add(btnStatus);
-            Controls.Add(btnCreateRoom);
-            Controls.Add(btnJoinRoom);
-            Name = "Menu";
-            Text = "Menu";
-            ResumeLayout(false);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(210, 218);
+            this.Controls.Add(this.btnQuit);
+            this.Controls.Add(this.btnBestScores);
+            this.Controls.Add(this.btnStatus);
+            this.Controls.Add(this.btnCreateRoom);
+            this.Controls.Add(this.btnJoinRoom);
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.Name = "Menu";
+            this.Text = "Menu";
+            this.ResumeLayout(false);
+
         }
 
         #endregion

@@ -19,11 +19,25 @@ namespace Trivia
 
         private void btnSignup_Click(object sender, EventArgs e)
         {
-            
+            string username = this.tbUsername.Text;
+            string password = this.tbPassword.Text;
+            string mail = this.tbMail.Text;
+            string address = this.txAddress.Text;
+            string phoneNumber = this.tbPhoneNumber.Text;
+            string birthDate = this.dtpBirthDate.Text;
+            try
+            {
+                Program.GetCommunicator().SignUp(username, password, mail, address, phoneNumber, birthDate);
+            }
+            catch (Exception ex)
+            {
+                return;
+            }
             Form fMenu = new Menu();
             this.Hide();
             fMenu.ShowDialog();
             this.Dispose();
         }
+
     }
 }

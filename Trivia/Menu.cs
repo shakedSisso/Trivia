@@ -20,6 +20,15 @@ namespace Trivia
         private void btnQuit_Click(object sender, EventArgs e)
         {
             //logout
+            try
+            {
+                Program.GetCommunicator().Logout();
+                Program.GetCommunicator().Disconnect();
+            }
+            catch (Exception ex)
+            {
+                return;
+            }
             Application.Exit();
         }
 
