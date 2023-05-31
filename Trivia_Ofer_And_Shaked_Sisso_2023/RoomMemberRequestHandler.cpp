@@ -87,7 +87,7 @@ RequestResult RoomMemberRequestHandler::getRoomState(const RequestInfo& info)
         RoomData data = this->m_room->getRoomData();
         response.players = this->m_room->getAllUsers();
         response.questionCount = data.numOfQuestionsInGame;
-        response.answerTimeout == data.timePerQuestion;
+        response.answerTimeout = data.timePerQuestion;
         response.hasGameBegun = data.isActive;
     }
     catch (const std::exception& e)
