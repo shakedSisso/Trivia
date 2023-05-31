@@ -50,7 +50,7 @@ namespace Trivia
             dynamic response = PacketDeserializer.ProcessSocketData(this.socket);
             if(response.code == (int)codes.Error)
             {
-                throw new Exception(response.message);
+                throw new Exception(response.message.ToString());
             }
             if(response.status == (int)codes.Login)
             {
@@ -69,7 +69,7 @@ namespace Trivia
             dynamic response = PacketDeserializer.ProcessSocketData(this.socket);
             if (response.code == (int)codes.Error)
             {
-                throw new Exception(response.message);
+                throw new Exception(response.message.ToString());
             }
             if (response.status == (int)codes.Signup)
             {
@@ -86,13 +86,8 @@ namespace Trivia
             dynamic response = PacketDeserializer.ProcessSocketData(this.socket);
             if (response.code == (int)codes.Error)
             {
-                string errorMessage = response.message;
-                string caption = "Error";
-                MessageBoxButtons buttons = MessageBoxButtons.OK;
-                MessageBoxIcon icon = MessageBoxIcon.Error;
-
-                MessageBox.Show(errorMessage, caption, buttons, icon);
-                throw new Exception(errorMessage);
+                
+                throw new Exception(response.message.ToString());
             }
             if (response.status == (int)codes.Logout)
             {
@@ -101,7 +96,7 @@ namespace Trivia
             throw new Exception("Couldn't logout");
         }
 
-        public string GetPlayersInRoom(int roomId)
+        public string[] GetPlayersInRoom(int roomId)
         {
             var jsonObject = new { room_id = roomId};
             byte[] buffer = PacketSerializer.GenerateMessage((int)codes.GetPlayersInRoom, jsonObject);
@@ -109,23 +104,17 @@ namespace Trivia
             dynamic response = PacketDeserializer.ProcessSocketData(this.socket);
             if (response.code == (int)codes.Error)
             {
-                string errorMessage = response.message;
-                string caption = "Error";
-                MessageBoxButtons buttons = MessageBoxButtons.OK;
-                MessageBoxIcon icon = MessageBoxIcon.Error;
-
-                MessageBox.Show(errorMessage, caption, buttons, icon);
-                throw new Exception(errorMessage);
+                throw new Exception(response.message.ToString());
             }
             if (response.status == (int)codes.GetPlayersInRoom)
             {
-                return response.PlayersInRoom;
+                return ((JArray)response.PlayersInRoom).ToObject<string[]>();
             }
             throw new Exception("Error while trying to make a request");
         }
         
 
-        public string GetRooms() // TODO - check how the rooms needs to be returned and if the function return type is string not raising errors
+        public string[] GetRooms() // TODO - check how the rooms needs to be returned and if the function return type is string not raising errors
         {
             var jsonObject = new { };
             byte[] buffer = PacketSerializer.GenerateMessage((int)codes.GetRooms, jsonObject);
@@ -133,17 +122,11 @@ namespace Trivia
             dynamic response = PacketDeserializer.ProcessSocketData(this.socket);
             if (response.code == (int)codes.Error)
             {
-                string errorMessage = response.message;
-                string caption = "Error";
-                MessageBoxButtons buttons = MessageBoxButtons.OK;
-                MessageBoxIcon icon = MessageBoxIcon.Error;
-
-                MessageBox.Show(errorMessage, caption, buttons, icon);
-                throw new Exception(errorMessage);
+                throw new Exception(response.message.ToString());
             }
             if (response.status == (int)codes.GetRooms)
             {
-                return response.Rooms;
+                return ((JArray)response.Rooms).ToObject<string[]>();
             }
             throw new Exception("Error while trying to make a request");
         }
@@ -176,13 +159,7 @@ namespace Trivia
             dynamic response = PacketDeserializer.ProcessSocketData(this.socket);
             if (response.code == (int)codes.Error)
             {
-                string errorMessage = response.message;
-                string caption = "Error";
-                MessageBoxButtons buttons = MessageBoxButtons.OK;
-                MessageBoxIcon icon = MessageBoxIcon.Error;
-
-                MessageBox.Show(errorMessage, caption, buttons, icon);
-                throw new Exception(errorMessage);
+                throw new Exception(response.message.ToString());
             }
             if (response.status == (int)codes.Statistics)
             {
@@ -199,13 +176,7 @@ namespace Trivia
             dynamic response = PacketDeserializer.ProcessSocketData(this.socket);
             if (response.code == (int)codes.Error)
             {
-                string errorMessage = response.message;
-                string caption = "Error";
-                MessageBoxButtons buttons = MessageBoxButtons.OK;
-                MessageBoxIcon icon = MessageBoxIcon.Error;
-
-                MessageBox.Show(errorMessage, caption, buttons, icon);
-                throw new Exception(errorMessage);
+                throw new Exception(response.message.ToString());
             }
             if (response.status == (int)codes.JoinRoom)
             {
@@ -222,13 +193,7 @@ namespace Trivia
             dynamic response = PacketDeserializer.ProcessSocketData(this.socket);
             if (response.code == (int)codes.Error)
             {
-                string errorMessage = response.message;
-                string caption = "Error";
-                MessageBoxButtons buttons = MessageBoxButtons.OK;
-                MessageBoxIcon icon = MessageBoxIcon.Error;
-
-                MessageBox.Show(errorMessage, caption, buttons, icon);
-                throw new Exception(errorMessage);
+                throw new Exception(response.message.ToString());
             }
             if (response.status == (int)codes.CreateRoom)
             {
@@ -245,13 +210,7 @@ namespace Trivia
             dynamic response = PacketDeserializer.ProcessSocketData(this.socket);
             if (response.code == (int)codes.Error)
             {
-                string errorMessage = response.message;
-                string caption = "Error";
-                MessageBoxButtons buttons = MessageBoxButtons.OK;
-                MessageBoxIcon icon = MessageBoxIcon.Error;
-
-                MessageBox.Show(errorMessage, caption, buttons, icon);
-                throw new Exception(errorMessage);
+                throw new Exception(response.message.ToString());
             }
             if (response.status == (int)codes.CloseRoom)
             {
@@ -268,13 +227,7 @@ namespace Trivia
             dynamic response = PacketDeserializer.ProcessSocketData(this.socket);
             if (response.code == (int)codes.Error)
             {
-                string errorMessage = response.message;
-                string caption = "Error";
-                MessageBoxButtons buttons = MessageBoxButtons.OK;
-                MessageBoxIcon icon = MessageBoxIcon.Error;
-
-                MessageBox.Show(errorMessage, caption, buttons, icon);
-                throw new Exception(errorMessage);
+                throw new Exception(response.message.ToString());
             }
             if (response.status == (int)codes.StartGame)
             {
@@ -291,13 +244,7 @@ namespace Trivia
             dynamic response = PacketDeserializer.ProcessSocketData(this.socket);
             if (response.code == (int)codes.Error)
             {
-                string errorMessage = response.message;
-                string caption = "Error";
-                MessageBoxButtons buttons = MessageBoxButtons.OK;
-                MessageBoxIcon icon = MessageBoxIcon.Error;
-
-                MessageBox.Show(errorMessage, caption, buttons, icon);
-                throw new Exception(errorMessage);
+                throw new Exception(response.message.ToString());
             }
             if (response.status == (int)codes.GetRoomState)
             {
@@ -314,13 +261,7 @@ namespace Trivia
             dynamic response = PacketDeserializer.ProcessSocketData(this.socket);
             if (response.code == (int)codes.Error)
             {
-                string errorMessage = response.message;
-                string caption = "Error";
-                MessageBoxButtons buttons = MessageBoxButtons.OK;
-                MessageBoxIcon icon = MessageBoxIcon.Error;
-
-                MessageBox.Show(errorMessage, caption, buttons, icon);
-                throw new Exception(errorMessage);
+                throw new Exception(response.message.ToString());
             }
             if (response.status == (int)codes.LeaveRoom)
             {
