@@ -1,6 +1,6 @@
 ﻿namespace Trivia
 {
-    partial class RoomAdmin
+    partial class CreateRoom
     {
         /// <summary>
         /// Required designer variable.
@@ -28,20 +28,37 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RoomAdmin));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CreateRoom));
+            btnBack = new Button();
             SuspendLayout();
             // 
-            // RoomAdmin
+            // btnBack
+            // 
+            btnBack.BackColor = Color.CadetBlue;
+            btnBack.Font = new Font("Maiandra GD", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            btnBack.ForeColor = SystemColors.ButtonHighlight;
+            btnBack.Location = new Point(640, 409);
+            btnBack.Name = "btnBack";
+            btnBack.Size = new Size(148, 29);
+            btnBack.TabIndex = 22;
+            btnBack.Text = "back";
+            btnBack.UseVisualStyleBackColor = false;
+            // 
+            // CreateRoom
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.PaleTurquoise;
             ClientSize = new Size(800, 450);
+            Controls.Add(btnBack);
             Icon = (Icon)resources.GetObject("$this.Icon");
-            Name = "RoomAdmin";
-            Text = "RoomAdmin";
+            Name = "CreateRoom";
+            Text = "CreateRoom";
             ResumeLayout(false);
         }
 
         #endregion
+
+        private Button btnBack;
     }
 }

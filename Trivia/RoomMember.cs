@@ -15,6 +15,7 @@ namespace Trivia
         public RoomMember()
         {
             InitializeComponent();
+            this.StartPosition = FormStartPosition.CenterScreen;
         }
     }
 }

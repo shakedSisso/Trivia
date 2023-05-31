@@ -10,12 +10,18 @@ using System.Windows.Forms;
 
 namespace Trivia
 {
-    public partial class RoomAdmin : Form
+    public partial class ConnectToRoom : Form
     {
-        public RoomAdmin()
+        public ConnectToRoom()
         {
             InitializeComponent();
             this.StartPosition = FormStartPosition.CenterScreen;
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            this.Dispose();
+        }
+
     }
 }

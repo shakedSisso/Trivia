@@ -20,9 +20,11 @@ namespace Trivia
 
             // Extract code from the first byte
             byte code = headerBytes[0];
+            Array.Reverse(headerBytes);
 
             // Extract length from the last four bytes
-            int length = BitConverter.ToInt32(headerBytes, 1);
+            int length = BitConverter.ToInt32(headerBytes, 1); 
+            Array.Reverse(headerBytes);
 
             byte[] dataBytes = new byte[length];
             socket.Receive(dataBytes);

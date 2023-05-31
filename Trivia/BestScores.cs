@@ -15,16 +15,31 @@ namespace Trivia
         public BestScores()
         {
             InitializeComponent();
+            this.StartPosition = FormStartPosition.CenterScreen;
+            lblFirstPlace.Text = string.Empty;
+            lblSecondPlace.Text = string.Empty;
+            lblThirdPlace.Text = string.Empty;
+            lblFourthPlace.Text = string.Empty;
+            lblFifthPlace.Text = string.Empty;
             try
             {
                 string[] highScores = Program.GetCommunicator().GetHighScores();
+                lblFirstPlace.Text = highScores[0];
+                lblSecondPlace.Text = highScores[1];
+                lblThirdPlace.Text = highScores[2];
+                lblFourthPlace.Text = highScores[3];
+                lblFifthPlace.Text = highScores[4];
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
-                return;
+                throw new Exception(ex.Message);
             }
-            
+
+        }
+
+        private void btnBack_Click(object sender, EventArgs e)
+        {
+            this.Dispose();
         }
     }
 }

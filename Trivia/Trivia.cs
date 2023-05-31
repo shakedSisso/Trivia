@@ -17,6 +17,7 @@ namespace Trivia
         public Trivia()
         {
             InitializeComponent();
+            this.StartPosition = FormStartPosition.CenterScreen;
         }
 
         private void btnLogin_Click(object sender, EventArgs e)

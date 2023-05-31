@@ -12,14 +12,19 @@ namespace Trivia
 {
     public partial class Menu : Form
     {
-        public Menu()
+        private string username;
+        public Menu(string username)
         {
             InitializeComponent();
+            this.StartPosition = FormStartPosition.CenterScreen;
+            lblUsername.Text = "Hello " + username + "!";
+            this.username = username;
+            lblUsername.Left = (this.Width - lblUsername.Width - 20) / 2;
+            this.FormClosing += Menu_FormClosing;
         }
 
-        private void btnQuit_Click(object sender, EventArgs e)
+        private void Menu_FormClosing(object? sender, FormClosingEventArgs e)
         {
-            //logout
             try
             {
                 Program.GetCommunicator().Logout();
@@ -27,41 +32,103 @@ namespace Trivia
             }
             catch (Exception ex)
             {
+                MessageBox.Show(ex.Message);
                 return;
             }
-            Application.Exit();
         }
 
-        private void btnJoinRoom_Click(object sender, EventArgs e)
+        private void btnQuit_Click(object sender, EventArgs e)
         {
-            Form fMember = new RoomMember();
-            this.Hide();
-            fMember.ShowDialog();
-            this.Show();
-        }
+            try
+            {
+                DialogResult result = MessageBox.Show("Are you sure you want to log out?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-        private void btnCreateRoom_Click(object sender, EventArgs e)
-        {
-            Form fAdmin = new RoomAdmin();
-            this.Hide();
-            fAdmin.ShowDialog();
-            this.Show();
-        }
-
-        private void btnStatus_Click(object sender, EventArgs e)
-        { 
-            Form fStatus = new MyStatus();
-            this.Hide();
-            fStatus.ShowDialog();
-            this.Show();
+                if (result == DialogResult.Yes)
+                {
+                    this.Hide();
+                    MessageBox.Show("Goodbye!");
+                    Application.Exit();
+                }
+                else if (result == DialogResult.No)
+                {
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return;
+            }
         }
 
         private void btnBestScores_Click(object sender, EventArgs e)
         {
-            Form fBestScores = new BestScores();
-            this.Hide();
-            fBestScores.ShowDialog();
-            this.Show();
+            lblErrorMessage.Text = string.Empty;
+            try
+            {
+                Form fBestScores = new BestScores();
+                this.Hide();
+                fBestScores.ShowDialog();
+                this.Show();
+            }
+            catch (Exception ex)
+            {
+                ChangeErrorText(ex.Message);
+            }
+        }
+
+        private void ChangeErrorText(string message)
+        {
+            lblErrorMessage.Text = message;
+            lblErrorMessage.Left = (this.Width - lblErrorMessage.Width - 20) / 2; //subtracting 20 to include the edge 
+        }
+
+        private void btnStatus_Click(object sender, EventArgs e)
+        {
+            lblErrorMessage.Text = string.Empty;
+            try
+            {
+                Form fStatus = new MyStatus(username);
+                this.Hide();
+                fStatus.ShowDialog();
+                this.Show();
+            }
+            catch (Exception ex)
+            {
+                ChangeErrorText(ex.Message);
+            }
+        }
+
+        private void btnJoinRoom_Click(object sender, EventArgs e)
+        {
+            lblErrorMessage.Text = string.Empty;
+            try
+            {
+                Form fConnectToRoom = new ConnectToRoom();
+                this.Hide();
+                fConnectToRoom.ShowDialog();
+                this.Show();
+            }
+            catch (Exception ex)
+            {
+                ChangeErrorText(ex.Message);
+            }
+        }
+
+        private void btnCreateRoom_Click(object sender, EventArgs e)
+        {
+            lblErrorMessage.Text = string.Empty;
+            try
+            {
+                Form fCreateRoom = new CreateRoom();
+                this.Hide();
+                fCreateRoom.ShowDialog();
+                this.Show();
+            }
+            catch (Exception ex)
+            {
+                ChangeErrorText(ex.Message);
+            }
         }
     }
 }

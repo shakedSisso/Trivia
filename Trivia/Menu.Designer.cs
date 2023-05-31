@@ -28,80 +28,122 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.btnJoinRoom = new System.Windows.Forms.Button();
-            this.btnCreateRoom = new System.Windows.Forms.Button();
-            this.btnStatus = new System.Windows.Forms.Button();
-            this.btnBestScores = new System.Windows.Forms.Button();
-            this.btnQuit = new System.Windows.Forms.Button();
-            this.SuspendLayout();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Menu));
+            btnJoinRoom = new Button();
+            btnCreateRoom = new Button();
+            btnStatus = new Button();
+            btnBestScores = new Button();
+            btnQuit = new Button();
+            lblUsername = new Label();
+            lblErrorMessage = new Label();
+            SuspendLayout();
             // 
             // btnJoinRoom
             // 
-            this.btnJoinRoom.Location = new System.Drawing.Point(10, 19);
-            this.btnJoinRoom.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.btnJoinRoom.Name = "btnJoinRoom";
-            this.btnJoinRoom.Size = new System.Drawing.Size(189, 30);
-            this.btnJoinRoom.TabIndex = 0;
-            this.btnJoinRoom.Text = "Join room";
-            this.btnJoinRoom.UseVisualStyleBackColor = true;
+            btnJoinRoom.BackColor = Color.CadetBlue;
+            btnJoinRoom.Font = new Font("Maiandra GD", 15F, FontStyle.Bold, GraphicsUnit.Point);
+            btnJoinRoom.ForeColor = SystemColors.ButtonHighlight;
+            btnJoinRoom.Location = new Point(40, 177);
+            btnJoinRoom.Name = "btnJoinRoom";
+            btnJoinRoom.Size = new Size(347, 63);
+            btnJoinRoom.TabIndex = 0;
+            btnJoinRoom.Text = "Join room";
+            btnJoinRoom.UseVisualStyleBackColor = false;
+            btnJoinRoom.Click += btnJoinRoom_Click;
             // 
             // btnCreateRoom
             // 
-            this.btnCreateRoom.Location = new System.Drawing.Point(10, 53);
-            this.btnCreateRoom.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.btnCreateRoom.Name = "btnCreateRoom";
-            this.btnCreateRoom.Size = new System.Drawing.Size(189, 30);
-            this.btnCreateRoom.TabIndex = 1;
-            this.btnCreateRoom.Text = "Create room";
-            this.btnCreateRoom.UseVisualStyleBackColor = true;
+            btnCreateRoom.BackColor = Color.CadetBlue;
+            btnCreateRoom.Font = new Font("Maiandra GD", 15F, FontStyle.Bold, GraphicsUnit.Point);
+            btnCreateRoom.ForeColor = SystemColors.ButtonHighlight;
+            btnCreateRoom.Location = new Point(40, 262);
+            btnCreateRoom.Name = "btnCreateRoom";
+            btnCreateRoom.Size = new Size(347, 63);
+            btnCreateRoom.TabIndex = 1;
+            btnCreateRoom.Text = "Create room";
+            btnCreateRoom.UseVisualStyleBackColor = false;
+            btnCreateRoom.Click += btnCreateRoom_Click;
             // 
             // btnStatus
             // 
-            this.btnStatus.Location = new System.Drawing.Point(10, 88);
-            this.btnStatus.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.btnStatus.Name = "btnStatus";
-            this.btnStatus.Size = new System.Drawing.Size(189, 30);
-            this.btnStatus.TabIndex = 2;
-            this.btnStatus.Text = "My status";
-            this.btnStatus.UseVisualStyleBackColor = true;
+            btnStatus.BackColor = Color.CadetBlue;
+            btnStatus.Font = new Font("Maiandra GD", 15F, FontStyle.Bold, GraphicsUnit.Point);
+            btnStatus.ForeColor = SystemColors.ButtonHighlight;
+            btnStatus.Location = new Point(419, 177);
+            btnStatus.Name = "btnStatus";
+            btnStatus.Size = new Size(347, 63);
+            btnStatus.TabIndex = 2;
+            btnStatus.Text = "My status";
+            btnStatus.UseVisualStyleBackColor = false;
+            btnStatus.Click += btnStatus_Click;
             // 
             // btnBestScores
             // 
-            this.btnBestScores.Location = new System.Drawing.Point(10, 122);
-            this.btnBestScores.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.btnBestScores.Name = "btnBestScores";
-            this.btnBestScores.Size = new System.Drawing.Size(189, 30);
-            this.btnBestScores.TabIndex = 3;
-            this.btnBestScores.Text = "Best Scores";
-            this.btnBestScores.UseVisualStyleBackColor = true;
-            this.btnBestScores.Click += new System.EventHandler(this.btnBestScores_Click);
+            btnBestScores.BackColor = Color.CadetBlue;
+            btnBestScores.Font = new Font("Maiandra GD", 15F, FontStyle.Bold, GraphicsUnit.Point);
+            btnBestScores.ForeColor = SystemColors.ButtonHighlight;
+            btnBestScores.Location = new Point(419, 262);
+            btnBestScores.Margin = new Padding(3, 2, 3, 2);
+            btnBestScores.Name = "btnBestScores";
+            btnBestScores.Size = new Size(347, 63);
+            btnBestScores.TabIndex = 3;
+            btnBestScores.Text = "Best Scores";
+            btnBestScores.UseVisualStyleBackColor = false;
+            btnBestScores.Click += btnBestScores_Click;
             // 
             // btnQuit
             // 
-            this.btnQuit.Location = new System.Drawing.Point(66, 187);
-            this.btnQuit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.btnQuit.Name = "btnQuit";
-            this.btnQuit.Size = new System.Drawing.Size(66, 22);
-            this.btnQuit.TabIndex = 4;
-            this.btnQuit.Text = "quit";
-            this.btnQuit.UseVisualStyleBackColor = true;
-            this.btnQuit.Click += new System.EventHandler(this.btnQuit_Click);
+            btnQuit.BackColor = Color.CadetBlue;
+            btnQuit.Font = new Font("Maiandra GD", 13F, FontStyle.Italic, GraphicsUnit.Point);
+            btnQuit.ForeColor = SystemColors.ButtonHighlight;
+            btnQuit.Location = new Point(207, 395);
+            btnQuit.Name = "btnQuit";
+            btnQuit.Size = new Size(407, 43);
+            btnQuit.TabIndex = 4;
+            btnQuit.Text = "quit";
+            btnQuit.UseVisualStyleBackColor = false;
+            btnQuit.Click += btnQuit_Click;
+            // 
+            // lblUsername
+            // 
+            lblUsername.AutoSize = true;
+            lblUsername.BackColor = Color.PaleTurquoise;
+            lblUsername.Font = new Font("Bauhaus 93", 35F, FontStyle.Regular, GraphicsUnit.Point);
+            lblUsername.ForeColor = Color.DarkSlateGray;
+            lblUsername.Location = new Point(317, 65);
+            lblUsername.Name = "lblUsername";
+            lblUsername.Size = new Size(166, 67);
+            lblUsername.TabIndex = 5;
+            lblUsername.Text = "Hello";
+            // 
+            // lblErrorMessage
+            // 
+            lblErrorMessage.AutoSize = true;
+            lblErrorMessage.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblErrorMessage.ForeColor = Color.Maroon;
+            lblErrorMessage.Location = new Point(361, 361);
+            lblErrorMessage.Name = "lblErrorMessage";
+            lblErrorMessage.Size = new Size(0, 20);
+            lblErrorMessage.TabIndex = 6;
             // 
             // Menu
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(210, 218);
-            this.Controls.Add(this.btnQuit);
-            this.Controls.Add(this.btnBestScores);
-            this.Controls.Add(this.btnStatus);
-            this.Controls.Add(this.btnCreateRoom);
-            this.Controls.Add(this.btnJoinRoom);
-            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.Name = "Menu";
-            this.Text = "Menu";
-            this.ResumeLayout(false);
-
+            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.PaleTurquoise;
+            ClientSize = new Size(800, 450);
+            Controls.Add(lblErrorMessage);
+            Controls.Add(lblUsername);
+            Controls.Add(btnQuit);
+            Controls.Add(btnBestScores);
+            Controls.Add(btnStatus);
+            Controls.Add(btnCreateRoom);
+            Controls.Add(btnJoinRoom);
+            Icon = (Icon)resources.GetObject("$this.Icon");
+            Name = "Menu";
+            Text = "Menu";
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -111,5 +153,7 @@
         private Button btnStatus;
         private Button btnBestScores;
         private Button btnQuit;
+        private Label lblUsername;
+        private Label lblErrorMessage;
     }
 }

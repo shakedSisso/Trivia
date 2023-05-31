@@ -1,6 +1,6 @@
 ﻿namespace Trivia
 {
-    partial class RoomAdmin
+    partial class ConnectToRoom
     {
         /// <summary>
         /// Required designer variable.
@@ -28,20 +28,37 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RoomAdmin));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConnectToRoom));
+            button1 = new Button();
             SuspendLayout();
             // 
-            // RoomAdmin
+            // button1
+            // 
+            button1.BackColor = Color.CadetBlue;
+            button1.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            button1.ForeColor = SystemColors.ButtonHighlight;
+            button1.Location = new Point(12, 12);
+            button1.Name = "button1";
+            button1.Size = new Size(66, 29);
+            button1.TabIndex = 21;
+            button1.Text = "back";
+            button1.UseVisualStyleBackColor = false;
+            button1.Click += button1_Click;
+            // 
+            // ConnectToRoom
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(button1);
             Icon = (Icon)resources.GetObject("$this.Icon");
-            Name = "RoomAdmin";
-            Text = "RoomAdmin";
+            Name = "ConnectToRoom";
+            Text = "ConnectToRoom";
             ResumeLayout(false);
         }
 
         #endregion
+
+        private Button button1;
     }
 }

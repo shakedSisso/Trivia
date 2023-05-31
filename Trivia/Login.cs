@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Trivia
 {
@@ -15,23 +16,47 @@ namespace Trivia
         public Login()
         {
             InitializeComponent();
+            this.StartPosition = FormStartPosition.CenterScreen;
         }
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            string username = this.tbUsername.Text;
-            string password = this.tbPassword.Text;
-            try
+            if (tbUsername.Text != string.Empty && tbPassword.Text != string.Empty)
             {
-                Program.GetCommunicator().Login(username, password);
+                string username = tbUsername.Text;
+                string password = tbPassword.Text;
+                try
+                {
+                    Program.GetCommunicator().Login(username, password);
+                    Form fMenu = new Menu(username);
+                    this.Hide();
+                    fMenu.ShowDialog();
+                    this.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    ChangeErrorText(ex.Message);
+                    tbUsername.Text = string.Empty;
+                    tbPassword.Text = string.Empty;
+                }
             }
-            catch (Exception ex)
+            else
             {
-                return;
+                ChangeErrorText("Please fill all fields");
             }
-            Form fMenu = new Menu();
+        }
+
+        private void ChangeErrorText(string message)
+        {
+            lblErrorMessage.Text = message;
+            lblErrorMessage.Left = (this.Width - lblErrorMessage.Width - 20) / 2; //subtracting 20 to include the edge 
+        }
+
+        private void btnBack_Click(object sender, EventArgs e)
+        {
+            Form fTrivia = new Trivia();
             this.Hide();
-            fMenu.ShowDialog();
+            fTrivia.ShowDialog();
             this.Dispose();
         }
     }

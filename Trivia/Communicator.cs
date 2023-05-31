@@ -50,13 +50,7 @@ namespace Trivia
             dynamic response = PacketDeserializer.ProcessSocketData(this.socket);
             if(response.code == (int)codes.Error)
             {
-                string errorMessage = response.message;
-                string caption = "Error";
-                MessageBoxButtons buttons = MessageBoxButtons.OK;
-                MessageBoxIcon icon = MessageBoxIcon.Error;
-
-                MessageBox.Show(errorMessage, caption, buttons, icon);
-                throw new Exception(errorMessage);
+                throw new Exception(response.message);
             }
             if(response.status == (int)codes.Login)
             {
@@ -75,13 +69,7 @@ namespace Trivia
             dynamic response = PacketDeserializer.ProcessSocketData(this.socket);
             if (response.code == (int)codes.Error)
             {
-                string errorMessage = response.message;
-                string caption = "Error";
-                MessageBoxButtons buttons = MessageBoxButtons.OK;
-                MessageBoxIcon icon = MessageBoxIcon.Error;
-
-                MessageBox.Show(errorMessage, caption, buttons, icon);
-                throw new Exception(errorMessage);
+                throw new Exception(response.message);
             }
             if (response.status == (int)codes.Signup)
             {
@@ -170,13 +158,7 @@ namespace Trivia
             dynamic response = PacketDeserializer.ProcessSocketData(this.socket);
             if (response.code == (int)codes.Error)
             {
-                string errorMessage = response.message;
-                string caption = "Error";
-                MessageBoxButtons buttons = MessageBoxButtons.OK;
-                MessageBoxIcon icon = MessageBoxIcon.Error;
-
-                MessageBox.Show(errorMessage, caption, buttons, icon);
-                throw new Exception(errorMessage);
+                throw new Exception(response.message);
             }
             if (response.status == (int)codes.HighScore)
             {

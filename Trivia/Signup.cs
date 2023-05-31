@@ -15,29 +15,50 @@ namespace Trivia
         public Signup()
         {
             InitializeComponent();
+            this.StartPosition = FormStartPosition.CenterScreen;
         }
 
         private void btnSignup_Click(object sender, EventArgs e)
         {
-            string username = this.tbUsername.Text;
-            string password = this.tbPassword.Text;
-            string mail = this.tbMail.Text;
-            string address = this.txAddress.Text;
-            string phoneNumber = this.tbPhoneNumber.Text;
-            string birthDate = this.dtpBirthDate.Text;
-            try
+            if (tbUsername.Text != string.Empty && tbPassword.Text != string.Empty && tbMail.Text != string.Empty && tbAddress.Text != string.Empty && tbPhoneNumber.Text != string.Empty && dtpBirthDate.Text != string.Empty)
             {
-                Program.GetCommunicator().SignUp(username, password, mail, address, phoneNumber, birthDate);
+                string username = this.tbUsername.Text;
+                string password = this.tbPassword.Text;
+                string mail = this.tbMail.Text;
+                string address = this.tbAddress.Text;
+                string phoneNumber = this.tbPhoneNumber.Text;
+                string birthDate = this.dtpBirthDate.Text;
+                try
+                {
+                    Program.GetCommunicator().SignUp(username, password, mail, address, phoneNumber, birthDate);
+                    Form fMenu = new Menu(username);
+                    this.Hide();
+                    fMenu.ShowDialog();
+                    this.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    ChangeErrorText(ex.Message);
+                }
             }
-            catch (Exception ex)
+            else
             {
-                return;
+                ChangeErrorText("Please fill all fields");
             }
-            Form fMenu = new Menu();
-            this.Hide();
-            fMenu.ShowDialog();
-            this.Dispose();
         }
 
+        private void ChangeErrorText(string message)
+        {
+            lblErrorMessage.Text = message;
+            lblErrorMessage.Left = (this.Width - lblErrorMessage.Width - 20) / 2; //subtracting 20 to include the edge 
+        }
+
+        private void btnBack_Click(object sender, EventArgs e)
+        {
+            Form fTrivia = new Trivia();
+            this.Hide();
+            fTrivia.ShowDialog();
+            this.Dispose();
+        }
     }
 }
