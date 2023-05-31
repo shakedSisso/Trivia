@@ -108,7 +108,15 @@ namespace Trivia
             }
             if (response.status == (int)codes.GetPlayersInRoom)
             {
-                return ((JArray)response.PlayersInRoom).ToObject<string[]>();
+                try
+                {
+
+                    return ((JArray)response.PlayersInRoom).ToObject<string[]>();
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
             }
             throw new Exception("Error while trying to make a request");
         }
@@ -126,7 +134,15 @@ namespace Trivia
             }
             if (response.status == (int)codes.GetRooms)
             {
-                return ((JArray)response.Rooms).ToObject<string[]>();
+                try
+                {
+
+                    return ((JArray)response.Rooms).ToObject<string[]>();
+                }
+                catch(Exception ex)
+                {
+                    return null;
+                }
             }
             throw new Exception("Error while trying to make a request");
         }
@@ -145,7 +161,15 @@ namespace Trivia
             }
             if (response.status == (int)codes.HighScore)
             {
-                return  ((JArray)response.statistics).ToObject<string[]>();
+                try
+                {
+
+                    return ((JArray)response.statistics).ToObject<string[]>();
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
             }
             throw new Exception("Error while trying to make a request");
         }
@@ -163,7 +187,15 @@ namespace Trivia
             }
             if (response.status == (int)codes.Statistics)
             {
-                return ((JArray)response.statistics).ToObject<string[]>();
+                try
+                {
+
+                    return ((JArray)response.statistics).ToObject<string[]>();
+                }
+                catch(Exception ex)
+                {
+                    return null;
+                }
             }
             throw new Exception("Error while trying to make a request");
         }
