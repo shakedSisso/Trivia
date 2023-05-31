@@ -15,6 +15,15 @@ namespace Trivia
         public MyStatus()
         {
             InitializeComponent();
+            try
+            {
+                string[] stats = Program.GetCommunicator().GetStatistics();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return;
+            }
         }
     }
 }

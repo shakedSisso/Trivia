@@ -50,7 +50,7 @@ namespace Trivia
 
         private void btnStatus_Click(object sender, EventArgs e)
         { 
-            Form fStatus = new Menu();
+            Form fStatus = new MyStatus();
             this.Hide();
             fStatus.ShowDialog();
             this.Show();
@@ -58,7 +58,7 @@ namespace Trivia
 
         private void btnBestScores_Click(object sender, EventArgs e)
         {
-            Form fBestScores = new Menu();
+            Form fBestScores = new BestScores();
             this.Hide();
             fBestScores.ShowDialog();
             this.Show();

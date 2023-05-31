@@ -23,7 +23,20 @@ namespace Trivia
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             communicator = new Communicator();
-            communicator.Connect();
+            try
+            {
+                communicator.Connect();
+            }
+            catch (Exception ex)
+            {
+                string errorMessage = ex.Message;
+                string caption = "Error";
+                MessageBoxButtons buttons = MessageBoxButtons.OK;
+                MessageBoxIcon icon = MessageBoxIcon.Error;
+
+                MessageBox.Show(errorMessage, caption, buttons, icon);
+                return;
+            }
             ApplicationConfiguration.Initialize();
             Application.Run(new Trivia());
         }

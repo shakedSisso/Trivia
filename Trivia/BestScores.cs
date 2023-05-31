@@ -15,6 +15,16 @@ namespace Trivia
         public BestScores()
         {
             InitializeComponent();
+            try
+            {
+                string[] highScores = Program.GetCommunicator().GetHighScores();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return;
+            }
+            
         }
     }
 }

@@ -74,6 +74,7 @@
             this.btnBestScores.TabIndex = 3;
             this.btnBestScores.Text = "Best Scores";
             this.btnBestScores.UseVisualStyleBackColor = true;
+            this.btnBestScores.Click += new System.EventHandler(this.btnBestScores_Click);
             // 
             // btnQuit
             // 

@@ -7,6 +7,8 @@ using System.Net.Sockets;
 using System.Text;
 using System.Net;
 using System.Windows.Forms;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 
 namespace Trivia
@@ -30,7 +32,7 @@ namespace Trivia
             }
             catch (Exception ex)
             {
-                Console.WriteLine("An error occurred while trying to connect to server: " + ex.Message);
+                throw new Exception("An error occurred while trying to connect to server: " + ex.Message);
             }
         }
 
@@ -160,7 +162,7 @@ namespace Trivia
         
 
 
-        public string GetHighScores()
+        public string[] GetHighScores()
         {
             var jsonObject = new { };
             byte[] buffer = PacketSerializer.GenerateMessage((int)codes.HighScore, jsonObject);
@@ -178,13 +180,13 @@ namespace Trivia
             }
             if (response.status == (int)codes.HighScore)
             {
-                return response.statistics;
+                return  ((JArray)response.statistics).ToObject<string[]>();
             }
             throw new Exception("Error while trying to make a request");
         }
 
 
-        public string GetStatistics()
+        public string[] GetStatistics()
         {
             var jsonObject = new { };
             byte[] buffer = PacketSerializer.GenerateMessage((int)codes.Statistics, jsonObject);
@@ -202,7 +204,7 @@ namespace Trivia
             }
             if (response.status == (int)codes.Statistics)
             {
-                return response.statistics;
+                return ((JArray)response.statistics).ToObject<string[]>();
             }
             throw new Exception("Error while trying to make a request");
         }
