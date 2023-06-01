@@ -25,15 +25,15 @@ namespace Trivia
             {
                 string[] highScores = Program.GetCommunicator().GetHighScores();
                 int len = highScores.Length;
-                if (len == 5)
+                if (len >= 5)
                     lblFifthPlace.Text = highScores[4];
-                if (len == 4)
+                if (len >= 4)
                     lblFourthPlace.Text = highScores[3];
-                if (len == 3)
+                if (len >= 3)
                     lblThirdPlace.Text = highScores[2];
-                if (len == 2)
+                if (len >= 2)
                     lblSecondPlace.Text = highScores[1];
-                if (len == 1)
+                if (len >= 1)
                     lblFirstPlace.Text = highScores[0];
             }
             catch (Exception ex)
