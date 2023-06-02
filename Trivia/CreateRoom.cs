@@ -22,5 +22,40 @@ namespace Trivia
         {
             this.Dispose();
         }
+
+        private void btnCreateRoom_Click(object sender, EventArgs e)
+        {
+            if (tbRoomName.Text != string.Empty && tbNumOfPlayers.Text != string.Empty
+                && tbNumOfQuestions.Text != string.Empty && tbTimeForQuestions.Text != string.Empty)
+            {
+                try
+                {
+                    string name = tbRoomName.Text;
+                    int playersCount = int.Parse(tbNumOfPlayers.Text);
+                    int questionCount = int.Parse(tbNumOfQuestions.Text);
+                    int timeOut = int.Parse(tbTimeForQuestions.Text);
+
+                    Program.GetCommunicator().CreateRoom(name, playersCount, questionCount, timeOut);
+                    Form fRoomAdmin = new RoomAdmin(name);
+                    this.Hide();
+                    fRoomAdmin.ShowDialog();
+                    this.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else
+            {
+                ChangeErrorText("Please fill all fields");
+            }
+        }
+
+        private void ChangeErrorText(string message)
+        {
+            lblErrorMessage.Text = message;
+            lblErrorMessage.Left = (this.Width - lblErrorMessage.Width - 20) / 2; //subtracting 20 to include the edge 
+        }
     }
 }
