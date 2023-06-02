@@ -8,6 +8,7 @@ using System.Text;
 using System.Net;
 using System.Windows.Forms;
 using Newtonsoft.Json;
+using System.Text.Json;
 using Newtonsoft.Json.Linq;
 
 
@@ -106,7 +107,7 @@ namespace Trivia
             {
                 throw new Exception(response.message.ToString());
             }
-            if (response.status == (int)codes.GetPlayersInRoom)
+            if (response.code == (int)codes.GetPlayersInRoom)
             {
                 try
                 {
@@ -120,10 +121,9 @@ namespace Trivia
             }
             throw new Exception("Error while trying to make a request");
         }
-        
-
-        public string[] GetRooms() // TODO - check how the rooms needs to be returned and if the function return type is string not raising errors
+        public RoomData[] GetRooms() // TODO - check how the rooms needs to be returned and if the function return type is string not raising errors
         {
+            RoomData[] rooms = null;
             var jsonObject = new { };
             byte[] buffer = PacketSerializer.GenerateMessage((int)codes.GetRooms, jsonObject);
             this.socket.Send(buffer);
@@ -134,15 +134,11 @@ namespace Trivia
             }
             if (response.status == (int)codes.GetRooms)
             {
-                try
+                if (response.Rooms != null)
                 {
-
-                    return ((JArray)response.Rooms).ToObject<string[]>();
+                    rooms = JsonConvert.DeserializeObject<RoomData[]>((response.Rooms).ToString());
                 }
-                catch(Exception ex)
-                {
-                    return null;
-                }
+                return rooms;
             }
             throw new Exception("Error while trying to make a request");
         }
@@ -163,7 +159,6 @@ namespace Trivia
             {
                 try
                 {
-
                     return ((JArray)response.statistics).ToObject<string[]>();
                 }
                 catch (Exception ex)
@@ -189,7 +184,6 @@ namespace Trivia
             {
                 try
                 {
-
                     return ((JArray)response.statistics).ToObject<string[]>();
                 }
                 catch(Exception ex)
