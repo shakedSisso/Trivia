@@ -76,17 +76,19 @@
             // tbUsername
             // 
             tbUsername.BackColor = SystemColors.ButtonHighlight;
-            tbUsername.Location = new Point(363, 162);
+            tbUsername.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            tbUsername.Location = new Point(363, 155);
             tbUsername.Name = "tbUsername";
-            tbUsername.Size = new Size(265, 27);
+            tbUsername.Size = new Size(265, 34);
             tbUsername.TabIndex = 3;
             // 
             // tbPassword
             // 
             tbPassword.BackColor = SystemColors.ButtonHighlight;
-            tbPassword.Location = new Point(363, 227);
+            tbPassword.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            tbPassword.Location = new Point(363, 220);
             tbPassword.Name = "tbPassword";
-            tbPassword.Size = new Size(265, 27);
+            tbPassword.Size = new Size(265, 34);
             tbPassword.TabIndex = 4;
             tbPassword.UseSystemPasswordChar = true;
             // 

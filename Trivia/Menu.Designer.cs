@@ -94,7 +94,7 @@
             // btnQuit
             // 
             btnQuit.BackColor = Color.CadetBlue;
-            btnQuit.Font = new Font("Maiandra GD", 13F, FontStyle.Italic, GraphicsUnit.Point);
+            btnQuit.Font = new Font("Maiandra GD", 13F, FontStyle.Regular, GraphicsUnit.Point);
             btnQuit.ForeColor = SystemColors.ButtonHighlight;
             btnQuit.Location = new Point(207, 395);
             btnQuit.Name = "btnQuit";
