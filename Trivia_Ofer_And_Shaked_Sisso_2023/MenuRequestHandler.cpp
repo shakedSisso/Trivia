@@ -3,13 +3,13 @@
 #define FALSE 0
 #define TRUE !FALSE
 
-#define LOGOUT_RESPONSE_CODE 4
-#define GET_ROOMS_RESPONSE_CODE 5
-#define GET_PLAYERS_IN_ROOM_RESPONSE_CODE 6
-#define JOIN_ROOM_RESPONSE_CODE 7
-#define CREATE_ROOM_RESPONSE_CODE 8
-#define GET_HIGH_SCORE_RESPONSE_CODE 9
-#define GET_PERSONAL_STATS_RESPONSE_CODE 10
+#define GET_PLAYERS_IN_ROOM_RESPONSE_CODE 3
+#define JOIN_ROOM_RESPONSE_CODE 4
+#define CREATE_ROOM_RESPONSE_CODE 5
+#define GET_HIGH_SCORE_RESPONSE_CODE 6
+#define LOGOUT_RESPONSE_CODE 7
+#define GET_ROOMS_RESPONSE_CODE 8
+#define GET_PERSONAL_STATS_RESPONSE_CODE 9
 
 MenuRequestHandler::MenuRequestHandler(RequestHandlerFactory& handlerFactory, LoggedUser& user, RoomManager& roomManager, StatisticsManager& statisticsManager)
     : m_handlerFactory(handlerFactory), m_user(user), m_roomManager(roomManager), m_statisticsManager(statisticsManager)
@@ -68,7 +68,7 @@ RequestResult MenuRequestHandler::handleRequest(const RequestInfo& info)
         std::cerr << e.what() << std::endl;
         result.newHandler = this;
         ErrorResponse response;
-        response.message = "ERROR";
+        response.message = e.what();
         result.buffer = JsonResponsePacketSerializer::serializeResponse(response);
     }
     return result;
