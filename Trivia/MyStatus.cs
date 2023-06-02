@@ -28,13 +28,13 @@ namespace Trivia
                 {
                     lblAverage.Text = "0.000";
                 }
-                lblAverage.Left = gbStats.Right - (lblAverage.Width + 70);
+                lblAverage.Left = gbStats.Right - (lblAverage.Width + 80);
                 lblRightAnswers.Text = stats[1];
-                lblRightAnswers.Left = gbStats.Right - (lblRightAnswers.Width + 70);
+                lblRightAnswers.Left = gbStats.Right - (lblRightAnswers.Width + 80);
                 lblWrongAnswers.Text = stats[2];
-                lblWrongAnswers.Left = gbStats.Right - (lblWrongAnswers.Width + 70);
+                lblWrongAnswers.Left = gbStats.Right - (lblWrongAnswers.Width + 80);
                 lblTotalGames.Text = stats[3];
-                lblTotalGames.Left = gbStats.Right - (lblTotalGames.Width + 70);
+                lblTotalGames.Left = gbStats.Right - (lblTotalGames.Width + 80);
             }
             catch (Exception ex)
             {
