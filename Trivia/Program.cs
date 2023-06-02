@@ -29,13 +29,17 @@ namespace Trivia
             }
             catch (Exception ex)
             {
-                string errorMessage = ex.Message;
-                string caption = "Error";
-                MessageBoxButtons buttons = MessageBoxButtons.OK;
-                MessageBoxIcon icon = MessageBoxIcon.Error;
+                DialogResult result = MessageBox.Show("There is no running server\n\n OK- retry\nCancel- close client", "Error", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
 
-                MessageBox.Show(errorMessage, caption, buttons, icon);
-                return;
+                if (result == DialogResult.OK)
+                {
+                    Main();
+                    return;
+                }
+                else if (result == DialogResult.Cancel)
+                {
+                    return;
+                }
             }
             ApplicationConfiguration.Initialize();
             Application.Run(new Trivia());
