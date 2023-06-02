@@ -23,6 +23,7 @@ namespace Trivia
             lblFifthPlace.Text = string.Empty;
             try
             {
+                int currectX;
                 string[] highScores = Program.GetCommunicator().GetHighScores();
                 int len = highScores.Length;
                 if (len >= 5)
@@ -30,11 +31,23 @@ namespace Trivia
                 if (len >= 4)
                     lblFourthPlace.Text = highScores[3];
                 if (len >= 3)
+                {
+                    currectX = lblThirdPlace.Left;
                     lblThirdPlace.Text = highScores[2];
+                    lblThirdPlace.Left = currectX - lblThirdPlace.Width / 2;
+                }
                 if (len >= 2)
+                {
+                    currectX = lblSecondPlace.Left;
                     lblSecondPlace.Text = highScores[1];
+                    lblSecondPlace.Left = currectX - lblSecondPlace.Width / 2;
+                }
                 if (len >= 1)
+                {
+                    currectX = lblFirstPlace.Left;
                     lblFirstPlace.Text = highScores[0];
+                    lblFirstPlace.Left = currectX - lblFirstPlace.Width / 2;
+                }
             }
             catch (Exception ex)
             {

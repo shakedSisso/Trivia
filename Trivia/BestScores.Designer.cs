@@ -91,7 +91,7 @@
             // 
             lblFourthPlace.AutoSize = true;
             lblFourthPlace.Font = new Font("Maiandra GD", 15F, FontStyle.Regular, GraphicsUnit.Point);
-            lblFourthPlace.Location = new Point(260, 329);
+            lblFourthPlace.Location = new Point(255, 329);
             lblFourthPlace.Name = "lblFourthPlace";
             lblFourthPlace.Size = new Size(81, 30);
             lblFourthPlace.TabIndex = 25;
@@ -101,7 +101,7 @@
             // 
             lblFifthPlace.AutoSize = true;
             lblFifthPlace.Font = new Font("Maiandra GD", 15F, FontStyle.Regular, GraphicsUnit.Point);
-            lblFifthPlace.Location = new Point(546, 329);
+            lblFifthPlace.Location = new Point(544, 329);
             lblFifthPlace.Name = "lblFifthPlace";
             lblFifthPlace.Size = new Size(57, 30);
             lblFifthPlace.TabIndex = 26;
@@ -111,7 +111,7 @@
             // 
             lblThirdPlace.AutoSize = true;
             lblThirdPlace.Font = new Font("Maiandra GD", 15F, FontStyle.Regular, GraphicsUnit.Point);
-            lblThirdPlace.Location = new Point(538, 159);
+            lblThirdPlace.Location = new Point(570, 163);
             lblThirdPlace.Name = "lblThirdPlace";
             lblThirdPlace.Size = new Size(64, 30);
             lblThirdPlace.TabIndex = 27;
@@ -121,7 +121,7 @@
             // 
             lblSecondPlace.AutoSize = true;
             lblSecondPlace.Font = new Font("Maiandra GD", 15F, FontStyle.Regular, GraphicsUnit.Point);
-            lblSecondPlace.Location = new Point(171, 144);
+            lblSecondPlace.Location = new Point(219, 149);
             lblSecondPlace.Name = "lblSecondPlace";
             lblSecondPlace.Size = new Size(88, 30);
             lblSecondPlace.TabIndex = 28;
@@ -132,7 +132,7 @@
             lblFirstPlace.AutoSize = true;
             lblFirstPlace.Font = new Font("Maiandra GD", 15F, FontStyle.Bold, GraphicsUnit.Point);
             lblFirstPlace.ForeColor = SystemColors.ActiveCaptionText;
-            lblFirstPlace.Location = new Point(357, 95);
+            lblFirstPlace.Location = new Point(393, 100);
             lblFirstPlace.Name = "lblFirstPlace";
             lblFirstPlace.Size = new Size(63, 30);
             lblFirstPlace.TabIndex = 29;
