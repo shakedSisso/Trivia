@@ -57,7 +57,7 @@ namespace Trivia
         {
             for (int i = this.Controls.Count - 1; i >= 0; i--)
             {
-                if (this.Controls[i] is Label label && label != lblUsers && label != lblRoomName) 
+                if (this.Controls[i] is Label label && label != lblUsers && label != lblRoomName)
                 {
                     this.Controls.RemoveAt(i);
                     label.Dispose();
@@ -109,7 +109,7 @@ namespace Trivia
                 {
                     Program.GetCommunicator().StartGame();
                     this.Invoke((MethodInvoker)delegate
-                    { 
+                    {
                         Form fGame = new Game(this.Location, this.roomName);
                         this.timer.Dispose();
                         this.timer = null;
@@ -126,7 +126,7 @@ namespace Trivia
                         updatePlayersList();
                     });
                 }
-                
+
             }
         }
 
@@ -136,6 +136,16 @@ namespace Trivia
             this.timer.Dispose();
             this.timer = null;
             this.Dispose();
+        }
+
+        private void RoomMember_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Program.GetCommunicator().LeaveRoom();
+            if (this.timer != null)
+            {
+                this.timer.Dispose();
+                this.timer = null;
+            }
         }
     }
 }

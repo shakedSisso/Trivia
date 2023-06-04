@@ -157,6 +157,7 @@
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "RoomAdmin";
             Text = "RoomAdmin";
+            FormClosing += RoomAdmin_FormClosing;
             ((System.ComponentModel.ISupportInitialize)pbUsers).EndInit();
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();

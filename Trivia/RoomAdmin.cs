@@ -140,5 +140,15 @@ namespace Trivia
             fGame.ShowDialog();
             this.Dispose();
         }
+
+        private void RoomAdmin_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Program.GetCommunicator().CloseRoom();
+            if (this.timer != null)
+            {
+                this.timer.Dispose();
+                this.timer = null;
+            }
+        }
     }
 }
