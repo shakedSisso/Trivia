@@ -17,6 +17,7 @@ namespace Trivia
         public Game(string name)
         {
             InitializeComponent();
+            this.Text = name;
             this.roomName = name;
         }
     }

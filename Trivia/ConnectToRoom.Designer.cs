@@ -139,7 +139,7 @@
             Controls.Add(pbUsers);
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "ConnectToRoom";
-            Text = "ConnectToRoom";
+            Text = "Connect to room";
             gbRooms.ResumeLayout(false);
             gbRooms.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pbUsers).EndInit();

@@ -27,6 +27,7 @@ namespace Trivia
         {
             InitializeComponent();
             this.StartPosition = FormStartPosition.CenterScreen;
+            this.Text = name + "- Admin";
             this.roomName = name;
             this.maxPlayers = maxUsers;
             lblRoomName.Text = "You are connected to " + this.roomName;

@@ -22,6 +22,7 @@ namespace Trivia
         {
             InitializeComponent();
             this.StartPosition = FormStartPosition.CenterScreen;
+            this.Text = name + "- Member";
             this.roomName = name;
             lblRoomName.Text = "You are connected to " + this.roomName;
             lblRoomName.Left = (this.Width - lblRoomName.Width - 20) / 2;

@@ -17,6 +17,7 @@ namespace Trivia
             InitializeComponent();
             gbStats.Text = username + "'s statistics";
             this.StartPosition = FormStartPosition.CenterScreen;
+            this.Text = gbStats.Text;
             try
             {
                 string[] stats = Program.GetCommunicator().GetStatistics();
