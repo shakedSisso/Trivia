@@ -26,7 +26,6 @@ namespace Trivia
             try
             {
                 this.roomId = -999;
-                this.rooms = Program.GetCommunicator().GetRooms();
                 updateRoomsList();
                 btnJoinRoom.Enabled = false;
                 timer = new System.Threading.Timer(refreshData, null, 0, 3000);
@@ -50,7 +49,6 @@ namespace Trivia
 
         private void refreshData(object state)
         {
-            this.rooms = Program.GetCommunicator().GetRooms();
             if(this.IsHandleCreated)
             {
                 this.Invoke((MethodInvoker)delegate {
@@ -70,6 +68,7 @@ namespace Trivia
 
                 }
             }
+            this.rooms = Program.GetCommunicator().GetRooms();
             if (rooms == null)
             {
                 lblNoRooms.Visible = true;
