@@ -1,17 +1,5 @@
 #include "JsonResponsePacketSerializer.h"
 
-#define ERROR_RESPONSE_CODE 0
-#define LOGIN_RESPONSE_CODE 1
-#define SIGNUP_RESPONSE_CODE 2
-
-#define GET_PLAYERS_IN_ROOM_RESPONSE_CODE 3
-#define JOIN_ROOM_RESPONSE_CODE 4
-#define CREATE_ROOM_RESPONSE_CODE 5
-#define GET_HIGH_SCORE_RESPONSE_CODE 6
-#define LOGOUT_RESPONSE_CODE 7
-#define GET_ROOMS_RESPONSE_CODE 8
-#define GET_PERSONAL_STATS_RESPONSE_CODE 9
-
 #define BYTE_MASK 0xFF
 #define LENGTH_FIELD_BYTES 4
 #define BITS_IN_BYTE 8
@@ -22,7 +10,7 @@ Buffer JsonResponsePacketSerializer::serializeResponse(const ErrorResponse& resp
     int jsonLength = 0;
     json responseData;
 
-    responseBuffer.push_back((unsigned char)ERROR_RESPONSE_CODE); // adding the response code to the first byte of the buffer
+    responseBuffer.push_back((unsigned char)Error); // adding the response code to the first byte of the buffer
     responseData["message"] = response.message;
 
     jsonLength = responseData.dump().length(); // getting the length of the data (the JSON) in order to put in the length field of the response
@@ -39,7 +27,7 @@ Buffer JsonResponsePacketSerializer::serializeResponse(const LoginResponse& resp
     int jsonLength = 0;
     json responseData;
 
-    responseBuffer.push_back((unsigned char)LOGIN_RESPONSE_CODE); // adding the response code to the first byte of the buffer
+    responseBuffer.push_back((unsigned char)Login); // adding the response code to the first byte of the buffer
     responseData["status"] = response.status;
 
     jsonLength = responseData.dump().length(); // getting the length of the data (the JSON) in order to put in the length field of the response
@@ -56,7 +44,7 @@ Buffer JsonResponsePacketSerializer::serializeResponse(const SignupResponse& res
     int jsonLength = 0;
     json responseData;
 
-    responseBuffer.push_back((unsigned char)SIGNUP_RESPONSE_CODE); // adding the response code to the first byte of the buffer
+    responseBuffer.push_back((unsigned char)Signup); // adding the response code to the first byte of the buffer
     responseData["status"] = response.status;
 
     jsonLength = responseData.dump().length(); // getting the length of the data (the JSON) in order to put in the length field of the response
@@ -73,7 +61,7 @@ Buffer JsonResponsePacketSerializer::serializeResponse(const LogoutResponse& res
     int jsonLength = 0;
     json responseData;
 
-    responseBuffer.push_back((unsigned char)LOGOUT_RESPONSE_CODE); // adding the response code to the first byte of the buffer
+    responseBuffer.push_back((unsigned char)Logout); // adding the response code to the first byte of the buffer
     responseData["status"] = response.status;
 
     jsonLength = responseData.dump().length(); // getting the length of the data (the JSON) in order to put in the length field of the response
@@ -90,7 +78,7 @@ Buffer JsonResponsePacketSerializer::serializeResponse(const GetRoomsResponse& r
     int jsonLength = 0;
     json responseData;
 
-    responseBuffer.push_back((unsigned char)GET_ROOMS_RESPONSE_CODE); // adding the response code to the first byte of the buffer
+    responseBuffer.push_back((unsigned char)GetRooms); // adding the response code to the first byte of the buffer
     responseData["status"] = response.status;
     // insert the rooms vector in the json object
     for (const auto& roomData : response.rooms) 
@@ -120,7 +108,7 @@ Buffer JsonResponsePacketSerializer::serializeResponse(const GetPlayersInRoomRes
     int jsonLength = 0;
     json responseData;
 
-    responseBuffer.push_back((unsigned char)GET_PLAYERS_IN_ROOM_RESPONSE_CODE); // adding the response code to the first byte of the buffer
+    responseBuffer.push_back((unsigned char)GetPlayersInRoom); // adding the response code to the first byte of the buffer
     responseData["PlayersInRoom"] = response.players;
 
     jsonLength = responseData.dump().length(); // getting the length of the data (the JSON) in order to put in the length field of the response
@@ -138,7 +126,7 @@ Buffer JsonResponsePacketSerializer::serializeResponse(const JoinRoomResponse& r
     int jsonLength = 0;
     json responseData;
 
-    responseBuffer.push_back((unsigned char)JOIN_ROOM_RESPONSE_CODE); // adding the response code to the first byte of the buffer
+    responseBuffer.push_back((unsigned char)JoinRoom); // adding the response code to the first byte of the buffer
     responseData["status"] = response.status;
 
     jsonLength = responseData.dump().length(); // getting the length of the data (the JSON) in order to put in the length field of the response
@@ -155,7 +143,7 @@ Buffer JsonResponsePacketSerializer::serializeResponse(const CreateRoomResponse&
     int jsonLength = 0;
     json responseData;
 
-    responseBuffer.push_back((unsigned char)CREATE_ROOM_RESPONSE_CODE); // adding the response code to the first byte of the buffer
+    responseBuffer.push_back((unsigned char)CreateRoom); // adding the response code to the first byte of the buffer
     responseData["status"] = response.status;
 
     jsonLength = responseData.dump().length(); // getting the length of the data (the JSON) in order to put in the length field of the response
@@ -172,7 +160,7 @@ Buffer JsonResponsePacketSerializer::serializeResponse(const GetHighScoreRespons
     int jsonLength = 0;
     json responseData;
 
-    responseBuffer.push_back((unsigned char)GET_HIGH_SCORE_RESPONSE_CODE); // adding the response code to the first byte of the buffer
+    responseBuffer.push_back((unsigned char)HighScore); // adding the response code to the first byte of the buffer
     responseData["status"] = response.status;
     responseData["statistics"] = response.statistics;
 
@@ -190,9 +178,81 @@ Buffer JsonResponsePacketSerializer::serializeResponse(const GetPersonalStatsRes
     int jsonLength = 0;
     json responseData;
 
-    responseBuffer.push_back((unsigned char)GET_PERSONAL_STATS_RESPONSE_CODE); // adding the response code to the first byte of the buffer
+    responseBuffer.push_back((unsigned char)Statistics); // adding the response code to the first byte of the buffer
     responseData["status"] = response.status;
     responseData["statistics"] = response.statistics;
+
+    jsonLength = responseData.dump().length(); // getting the length of the data (the JSON) in order to put in the length field of the response
+    JsonResponsePacketSerializer::insertIntToBuffer(responseBuffer, jsonLength, LENGTH_FIELD_BYTES); // inserting the value of the length of the json in bytes (and filling the 4 bytes of the length field)
+
+    JsonResponsePacketSerializer::insertJsonToBuffer(responseBuffer, responseData);
+
+    return responseBuffer;
+}
+
+Buffer JsonResponsePacketSerializer::serializeResponse(const CloseRoomResponse& response)
+{
+    Buffer responseBuffer;
+    int jsonLength = 0;
+    json responseData;
+
+    responseBuffer.push_back((unsigned char)CloseRoom); // adding the response code to the first byte of the buffer
+    responseData["status"] = response.status;
+
+    jsonLength = responseData.dump().length(); // getting the length of the data (the JSON) in order to put in the length field of the response
+    JsonResponsePacketSerializer::insertIntToBuffer(responseBuffer, jsonLength, LENGTH_FIELD_BYTES); // inserting the value of the length of the json in bytes (and filling the 4 bytes of the length field)
+
+    JsonResponsePacketSerializer::insertJsonToBuffer(responseBuffer, responseData);
+
+    return responseBuffer;
+}
+
+Buffer JsonResponsePacketSerializer::serializeResponse(const StartGameResponse& response)
+{
+    Buffer responseBuffer;
+    int jsonLength = 0;
+    json responseData;
+
+    responseBuffer.push_back((unsigned char)StartGame); // adding the response code to the first byte of the buffer
+    responseData["status"] = response.status;
+
+    jsonLength = responseData.dump().length(); // getting the length of the data (the JSON) in order to put in the length field of the response
+    JsonResponsePacketSerializer::insertIntToBuffer(responseBuffer, jsonLength, LENGTH_FIELD_BYTES); // inserting the value of the length of the json in bytes (and filling the 4 bytes of the length field)
+
+    JsonResponsePacketSerializer::insertJsonToBuffer(responseBuffer, responseData);
+
+    return responseBuffer;
+}
+
+Buffer JsonResponsePacketSerializer::serializeResponse(const GetRoomStateResponse& response)
+{
+    Buffer responseBuffer;
+    int jsonLength = 0;
+    json responseData;
+
+    responseBuffer.push_back((unsigned char)GetRoomState); // adding the response code to the first byte of the buffer
+    responseData["status"] = response.status;
+    responseData["hasGameBegun"] = response.hasGameBegun;
+    responseData["players"] = response.players;
+    responseData["questionCount"] = response.questionCount;
+    responseData["answerTimeOut"] = response.answerTimeout;
+
+    jsonLength = responseData.dump().length(); // getting the length of the data (the JSON) in order to put in the length field of the response
+    JsonResponsePacketSerializer::insertIntToBuffer(responseBuffer, jsonLength, LENGTH_FIELD_BYTES); // inserting the value of the length of the json in bytes (and filling the 4 bytes of the length field)
+
+    JsonResponsePacketSerializer::insertJsonToBuffer(responseBuffer, responseData);
+
+    return responseBuffer;
+}
+
+Buffer JsonResponsePacketSerializer::serializeResponse(const LeaveRoomResponse& response)
+{
+    Buffer responseBuffer;
+    int jsonLength = 0;
+    json responseData;
+
+    responseBuffer.push_back((unsigned char)LeaveRoom); // adding the response code to the first byte of the buffer
+    responseData["status"] = response.status;
 
     jsonLength = responseData.dump().length(); // getting the length of the data (the JSON) in order to put in the length field of the response
     JsonResponsePacketSerializer::insertIntToBuffer(responseBuffer, jsonLength, LENGTH_FIELD_BYTES); // inserting the value of the length of the json in bytes (and filling the 4 bytes of the length field)
