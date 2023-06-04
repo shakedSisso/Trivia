@@ -121,7 +121,7 @@ namespace Trivia
             }
             throw new Exception("Error while trying to make a request");
         }
-        public RoomData[] GetRooms() // TODO - check how the rooms needs to be returned and if the function return type is string not raising errors
+        public RoomData[] GetRooms()
         {
             RoomData[] rooms = null;
             var jsonObject = new { };
