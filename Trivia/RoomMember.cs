@@ -13,8 +13,6 @@ namespace Trivia
 {
     public partial class RoomMember : Form
     {
-        private Thread updateThread;
-        private bool threadFlag;
         private string roomName;
         private int questionCount;
         private int timePerQuestion;
@@ -38,12 +36,6 @@ namespace Trivia
             }
         }
 
-        private void joinThread()
-        {
-            this.threadFlag = false;
-            this.updateThread?.Join();
-        }
-
         private void updatePlayersList()
         {
             for (int i = this.Controls.Count - 1; i >= 0; i--)
@@ -56,7 +48,6 @@ namespace Trivia
             }
             try
             {
-                this.players = Program.GetCommunicator().GetRoomState().players;
                 if (players != null)
                 {
                     Label lbl;
@@ -81,11 +72,22 @@ namespace Trivia
             }
 
         }
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+
+            if (this.timer != null)
+            {
+                this.timer.Dispose();
+                this.timer = null;
+            }
+        }
 
         private void refreshData(object state)
         {
             if (this.IsHandleCreated)
             {
+                this.players = Program.GetCommunicator().GetRoomState().players;
                 this.Invoke((MethodInvoker)delegate
                 {
                     updatePlayersList();
@@ -96,7 +98,8 @@ namespace Trivia
         private void btnLeaveGame_Click(object sender, EventArgs e)
         {
             Program.GetCommunicator().LeaveRoom();
-            joinThread();
+            this.timer.Dispose();
+            this.timer = null;
             this.Dispose();
         }
     }

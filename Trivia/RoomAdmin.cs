@@ -44,11 +44,22 @@ namespace Trivia
             }
         }
 
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+
+            if (this.timer != null)
+            {
+                this.timer.Dispose();
+                this.timer = null;
+            }
+        }
+
         private void refreshData(object state)
         {
-            this.players = Program.GetCommunicator().GetRoomState().players;
             if (this.IsHandleCreated)
             {
+                this.players = Program.GetCommunicator().GetRoomState().players;
                 this.Invoke((MethodInvoker)delegate
                 {
                     updatePlayersList();
@@ -83,7 +94,6 @@ namespace Trivia
             }
             try
             {
-                this.players = Program.GetCommunicator().GetRoomState().players;
                 if (players != null)
                 {
                     Label lbl;
@@ -108,16 +118,12 @@ namespace Trivia
             }
         }
 
-        private void joinThread()
-        {
-            this.threadFlag = false;
-            this.updateThread?.Join();
-        }
 
         private void btnCloseGame_Click(object sender, EventArgs e)
         {
             Program.GetCommunicator().CloseRoom();
-            joinThread();
+            this.timer.Dispose();
+            this.timer = null;
             this.Dispose();
         }
 
@@ -125,8 +131,9 @@ namespace Trivia
         {
             Program.GetCommunicator().StartGame();
             Form fGame = new Game(this.roomName);
+            this.timer.Dispose();
+            this.timer = null;
             this.Hide();
-            joinThread();
             fGame.ShowDialog();
             this.Dispose();
         }

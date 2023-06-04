@@ -51,6 +51,7 @@ namespace Trivia
         {
             if(this.IsHandleCreated)
             {
+                this.rooms = Program.GetCommunicator().GetRooms();
                 this.Invoke((MethodInvoker)delegate {
                     updateRoomsList();
                 });
@@ -68,7 +69,6 @@ namespace Trivia
 
                 }
             }
-            this.rooms = Program.GetCommunicator().GetRooms();
             if (rooms == null)
             {
                 lblNoRooms.Visible = true;
