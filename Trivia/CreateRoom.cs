@@ -36,7 +36,7 @@ namespace Trivia
                     int timeOut = int.Parse(tbTimeForQuestions.Text);
 
                     Program.GetCommunicator().CreateRoom(name, playersCount, questionCount, timeOut);
-                    Form fRoomAdmin = new RoomAdmin(name);
+                    Form fRoomAdmin = new RoomAdmin(name, playersCount);
                     this.Hide();
                     fRoomAdmin.ShowDialog();
                     this.Dispose();
