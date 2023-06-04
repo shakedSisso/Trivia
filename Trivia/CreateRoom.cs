@@ -57,5 +57,10 @@ namespace Trivia
             lblErrorMessage.Text = message;
             lblErrorMessage.Left = (this.Width - lblErrorMessage.Width - 20) / 2; //subtracting 20 to include the edge 
         }
+
+        private void btnBack_Click_1(object sender, EventArgs e)
+        {
+            this.Dispose();
+        }
     }
 }
