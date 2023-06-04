@@ -207,11 +207,15 @@ std::vector<std::string> MongoDatabase::getHighScores()
 	mongocxx::cursor cursor = statisticsColl.find({}, options);  // Retrieve all documents from the collection with the specified sort order
 	json jsonData;
 	std::vector<std::string> highScores;
+	std::string message;
 
 	for (const auto& doc : cursor) {
 		// Access the fields of the document and perform the desired operations
 		jsonData = json::parse(bsoncxx::to_json(doc));
-		highScores.push_back(jsonData["username"]);
+		message = jsonData["username"];
+		message += "- ";
+		message += std::to_string((int)jsonData["correct_answers"]);
+		highScores.push_back(message);
 	}
 	return highScores;
 }

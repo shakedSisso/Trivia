@@ -10,7 +10,14 @@ Room::Room(const RoomData metadata)
 
 void Room::addUser(const LoggedUser& userToAdd)
 {
-	this->m_users.push_back(userToAdd);
+	if (this->m_metadata.maxPlayers > this->m_users.size())
+	{
+		this->m_users.push_back(userToAdd);
+	}
+	else
+	{
+		throw std::exception("Room is full");
+	}
 }
 
 void Room::removeUser(const LoggedUser& userToRemove)

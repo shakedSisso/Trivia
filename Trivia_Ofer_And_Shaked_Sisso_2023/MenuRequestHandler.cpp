@@ -3,6 +3,7 @@
 #define FALSE 0
 #define TRUE !FALSE
 
+
 MenuRequestHandler::MenuRequestHandler(RequestHandlerFactory& handlerFactory, LoggedUser& user, RoomManager& roomManager, StatisticsManager& statisticsManager)
     : m_handlerFactory(handlerFactory), m_user(user), m_roomManager(roomManager), m_statisticsManager(statisticsManager)
 {
@@ -60,7 +61,7 @@ RequestResult MenuRequestHandler::handleRequest(const RequestInfo& info)
         std::cerr << e.what() << std::endl;
         result.newHandler = this;
         ErrorResponse response;
-        response.message = "ERROR";
+        response.message = e.what();
         result.buffer = JsonResponsePacketSerializer::serializeResponse(response);
     }
     return result;
