@@ -19,10 +19,16 @@ namespace Trivia
             InitializeComponent();
             this.StartPosition = FormStartPosition.CenterScreen;
         }
+        public Trivia(Point startLocation) //constractor for calling when back is pressed in login or signup
+        {
+            InitializeComponent();
+            this.StartPosition = FormStartPosition.Manual;
+            this.Location = startLocation;
+        }
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            Form fLogin = new Login();
+            Form fLogin = new Login(this.Location);
             this.Hide();
             fLogin.ShowDialog();
             this.Dispose();
@@ -30,7 +36,7 @@ namespace Trivia
 
         private void btnSignup_Click(object sender, EventArgs e)
         {
-            Form fSignup = new Signup();
+            Form fSignup = new Signup(this.Location);
             this.Hide();
             fSignup.ShowDialog();
             this.Dispose();

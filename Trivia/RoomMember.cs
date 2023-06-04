@@ -19,10 +19,11 @@ namespace Trivia
         private bool isActive;
         private Newtonsoft.Json.Linq.JArray players;
         private System.Threading.Timer timer;
-        public RoomMember(string name)
+        public RoomMember(Point startLocation, string name)
         {
             InitializeComponent();
-            this.StartPosition = FormStartPosition.CenterScreen;
+            this.StartPosition = FormStartPosition.Manual;
+            this.Location = startLocation;
             this.Text = name + "- Member";
             this.roomName = name;
             lblRoomName.Text = "You are connected to " + this.roomName;
@@ -109,7 +110,7 @@ namespace Trivia
                     Program.GetCommunicator().StartGame();
                     this.Invoke((MethodInvoker)delegate
                     { 
-                        Form fGame = new Game(this.roomName);
+                        Form fGame = new Game(this.Location, this.roomName);
                         this.timer.Dispose();
                         this.timer = null;
                         this.Hide();

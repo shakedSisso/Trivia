@@ -17,10 +17,11 @@ namespace Trivia
         private int roomId;
         private System.Threading.Timer timer;
 
-        public ConnectToRoom()
+        public ConnectToRoom(Point startLocation)
         {
             InitializeComponent();
-            this.StartPosition = FormStartPosition.CenterScreen;
+            this.StartPosition = FormStartPosition.Manual;
+            this.Location = startLocation;
             btnRefresh.Visible = true;
             btnJoinRoom.Visible = true;
             try
@@ -83,9 +84,9 @@ namespace Trivia
                     if (!this.rooms[i].isActive)
                     {
                         btn = new Button();
-                        btn.Left = gbRooms.Left - 50;
+                        btn.Left = gbRooms.Left - 55;
                         btn.Top = gbRooms.Top + 10 + 30 * i;
-                        btn.Width = gbRooms.Width;
+                        btn.Width = gbRooms.Width + 10;
                         btn.Height = 30;
                         btn.Text = this.rooms[i].name;
                         btn.Tag = this.rooms[i].id;
@@ -174,7 +175,7 @@ namespace Trivia
                     if (this.rooms[i].id == this.roomId)
                         roomName = this.rooms[i].name;
                 }
-                Form fRoomMember = new RoomMember(roomName);
+                Form fRoomMember = new RoomMember(this.Location, roomName);
                 this.timer.Dispose();
                 this.timer = null;
                 this.Hide();

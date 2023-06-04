@@ -13,10 +13,11 @@ namespace Trivia
     public partial class Menu : Form
     {
         private string username;
-        public Menu(string username)
+        public Menu(Point startLocation, string username)
         {
             InitializeComponent();
-            this.StartPosition = FormStartPosition.CenterScreen;
+            this.StartPosition = FormStartPosition.Manual;
+            this.Location = startLocation;
             lblUsername.Text = "Hello " + username + "!";
             this.username = username;
             lblUsername.Left = (this.Width - lblUsername.Width - 20) / 2;
@@ -66,7 +67,7 @@ namespace Trivia
             lblErrorMessage.Text = string.Empty;
             try
             {
-                Form fBestScores = new BestScores();
+                Form fBestScores = new BestScores(this.Location);
                 this.Hide();
                 fBestScores.ShowDialog();
                 this.Show();
@@ -88,7 +89,7 @@ namespace Trivia
             lblErrorMessage.Text = string.Empty;
             try
             {
-                Form fStatus = new MyStatus(username);
+                Form fStatus = new MyStatus(this.Location, username);
                 this.Hide();
                 fStatus.ShowDialog();
                 this.Show();
@@ -104,7 +105,7 @@ namespace Trivia
             lblErrorMessage.Text = string.Empty;
             try
             {
-                Form fConnectToRoom = new ConnectToRoom();
+                Form fConnectToRoom = new ConnectToRoom(this.Location);
                 this.Hide();
                 fConnectToRoom.ShowDialog();
                 this.Show();
@@ -120,7 +121,7 @@ namespace Trivia
             lblErrorMessage.Text = string.Empty;
             try
             {
-                Form fCreateRoom = new CreateRoom();
+                Form fCreateRoom = new CreateRoom(this.Location);
                 this.Hide();
                 fCreateRoom.ShowDialog();
                 this.Show();

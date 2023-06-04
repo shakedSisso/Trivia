@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
 using System.Timers;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Trivia
 {
@@ -23,10 +24,11 @@ namespace Trivia
         private Newtonsoft.Json.Linq.JArray players;
         private bool isActive;
         private System.Threading.Timer timer;
-        public RoomAdmin(string name, int maxUsers)
+        public RoomAdmin(Point startLocation, string name, int maxUsers)
         {
             InitializeComponent();
-            this.StartPosition = FormStartPosition.CenterScreen;
+            this.StartPosition = FormStartPosition.Manual;
+            this.Location = startLocation;
             this.Text = name + "- Admin";
             this.roomName = name;
             this.maxPlayers = maxUsers;
@@ -131,7 +133,7 @@ namespace Trivia
         private void btnStartGame_Click(object sender, EventArgs e)
         {
             Program.GetCommunicator().StartGame();
-            Form fGame = new Game(this.roomName);
+            Form fGame = new Game(this.Location, this.roomName);
             this.timer.Dispose();
             this.timer = null;
             this.Hide();

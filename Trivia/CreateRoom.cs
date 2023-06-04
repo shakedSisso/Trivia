@@ -12,10 +12,11 @@ namespace Trivia
 {
     public partial class CreateRoom : Form
     {
-        public CreateRoom()
+        public CreateRoom(Point startLocation)
         {
             InitializeComponent();
-            this.StartPosition = FormStartPosition.CenterScreen;
+            this.StartPosition = FormStartPosition.Manual;
+            this.Location = startLocation;
         }
 
         private void btnBack_Click(object sender, EventArgs e)
@@ -36,7 +37,7 @@ namespace Trivia
                     int timeOut = int.Parse(tbTimeForQuestions.Text);
 
                     Program.GetCommunicator().CreateRoom(name, playersCount, questionCount, timeOut);
-                    Form fRoomAdmin = new RoomAdmin(name, playersCount);
+                    Form fRoomAdmin = new RoomAdmin(this.Location, name, playersCount);
                     this.Hide();
                     fRoomAdmin.ShowDialog();
                     this.Dispose();
