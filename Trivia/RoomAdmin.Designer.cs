@@ -31,11 +31,15 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RoomAdmin));
             btnCloseGame = new Button();
             btnStartGame = new Button();
-            gbPlayers = new GroupBox();
             lblMaxNumber = new Label();
             lblQuestionCount = new Label();
             lblTimeOut = new Label();
             lblRoomName = new Label();
+            lblUsers = new Label();
+            pbUsers = new PictureBox();
+            groupBox1 = new GroupBox();
+            ((System.ComponentModel.ISupportInitialize)pbUsers).BeginInit();
+            groupBox1.SuspendLayout();
             SuspendLayout();
             // 
             // btnCloseGame
@@ -64,22 +68,11 @@
             btnStartGame.UseVisualStyleBackColor = false;
             btnStartGame.Click += btnStartGame_Click;
             // 
-            // gbPlayers
-            // 
-            gbPlayers.BackColor = Color.LightCyan;
-            gbPlayers.Font = new Font("Bauhaus 93", 13F, FontStyle.Regular, GraphicsUnit.Point);
-            gbPlayers.Location = new Point(312, 90);
-            gbPlayers.Name = "gbPlayers";
-            gbPlayers.Size = new Size(433, 200);
-            gbPlayers.TabIndex = 40;
-            gbPlayers.TabStop = false;
-            gbPlayers.Text = "Current participants are:";
-            // 
             // lblMaxNumber
             // 
             lblMaxNumber.AutoSize = true;
             lblMaxNumber.Font = new Font("Segoe UI", 11F, FontStyle.Bold, GraphicsUnit.Point);
-            lblMaxNumber.Location = new Point(35, 90);
+            lblMaxNumber.Location = new Point(6, 30);
             lblMaxNumber.Name = "lblMaxNumber";
             lblMaxNumber.Size = new Size(201, 25);
             lblMaxNumber.TabIndex = 41;
@@ -89,7 +82,7 @@
             // 
             lblQuestionCount.AutoSize = true;
             lblQuestionCount.Font = new Font("Segoe UI", 11F, FontStyle.Bold, GraphicsUnit.Point);
-            lblQuestionCount.Location = new Point(35, 180);
+            lblQuestionCount.Location = new Point(6, 87);
             lblQuestionCount.Name = "lblQuestionCount";
             lblQuestionCount.Size = new Size(206, 25);
             lblQuestionCount.TabIndex = 42;
@@ -99,7 +92,7 @@
             // 
             lblTimeOut.AutoSize = true;
             lblTimeOut.Font = new Font("Segoe UI", 11F, FontStyle.Bold, GraphicsUnit.Point);
-            lblTimeOut.Location = new Point(35, 265);
+            lblTimeOut.Location = new Point(6, 150);
             lblTimeOut.Name = "lblTimeOut";
             lblTimeOut.Size = new Size(178, 25);
             lblTimeOut.TabIndex = 43;
@@ -116,22 +109,57 @@
             lblRoomName.TabIndex = 44;
             lblRoomName.Text = "You are connected to";
             // 
+            // lblUsers
+            // 
+            lblUsers.AutoSize = true;
+            lblUsers.BackColor = Color.MintCream;
+            lblUsers.Font = new Font("Bauhaus 93", 15F, FontStyle.Regular, GraphicsUnit.Point);
+            lblUsers.Location = new Point(307, 92);
+            lblUsers.Name = "lblUsers";
+            lblUsers.Size = new Size(288, 28);
+            lblUsers.TabIndex = 55;
+            lblUsers.Text = "Current participants are:";
+            // 
+            // pbUsers
+            // 
+            pbUsers.BackColor = Color.MintCream;
+            pbUsers.Location = new Point(305, 90);
+            pbUsers.Name = "pbUsers";
+            pbUsers.Size = new Size(433, 200);
+            pbUsers.TabIndex = 56;
+            pbUsers.TabStop = false;
+            // 
+            // groupBox1
+            // 
+            groupBox1.Controls.Add(lblMaxNumber);
+            groupBox1.Controls.Add(lblQuestionCount);
+            groupBox1.Controls.Add(lblTimeOut);
+            groupBox1.Font = new Font("Segoe UI", 12F, FontStyle.Italic, GraphicsUnit.Point);
+            groupBox1.Location = new Point(49, 92);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Size = new Size(250, 198);
+            groupBox1.TabIndex = 57;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "Room data:";
+            // 
             // RoomAdmin
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.PaleTurquoise;
             ClientSize = new Size(800, 450);
+            Controls.Add(groupBox1);
             Controls.Add(lblRoomName);
-            Controls.Add(lblTimeOut);
-            Controls.Add(lblQuestionCount);
-            Controls.Add(lblMaxNumber);
-            Controls.Add(gbPlayers);
             Controls.Add(btnCloseGame);
             Controls.Add(btnStartGame);
+            Controls.Add(lblUsers);
+            Controls.Add(pbUsers);
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "RoomAdmin";
             Text = "RoomAdmin";
+            ((System.ComponentModel.ISupportInitialize)pbUsers).EndInit();
+            groupBox1.ResumeLayout(false);
+            groupBox1.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -140,10 +168,12 @@
 
         private Button btnCloseGame;
         private Button btnStartGame;
-        private GroupBox gbPlayers;
         private Label lblMaxNumber;
         private Label lblQuestionCount;
         private Label lblTimeOut;
         private Label lblRoomName;
+        private Label lblUsers;
+        private PictureBox pbUsers;
+        private GroupBox groupBox1;
     }
 }
