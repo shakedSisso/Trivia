@@ -27,6 +27,7 @@ namespace Trivia
             lblRoomName.Left = (this.Width - lblRoomName.Width - 20) / 2;
             try
             {
+                this.players = Program.GetCommunicator().GetRoomState().players;
                 updatePlayersList();
                 timer = new System.Threading.Timer(refreshData, null, 0, 3000);
             }
@@ -87,11 +88,29 @@ namespace Trivia
         {
             if (this.IsHandleCreated)
             {
-                this.players = Program.GetCommunicator().GetRoomState().players;
-                this.Invoke((MethodInvoker)delegate
+                dynamic roomState = Program.GetCommunicator().GetRoomState();
+                if((bool)roomState.hasGameBegun)
                 {
-                    updatePlayersList();
-                });
+                    Program.GetCommunicator().StartGame();
+                    this.Invoke((MethodInvoker)delegate
+                    { 
+                        Form fGame = new Game(this.roomName);
+                        this.timer.Dispose();
+                        this.timer = null;
+                        this.Hide();
+                        fGame.ShowDialog();
+                        this.Dispose();
+                    });
+                }
+                else
+                {
+                    this.players = roomState.players;
+                    this.Invoke((MethodInvoker)delegate
+                    {
+                        updatePlayersList();
+                    });
+                }
+                
             }
         }
 
