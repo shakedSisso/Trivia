@@ -26,6 +26,7 @@ namespace Trivia
             try
             {
                 this.roomId = -999;
+                this.rooms = Program.GetCommunicator().GetRooms();
                 updateRoomsList();
                 btnJoinRoom.Enabled = false;
                 timer = new System.Threading.Timer(refreshData, null, 0, 3000);
