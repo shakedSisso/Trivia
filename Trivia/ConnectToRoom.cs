@@ -13,10 +13,10 @@ namespace Trivia
 {
     public partial class ConnectToRoom : Form
     {
-        private Thread updateThread;
-        private bool threadFlag;
         private RoomData[] rooms;
         private int roomId;
+        private System.Threading.Timer timer;
+
         public ConnectToRoom()
         {
             InitializeComponent();
@@ -29,13 +29,33 @@ namespace Trivia
                 this.rooms = Program.GetCommunicator().GetRooms();
                 updateRoomsList();
                 btnJoinRoom.Enabled = false;
-                this.updateThread = new Thread(updateRoomsList);
-                this.threadFlag = true;
-                this.updateThread.Start();
+                timer = new System.Threading.Timer(refreshData, null, 0, 3000);
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
+            }
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+
+            if(this.timer != null)
+            {
+                this.timer.Dispose();
+                this.timer = null;
+            }
+        }
+
+        private void refreshData(object state)
+        {
+            this.rooms = Program.GetCommunicator().GetRooms();
+            if(this.IsHandleCreated)
+            {
+                this.Invoke((MethodInvoker)delegate {
+                    updateRoomsList();
+                });
             }
         }
 
@@ -120,15 +140,10 @@ namespace Trivia
             }
         }
 
-        private void joinThread()
-        {
-            this.threadFlag = false;
-            this.updateThread?.Join();
-        }
-
         private void btnBack_Click(object sender, EventArgs e)
         {
-            joinThread();
+            this.timer.Dispose();
+            this.timer = null;
             this.Dispose();
         }
 
@@ -160,8 +175,9 @@ namespace Trivia
                         roomName = this.rooms[i].name;
                 }
                 Form fRoomMember = new RoomMember(roomName);
+                this.timer.Dispose();
+                this.timer = null;
                 this.Hide();
-                joinThread();
                 fRoomMember.ShowDialog();
                 this.Dispose();
             }
