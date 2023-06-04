@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace Trivia
 {
@@ -17,6 +18,8 @@ namespace Trivia
         private string roomName;
         private int questionCount;
         private int timePerQuestion;
+        private Newtonsoft.Json.Linq.JArray players;
+        private System.Threading.Timer timer;
         public RoomMember(string name)
         {
             InitializeComponent();
@@ -27,9 +30,7 @@ namespace Trivia
             try
             {
                 updatePlayersList();
-                this.updateThread = new Thread(updatePlayersList);
-                this.threadFlag = true;
-                this.updateThread.Start();
+                timer = new System.Threading.Timer(refreshData, null, 0, 3000);
             }
             catch (Exception ex)
             {
@@ -45,8 +46,51 @@ namespace Trivia
 
         private void updatePlayersList()
         {
-            Program.GetCommunicator().GetRoomState();
-            //update list of players connected to the room
+            for (int i = this.Controls.Count - 1; i >= 0; i--)
+            {
+                if (this.Controls[i] is Label label && label != lblUsers && label != lblRoomName) 
+                {
+                    this.Controls.RemoveAt(i);
+                    label.Dispose();
+                }
+            }
+            try
+            {
+                this.players = Program.GetCommunicator().GetRoomState().players;
+                if (players != null)
+                {
+                    Label lbl;
+                    for (int i = 0; i < this.players.Count; i++)
+                    {
+                        lbl = new Label();
+                        lbl.Left = lblUsers.Left;
+                        lbl.Top = lblUsers.Bottom + 30 * i;
+                        lbl.Text = players[i].ToString();
+                        lbl.Font = new Font("Maiandra GD", 12, FontStyle.Bold);
+                        lbl.ForeColor = Color.DarkSlateGray;
+                        lbl.BackColor = Color.MintCream;
+                        lbl.BringToFront();
+                        this.Controls.Add(lbl);
+                    }
+                }
+                pbUsers.SendToBack();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+        }
+
+        private void refreshData(object state)
+        {
+            if (this.IsHandleCreated)
+            {
+                this.Invoke((MethodInvoker)delegate
+                {
+                    updatePlayersList();
+                });
+            }
         }
 
         private void btnLeaveGame_Click(object sender, EventArgs e)
