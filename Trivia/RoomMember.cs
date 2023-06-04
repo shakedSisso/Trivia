@@ -16,6 +16,7 @@ namespace Trivia
         private string roomName;
         private int questionCount;
         private int timePerQuestion;
+        private bool isActive;
         private Newtonsoft.Json.Linq.JArray players;
         private System.Threading.Timer timer;
         public RoomMember(string name)
@@ -28,13 +29,26 @@ namespace Trivia
             lblRoomName.Left = (this.Width - lblRoomName.Width - 20) / 2;
             try
             {
-                this.players = Program.GetCommunicator().GetRoomState().players;
+                InitializeData();
                 updatePlayersList();
                 timer = new System.Threading.Timer(refreshData, null, 0, 3000);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+            }
+        }
+        private void InitializeData()
+        {
+            dynamic roomState = Program.GetCommunicator().GetRoomState();
+            if (roomState != null)
+            {
+                this.players = roomState.players;
+                this.questionCount = roomState.questionCount;
+                this.timePerQuestion = roomState.answerTimeOut;
+                this.isActive = roomState.hasGameBegun;
+                lblQuestionCount.Text = lblQuestionCount.Text + " " + this.questionCount;
+                lblTimeOut.Text = lblTimeOut.Text + " " + this.timePerQuestion;
             }
         }
 
