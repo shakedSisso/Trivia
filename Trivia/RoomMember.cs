@@ -19,6 +19,8 @@ namespace Trivia
         private bool isActive;
         private Newtonsoft.Json.Linq.JArray players;
         private System.Threading.Timer timer;
+        private object communicatorLock;
+        private bool isDisconnected;
         public RoomMember(Point startLocation, string name)
         {
             InitializeComponent();
@@ -28,6 +30,8 @@ namespace Trivia
             this.roomName = name;
             lblRoomName.Text = "You are connected to " + this.roomName;
             lblRoomName.Left = (this.Width - lblRoomName.Width - 20) / 2;
+            this.communicatorLock = new object();
+            this.isDisconnected = false;
             try
             {
                 InitializeData();
@@ -102,12 +106,39 @@ namespace Trivia
 
         private void refreshData(object state)
         {
+            dynamic roomState;
+            bool isActive = false;
+            Newtonsoft.Json.Linq.JArray playerArray = new Newtonsoft.Json.Linq.JArray();
             if (this.IsHandleCreated)
             {
-                dynamic roomState = Program.GetCommunicator().GetRoomState();
-                if((bool)roomState.hasGameBegun)
+                lock(this.communicatorLock)
                 {
-                    Program.GetCommunicator().StartGame();
+                    try
+                    {
+                        roomState = Program.GetCommunicator().GetRoomState();
+                        isActive = (bool)roomState.hasGameBegun;
+                        playerArray = roomState.players;
+                    }
+                    catch(Exception ex)
+                    {
+                        Program.GetCommunicator().LeaveRoom();
+                        this.isDisconnected = true;
+                        this.Invoke((MethodInvoker)delegate
+                        {
+                            this.timer.Dispose();
+                            this.timer = null;
+                            MessageBox.Show("Room Closed", "The room was closed by the room admin.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            this.Dispose();
+                        });
+                        return;
+                    }
+                }
+                if(isActive)
+                {
+                    lock(this.communicatorLock)
+                    {
+                        Program.GetCommunicator().StartGame();
+                    }    
                     this.Invoke((MethodInvoker)delegate
                     {
                         Form fGame = new Game(this.Location, this.roomName);
@@ -120,7 +151,7 @@ namespace Trivia
                 }
                 else
                 {
-                    this.players = roomState.players;
+                    this.players = playerArray;
                     this.Invoke((MethodInvoker)delegate
                     {
                         updatePlayersList();
@@ -132,7 +163,11 @@ namespace Trivia
 
         private void btnLeaveGame_Click(object sender, EventArgs e)
         {
-            Program.GetCommunicator().LeaveRoom();
+            lock(this.communicatorLock)
+            {
+                Program.GetCommunicator().LeaveRoom();
+                this.isDisconnected = true;
+            }
             this.timer.Dispose();
             this.timer = null;
             this.Dispose();
@@ -140,7 +175,13 @@ namespace Trivia
 
         private void RoomMember_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Program.GetCommunicator().LeaveRoom();
+            if(!this.isDisconnected)
+            {
+                lock(this.communicatorLock)
+                {
+                    Program.GetCommunicator().LeaveRoom();
+                }
+            }
             if (this.timer != null)
             {
                 this.timer.Dispose();
