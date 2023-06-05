@@ -17,6 +17,9 @@ namespace Trivia
         public Game(string name)
         {
             InitializeComponent();
+            this.StartPosition = FormStartPosition.Manual;
+            this.Location = LocationManager.GetFormLocation();
+            this.Text = name;
             this.roomName = name;
         }
     }

@@ -14,14 +14,23 @@ namespace Trivia
 {
     public partial class Trivia : Form
     {
-        public Trivia()
+        public Trivia(bool firstStart)
         {
             InitializeComponent();
-            this.StartPosition = FormStartPosition.CenterScreen;
+            if (firstStart)
+            {
+                this.StartPosition = FormStartPosition.CenterScreen;
+            }
+            else
+            {
+                this.StartPosition = FormStartPosition.Manual;
+                this.Location = LocationManager.GetFormLocation();
+            }
         }
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
+            LocationManager.SetFormLocation(this.Location);
             Form fLogin = new Login();
             this.Hide();
             fLogin.ShowDialog();
@@ -30,6 +39,7 @@ namespace Trivia
 
         private void btnSignup_Click(object sender, EventArgs e)
         {
+            LocationManager.SetFormLocation(this.Location);
             Form fSignup = new Signup();
             this.Hide();
             fSignup.ShowDialog();

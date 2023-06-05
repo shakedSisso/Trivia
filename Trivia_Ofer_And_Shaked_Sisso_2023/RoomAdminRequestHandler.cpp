@@ -47,7 +47,7 @@ RequestResult RoomAdminRequestHandler::handleRequest(const RequestInfo& info)
         std::cerr << e.what() << std::endl;
         result.newHandler = this;
         ErrorResponse response;
-        response.message = "ERROR";
+        response.message = e.what();
         result.buffer = JsonResponsePacketSerializer::serializeResponse(response);
     }
     return result;

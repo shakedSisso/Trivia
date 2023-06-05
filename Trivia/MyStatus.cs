@@ -16,7 +16,9 @@ namespace Trivia
         {
             InitializeComponent();
             gbStats.Text = username + "'s statistics";
-            this.StartPosition = FormStartPosition.CenterScreen;
+            this.StartPosition = FormStartPosition.Manual;
+            this.Location = LocationManager.GetFormLocation();
+            this.Text = gbStats.Text;
             try
             {
                 string[] stats = Program.GetCommunicator().GetStatistics();
@@ -45,6 +47,7 @@ namespace Trivia
 
         private void btnBack_Click(object sender, EventArgs e)
         {
+            LocationManager.SetFormLocation(this.Location);
             this.Dispose();
         }
     }

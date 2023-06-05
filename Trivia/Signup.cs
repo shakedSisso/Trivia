@@ -15,7 +15,8 @@ namespace Trivia
         public Signup()
         {
             InitializeComponent();
-            this.StartPosition = FormStartPosition.CenterScreen;
+            this.StartPosition = FormStartPosition.Manual;
+            this.Location = LocationManager.GetFormLocation();
         }
 
         private void btnSignup_Click(object sender, EventArgs e)
@@ -55,7 +56,7 @@ namespace Trivia
 
         private void btnBack_Click(object sender, EventArgs e)
         {
-            Form fTrivia = new Trivia();
+            Form fTrivia = new Trivia(false);
             this.Hide();
             fTrivia.ShowDialog();
             this.Dispose();
