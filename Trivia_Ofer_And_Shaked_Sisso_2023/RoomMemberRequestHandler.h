@@ -16,6 +16,7 @@ private:
 	LoggedUser m_user;
 	RoomManager& m_roomManager;
 	RequestHandlerFactory& m_handlerFactory;
+	unsigned int m_roomId;
 
 	RequestResult leaveRoom(const RequestInfo& info);
 	RequestResult getRoomState(const RequestInfo& info); 

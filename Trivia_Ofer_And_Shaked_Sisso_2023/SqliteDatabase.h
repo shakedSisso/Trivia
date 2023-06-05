@@ -30,6 +30,7 @@ private:
 	int addQuestion(const QuestionStruct& q);
 
 	bool createTables(int& res);
+	static int callbackHighScores(void* list, int argc, char** argv, char** azColName);
 	static int callbackString(void* list, int argc, char** argv, char** azColName);
 	static int callbackQuestions(void* list, int argc, char** argv, char** azColName);
 };
