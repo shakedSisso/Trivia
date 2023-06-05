@@ -13,29 +13,56 @@ namespace Trivia
 {
     public partial class ConnectToRoom : Form
     {
-        private Thread updateThread;
-        private bool threadFlag;
         private RoomData[] rooms;
         private int roomId;
+        private System.Threading.Timer timer;
+        private object communicatorLock;
+
         public ConnectToRoom()
         {
             InitializeComponent();
-            this.StartPosition = FormStartPosition.CenterScreen;
+            this.StartPosition = FormStartPosition.Manual;
+            this.Location = LocationManager.GetFormLocation();
             btnRefresh.Visible = true;
             btnJoinRoom.Visible = true;
+            this.communicatorLock = new object();
             try
             {
                 this.roomId = -999;
                 this.rooms = Program.GetCommunicator().GetRooms();
                 updateRoomsList();
                 btnJoinRoom.Enabled = false;
-                this.updateThread = new Thread(updateRoomsList);
-                this.threadFlag = true;
-                this.updateThread.Start();
+                timer = new System.Threading.Timer(refreshData, null, 0, 3000);
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
+            }
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            LocationManager.SetFormLocation(this.Location);
+            base.OnFormClosing(e);
+
+            if(this.timer != null)
+            {
+                this.timer.Dispose();
+                this.timer = null;
+            }
+        }
+
+        private void refreshData(object state)
+        {
+            if(this.IsHandleCreated)
+            {
+                lock(this.communicatorLock)
+                {
+                    this.rooms = Program.GetCommunicator().GetRooms();
+                }
+                this.Invoke((MethodInvoker)delegate {
+                    updateRoomsList();
+                });
             }
         }
 
@@ -63,9 +90,9 @@ namespace Trivia
                     if (!this.rooms[i].isActive)
                     {
                         btn = new Button();
-                        btn.Left = gbRooms.Left - 50;
+                        btn.Left = gbRooms.Left - 55;
                         btn.Top = gbRooms.Top + 10 + 30 * i;
-                        btn.Width = gbRooms.Width;
+                        btn.Width = gbRooms.Width + 10;
                         btn.Height = 30;
                         btn.Text = this.rooms[i].name;
                         btn.Tag = this.rooms[i].id;
@@ -83,6 +110,7 @@ namespace Trivia
             lblUsers.Visible = true;
             pbUsers.Visible = true;
             btnJoinRoom.Enabled = true;
+            string[] players;
             for (int i = this.Controls.Count - 1; i >= 0; i--)
             {
                 if (this.Controls[i] is Label label && label != lblUsers)
@@ -95,7 +123,10 @@ namespace Trivia
             {
                 Button button = (Button)sender;
                 this.roomId = (int)button.Tag;
-                string[] players = Program.GetCommunicator().GetPlayersInRoom(this.roomId);
+                lock(this.communicatorLock)
+                {
+                    players = Program.GetCommunicator().GetPlayersInRoom(this.roomId);
+                }
                 if (players != null)
                 {
                     Label lbl;
@@ -120,15 +151,10 @@ namespace Trivia
             }
         }
 
-        private void joinThread()
-        {
-            this.threadFlag = false;
-            this.updateThread?.Join();
-        }
-
         private void btnBack_Click(object sender, EventArgs e)
         {
-            joinThread();
+            this.timer.Dispose();
+            this.timer = null;
             this.Dispose();
         }
 
@@ -145,30 +171,40 @@ namespace Trivia
             lblUsers.Visible = false;
             pbUsers.Visible = false;
             this.roomId = -999;
+            lock (this.communicatorLock)
+            {
+                this.rooms = Program.GetCommunicator().GetRooms();
+            }
             updateRoomsList();
             btnJoinRoom.Enabled = false;
         }
 
         private void btnJoinRoom_Click(object sender, EventArgs e)
         {
-            if (this.roomId != -999 && Program.GetCommunicator().JoinRoom(this.roomId))
+            lock(this.communicatorLock)
             {
-                string roomName = string.Empty;
-                for (int i = 0; i < this.rooms.Length; i++)
+                if (this.roomId != -999 && Program.GetCommunicator().JoinRoom(this.roomId))
                 {
-                    if (this.rooms[i].id == this.roomId)
-                        roomName = this.rooms[i].name;
+                    string roomName = string.Empty;
+                    for (int i = 0; i < this.rooms.Length; i++)
+                    {
+                        if (this.rooms[i].id == this.roomId)
+                            roomName = this.rooms[i].name;
+                    }
+                    LocationManager.SetFormLocation(this.Location);
+                    Form fRoomMember = new RoomMember(roomName);
+                    this.timer.Dispose();
+                    this.timer = null;
+                    this.Hide();
+                    fRoomMember.ShowDialog();
+                    this.Dispose();
                 }
-                Form fRoomMember = new RoomMember(roomName);
-                this.Hide();
-                joinThread();
-                fRoomMember.ShowDialog();
-                this.Dispose();
+                else
+                {
+                    throw new Exception("Couldn't connect to the room");
+                }
             }
-            else
-            {
-                throw new Exception("Couldn't connect to the room");
-            }
+            
         }
     }
 }

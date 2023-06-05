@@ -16,7 +16,8 @@ namespace Trivia
         public Menu(string username)
         {
             InitializeComponent();
-            this.StartPosition = FormStartPosition.CenterScreen;
+            this.StartPosition = FormStartPosition.Manual;
+            this.Location = LocationManager.GetFormLocation();
             lblUsername.Text = "Hello " + username + "!";
             this.username = username;
             lblUsername.Left = (this.Width - lblUsername.Width - 20) / 2;
@@ -66,9 +67,11 @@ namespace Trivia
             lblErrorMessage.Text = string.Empty;
             try
             {
+                LocationManager.SetFormLocation(this.Location);
                 Form fBestScores = new BestScores();
                 this.Hide();
                 fBestScores.ShowDialog();
+                this.Location = LocationManager.GetFormLocation();
                 this.Show();
             }
             catch (Exception ex)
@@ -88,9 +91,11 @@ namespace Trivia
             lblErrorMessage.Text = string.Empty;
             try
             {
+                LocationManager.SetFormLocation(this.Location);
                 Form fStatus = new MyStatus(username);
                 this.Hide();
                 fStatus.ShowDialog();
+                this.Location = LocationManager.GetFormLocation();
                 this.Show();
             }
             catch (Exception ex)
@@ -104,9 +109,11 @@ namespace Trivia
             lblErrorMessage.Text = string.Empty;
             try
             {
+                LocationManager.SetFormLocation(this.Location);
                 Form fConnectToRoom = new ConnectToRoom();
                 this.Hide();
                 fConnectToRoom.ShowDialog();
+                this.Location = LocationManager.GetFormLocation();
                 this.Show();
             }
             catch (Exception ex)
@@ -120,9 +127,11 @@ namespace Trivia
             lblErrorMessage.Text = string.Empty;
             try
             {
+                LocationManager.SetFormLocation(this.Location);
                 Form fCreateRoom = new CreateRoom();
                 this.Hide();
                 fCreateRoom.ShowDialog();
+                this.Location = LocationManager.GetFormLocation();
                 this.Show();
             }
             catch (Exception ex)

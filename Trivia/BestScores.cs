@@ -15,7 +15,8 @@ namespace Trivia
         public BestScores()
         {
             InitializeComponent();
-            this.StartPosition = FormStartPosition.CenterScreen;
+            this.StartPosition = FormStartPosition.Manual;
+            this.Location = LocationManager.GetFormLocation();
             lblFirstPlace.Text = string.Empty;
             lblSecondPlace.Text = string.Empty;
             lblThirdPlace.Text = string.Empty;
@@ -58,6 +59,7 @@ namespace Trivia
 
         private void btnBack_Click(object sender, EventArgs e)
         {
+            LocationManager.SetFormLocation(this.Location);
             this.Dispose();
         }
     }

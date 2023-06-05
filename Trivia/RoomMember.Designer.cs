@@ -32,8 +32,12 @@
             lblRoomName = new Label();
             lblTimeOut = new Label();
             lblQuestionCount = new Label();
-            gbPlayers = new GroupBox();
             btnLeaveGame = new Button();
+            pbUsers = new PictureBox();
+            lblUsers = new Label();
+            groupBox1 = new GroupBox();
+            ((System.ComponentModel.ISupportInitialize)pbUsers).BeginInit();
+            groupBox1.SuspendLayout();
             SuspendLayout();
             // 
             // lblRoomName
@@ -51,7 +55,7 @@
             // 
             lblTimeOut.AutoSize = true;
             lblTimeOut.Font = new Font("Segoe UI", 11F, FontStyle.Bold, GraphicsUnit.Point);
-            lblTimeOut.Location = new Point(24, 178);
+            lblTimeOut.Location = new Point(6, 98);
             lblTimeOut.Name = "lblTimeOut";
             lblTimeOut.Size = new Size(178, 25);
             lblTimeOut.TabIndex = 51;
@@ -61,22 +65,11 @@
             // 
             lblQuestionCount.AutoSize = true;
             lblQuestionCount.Font = new Font("Segoe UI", 11F, FontStyle.Bold, GraphicsUnit.Point);
-            lblQuestionCount.Location = new Point(24, 83);
+            lblQuestionCount.Location = new Point(6, 30);
             lblQuestionCount.Name = "lblQuestionCount";
             lblQuestionCount.Size = new Size(206, 25);
             lblQuestionCount.TabIndex = 50;
             lblQuestionCount.Text = "Number of questions:";
-            // 
-            // gbPlayers
-            // 
-            gbPlayers.BackColor = Color.LightCyan;
-            gbPlayers.Font = new Font("Bauhaus 93", 13F, FontStyle.Regular, GraphicsUnit.Point);
-            gbPlayers.Location = new Point(301, 83);
-            gbPlayers.Name = "gbPlayers";
-            gbPlayers.Size = new Size(433, 200);
-            gbPlayers.TabIndex = 48;
-            gbPlayers.TabStop = false;
-            gbPlayers.Text = "Current participants are:";
             // 
             // btnLeaveGame
             // 
@@ -91,20 +84,56 @@
             btnLeaveGame.UseVisualStyleBackColor = false;
             btnLeaveGame.Click += btnLeaveGame_Click;
             // 
+            // pbUsers
+            // 
+            pbUsers.BackColor = Color.MintCream;
+            pbUsers.Location = new Point(299, 83);
+            pbUsers.Name = "pbUsers";
+            pbUsers.Size = new Size(433, 200);
+            pbUsers.TabIndex = 54;
+            pbUsers.TabStop = false;
+            // 
+            // lblUsers
+            // 
+            lblUsers.AutoSize = true;
+            lblUsers.BackColor = Color.MintCream;
+            lblUsers.Font = new Font("Bauhaus 93", 15F, FontStyle.Regular, GraphicsUnit.Point);
+            lblUsers.Location = new Point(301, 85);
+            lblUsers.Name = "lblUsers";
+            lblUsers.Size = new Size(288, 28);
+            lblUsers.TabIndex = 53;
+            lblUsers.Text = "Current participants are:";
+            // 
+            // groupBox1
+            // 
+            groupBox1.Controls.Add(lblQuestionCount);
+            groupBox1.Controls.Add(lblTimeOut);
+            groupBox1.Font = new Font("Segoe UI", 12F, FontStyle.Italic, GraphicsUnit.Point);
+            groupBox1.Location = new Point(43, 85);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Size = new Size(250, 198);
+            groupBox1.TabIndex = 55;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "Room data:";
+            // 
             // RoomMember
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.PaleTurquoise;
             ClientSize = new Size(800, 450);
+            Controls.Add(groupBox1);
             Controls.Add(lblRoomName);
-            Controls.Add(lblTimeOut);
-            Controls.Add(lblQuestionCount);
-            Controls.Add(gbPlayers);
             Controls.Add(btnLeaveGame);
+            Controls.Add(lblUsers);
+            Controls.Add(pbUsers);
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "RoomMember";
             Text = "RoomMember";
+            FormClosing += RoomMember_FormClosing;
+            ((System.ComponentModel.ISupportInitialize)pbUsers).EndInit();
+            groupBox1.ResumeLayout(false);
+            groupBox1.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -114,7 +143,9 @@
         private Label lblRoomName;
         private Label lblTimeOut;
         private Label lblQuestionCount;
-        private GroupBox gbPlayers;
         private Button btnLeaveGame;
+        private PictureBox pbUsers;
+        private Label lblUsers;
+        private GroupBox groupBox1;
     }
 }

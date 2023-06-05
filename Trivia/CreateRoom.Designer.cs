@@ -56,6 +56,7 @@
             btnBack.TabIndex = 22;
             btnBack.Text = "back";
             btnBack.UseVisualStyleBackColor = false;
+            btnBack.Click += btnBack_Click;
             // 
             // pictureBox1
             // 
@@ -202,7 +203,7 @@
             Controls.Add(btnBack);
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "CreateRoom";
-            Text = "CreateRoom";
+            Text = "Create room";
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
             PerformLayout();

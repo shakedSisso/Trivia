@@ -15,11 +15,13 @@ namespace Trivia
         public CreateRoom()
         {
             InitializeComponent();
-            this.StartPosition = FormStartPosition.CenterScreen;
+            this.StartPosition = FormStartPosition.Manual;
+            this.Location = LocationManager.GetFormLocation();
         }
 
         private void btnBack_Click(object sender, EventArgs e)
         {
+            LocationManager.SetFormLocation(this.Location);
             this.Dispose();
         }
 
@@ -36,7 +38,8 @@ namespace Trivia
                     int timeOut = int.Parse(tbTimeForQuestions.Text);
 
                     Program.GetCommunicator().CreateRoom(name, playersCount, questionCount, timeOut);
-                    Form fRoomAdmin = new RoomAdmin(name);
+                    LocationManager.SetFormLocation(this.Location);
+                    Form fRoomAdmin = new RoomAdmin(name, playersCount);
                     this.Hide();
                     fRoomAdmin.ShowDialog();
                     this.Dispose();
