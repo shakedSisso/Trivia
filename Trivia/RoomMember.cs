@@ -128,7 +128,7 @@ namespace Trivia
                         {
                             this.timer.Dispose();
                             this.timer = null;
-                            MessageBox.Show("Room Closed", "The room was closed by the room admin.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBox.Show("The room was closed by the room admin.", "Room Closed", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             this.Dispose();
                         });
                         return;
