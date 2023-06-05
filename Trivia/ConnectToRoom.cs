@@ -192,7 +192,7 @@ namespace Trivia
                             roomName = this.rooms[i].name;
                     }
                     LocationManager.SetFormLocation(this.Location);
-                    Form fRoomMember = new RoomMember(this.Location, roomName);
+                    Form fRoomMember = new RoomMember(roomName);
                     this.timer.Dispose();
                     this.timer = null;
                     this.Hide();

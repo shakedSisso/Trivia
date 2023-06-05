@@ -154,7 +154,7 @@ namespace Trivia
                 this.isClosed = true;
             }
             LocationManager.SetFormLocation(this.Location);
-            Form fGame = new Game(this.Location, this.roomName);
+            Form fGame = new Game(this.roomName);
             this.timer.Dispose();
             this.timer = null;
             this.Hide();
