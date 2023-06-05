@@ -12,11 +12,11 @@ namespace Trivia
 {
     public partial class BestScores : Form
     {
-        public BestScores(Point startLocation)
+        public BestScores()
         {
             InitializeComponent();
             this.StartPosition = FormStartPosition.Manual;
-            this.Location = startLocation;
+            this.Location = LocationManager.GetFormLocation();
             lblFirstPlace.Text = string.Empty;
             lblSecondPlace.Text = string.Empty;
             lblThirdPlace.Text = string.Empty;
@@ -59,6 +59,7 @@ namespace Trivia
 
         private void btnBack_Click(object sender, EventArgs e)
         {
+            LocationManager.SetFormLocation(this.Location);
             this.Dispose();
         }
     }

@@ -56,7 +56,7 @@
             btnBack.TabIndex = 22;
             btnBack.Text = "back";
             btnBack.UseVisualStyleBackColor = false;
-            btnBack.Click += btnBack_Click_1;
+            btnBack.Click += btnBack_Click;
             // 
             // pictureBox1
             // 

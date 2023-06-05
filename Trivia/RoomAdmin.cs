@@ -24,11 +24,11 @@ namespace Trivia
         private Newtonsoft.Json.Linq.JArray players;
         private bool isActive;
         private System.Threading.Timer timer;
-        public RoomAdmin(Point startLocation, string name, int maxUsers)
+        public RoomAdmin(string name, int maxUsers)
         {
             InitializeComponent();
             this.StartPosition = FormStartPosition.Manual;
-            this.Location = startLocation;
+            this.Location = LocationManager.GetFormLocation();
             this.Text = name + "- Admin";
             this.roomName = name;
             this.maxPlayers = maxUsers;
@@ -49,6 +49,7 @@ namespace Trivia
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
+            LocationManager.SetFormLocation(this.Location);
             base.OnFormClosing(e);
 
             if (this.timer != null)
@@ -124,16 +125,14 @@ namespace Trivia
 
         private void btnCloseGame_Click(object sender, EventArgs e)
         {
-            Program.GetCommunicator().CloseRoom();
-            this.timer.Dispose();
-            this.timer = null;
             this.Dispose();
         }
 
         private void btnStartGame_Click(object sender, EventArgs e)
         {
             Program.GetCommunicator().StartGame();
-            Form fGame = new Game(this.Location, this.roomName);
+            LocationManager.SetFormLocation(this.Location);
+            Form fGame = new Game(this.roomName);
             this.timer.Dispose();
             this.timer = null;
             this.Hide();

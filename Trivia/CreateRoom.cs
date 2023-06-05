@@ -12,15 +12,16 @@ namespace Trivia
 {
     public partial class CreateRoom : Form
     {
-        public CreateRoom(Point startLocation)
+        public CreateRoom()
         {
             InitializeComponent();
             this.StartPosition = FormStartPosition.Manual;
-            this.Location = startLocation;
+            this.Location = LocationManager.GetFormLocation();
         }
 
         private void btnBack_Click(object sender, EventArgs e)
         {
+            LocationManager.SetFormLocation(this.Location);
             this.Dispose();
         }
 
@@ -37,7 +38,8 @@ namespace Trivia
                     int timeOut = int.Parse(tbTimeForQuestions.Text);
 
                     Program.GetCommunicator().CreateRoom(name, playersCount, questionCount, timeOut);
-                    Form fRoomAdmin = new RoomAdmin(this.Location, name, playersCount);
+                    LocationManager.SetFormLocation(this.Location);
+                    Form fRoomAdmin = new RoomAdmin(name, playersCount);
                     this.Hide();
                     fRoomAdmin.ShowDialog();
                     this.Dispose();
@@ -57,11 +59,6 @@ namespace Trivia
         {
             lblErrorMessage.Text = message;
             lblErrorMessage.Left = (this.Width - lblErrorMessage.Width - 20) / 2; //subtracting 20 to include the edge 
-        }
-
-        private void btnBack_Click_1(object sender, EventArgs e)
-        {
-            this.Dispose();
         }
     }
 }
