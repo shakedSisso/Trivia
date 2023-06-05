@@ -26,11 +26,11 @@ namespace Trivia
         private System.Threading.Timer timer;
         private object communicatorLock;
         private bool isClosed;
-        public RoomAdmin(Point startLocation, string name, int maxUsers)
+        public RoomAdmin(string name, int maxUsers)
         {
             InitializeComponent();
             this.StartPosition = FormStartPosition.Manual;
-            this.Location = startLocation;
+            this.Location = LocationManager.GetFormLocation();
             this.Text = name + "- Admin";
             this.roomName = name;
             this.maxPlayers = maxUsers;
@@ -53,6 +53,7 @@ namespace Trivia
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
+            LocationManager.SetFormLocation(this.Location);
             base.OnFormClosing(e);
 
             if (this.timer != null)
@@ -152,6 +153,7 @@ namespace Trivia
                 Program.GetCommunicator().StartGame();
                 this.isClosed = true;
             }
+            LocationManager.SetFormLocation(this.Location);
             Form fGame = new Game(this.Location, this.roomName);
             this.timer.Dispose();
             this.timer = null;

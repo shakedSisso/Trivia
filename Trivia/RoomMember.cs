@@ -21,11 +21,11 @@ namespace Trivia
         private System.Threading.Timer timer;
         private object communicatorLock;
         private bool isDisconnected;
-        public RoomMember(Point startLocation, string name)
+        public RoomMember(string name)
         {
             InitializeComponent();
             this.StartPosition = FormStartPosition.Manual;
-            this.Location = startLocation;
+            this.Location = LocationManager.GetFormLocation();
             this.Text = name + "- Member";
             this.roomName = name;
             lblRoomName.Text = "You are connected to " + this.roomName;
@@ -95,6 +95,7 @@ namespace Trivia
         }
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
+            LocationManager.SetFormLocation(this.Location);
             base.OnFormClosing(e);
 
             if (this.timer != null)
@@ -141,7 +142,8 @@ namespace Trivia
                     }    
                     this.Invoke((MethodInvoker)delegate
                     {
-                        Form fGame = new Game(this.Location, this.roomName);
+                        LocationManager.SetFormLocation(this.Location);
+                        Form fGame = new Game(this.roomName);
                         this.timer.Dispose();
                         this.timer = null;
                         this.Hide();

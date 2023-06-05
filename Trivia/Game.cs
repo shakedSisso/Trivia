@@ -14,11 +14,11 @@ namespace Trivia
     public partial class Game : Form
     {
         private string roomName;
-        public Game(Point startLocation, string name)
+        public Game(string name)
         {
             InitializeComponent();
             this.StartPosition = FormStartPosition.Manual;
-            this.Location = startLocation;
+            this.Location = LocationManager.GetFormLocation();
             this.Text = name;
             this.roomName = name;
         }

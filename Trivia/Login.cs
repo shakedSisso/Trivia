@@ -13,11 +13,11 @@ namespace Trivia
 {
     public partial class Login : Form
     {
-        public Login(Point startLocation)
+        public Login()
         {
             InitializeComponent();
             this.StartPosition = FormStartPosition.Manual;
-            this.Location = startLocation;
+            this.Location = LocationManager.GetFormLocation();
         }
 
         private void btnLogin_Click(object sender, EventArgs e)
@@ -28,8 +28,9 @@ namespace Trivia
                 string password = tbPassword.Text;
                 try
                 {
+                    LocationManager.SetFormLocation(this.Location);
                     Program.GetCommunicator().Login(username, password);
-                    Form fMenu = new Menu(this.Location, username);
+                    Form fMenu = new Menu(username);
                     this.Hide();
                     fMenu.ShowDialog();
                     this.Dispose();
@@ -55,7 +56,8 @@ namespace Trivia
 
         private void btnBack_Click(object sender, EventArgs e)
         {
-            Form fTrivia = new Trivia(this.Location);
+            this.Location = LocationManager.GetFormLocation();
+            Form fTrivia = new Trivia(false);
             this.Hide();
             fTrivia.ShowDialog();
             this.Dispose();

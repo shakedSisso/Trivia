@@ -14,21 +14,24 @@ namespace Trivia
 {
     public partial class Trivia : Form
     {
-        public Trivia()
+        public Trivia(bool firstStart)
         {
             InitializeComponent();
-            this.StartPosition = FormStartPosition.CenterScreen;
-        }
-        public Trivia(Point startLocation) //constractor for calling when back is pressed in login or signup
-        {
-            InitializeComponent();
-            this.StartPosition = FormStartPosition.Manual;
-            this.Location = startLocation;
+            if (firstStart)
+            {
+                this.StartPosition = FormStartPosition.CenterScreen;
+            }
+            else
+            {
+                this.StartPosition = FormStartPosition.Manual;
+                this.Location = LocationManager.GetFormLocation();
+            }
         }
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            Form fLogin = new Login(this.Location);
+            LocationManager.SetFormLocation(this.Location);
+            Form fLogin = new Login();
             this.Hide();
             fLogin.ShowDialog();
             this.Dispose();
@@ -36,7 +39,8 @@ namespace Trivia
 
         private void btnSignup_Click(object sender, EventArgs e)
         {
-            Form fSignup = new Signup(this.Location);
+            LocationManager.SetFormLocation(this.Location);
+            Form fSignup = new Signup();
             this.Hide();
             fSignup.ShowDialog();
             this.Dispose();

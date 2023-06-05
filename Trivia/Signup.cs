@@ -12,11 +12,11 @@ namespace Trivia
 {
     public partial class Signup : Form
     {
-        public Signup(Point startLocation)
+        public Signup()
         {
             InitializeComponent();
             this.StartPosition = FormStartPosition.Manual;
-            this.Location = startLocation;
+            this.Location = LocationManager.GetFormLocation();
         }
 
         private void btnSignup_Click(object sender, EventArgs e)
@@ -32,7 +32,7 @@ namespace Trivia
                 try
                 {
                     Program.GetCommunicator().SignUp(username, password, mail, address, phoneNumber, birthDate);
-                    Form fMenu = new Menu(this.Location, username);
+                    Form fMenu = new Menu(username);
                     this.Hide();
                     fMenu.ShowDialog();
                     this.Dispose();
@@ -56,7 +56,7 @@ namespace Trivia
 
         private void btnBack_Click(object sender, EventArgs e)
         {
-            Form fTrivia = new Trivia(this.Location);
+            Form fTrivia = new Trivia(false);
             this.Hide();
             fTrivia.ShowDialog();
             this.Dispose();

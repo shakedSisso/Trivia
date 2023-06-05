@@ -18,11 +18,11 @@ namespace Trivia
         private System.Threading.Timer timer;
         private object communicatorLock;
 
-        public ConnectToRoom(Point startLocation)
+        public ConnectToRoom()
         {
             InitializeComponent();
             this.StartPosition = FormStartPosition.Manual;
-            this.Location = startLocation;
+            this.Location = LocationManager.GetFormLocation();
             btnRefresh.Visible = true;
             btnJoinRoom.Visible = true;
             this.communicatorLock = new object();
@@ -42,6 +42,7 @@ namespace Trivia
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
+            LocationManager.SetFormLocation(this.Location);
             base.OnFormClosing(e);
 
             if(this.timer != null)
@@ -190,6 +191,7 @@ namespace Trivia
                         if (this.rooms[i].id == this.roomId)
                             roomName = this.rooms[i].name;
                     }
+                    LocationManager.SetFormLocation(this.Location);
                     Form fRoomMember = new RoomMember(this.Location, roomName);
                     this.timer.Dispose();
                     this.timer = null;

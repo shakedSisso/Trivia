@@ -12,12 +12,12 @@ namespace Trivia
 {
     public partial class MyStatus : Form
     {
-        public MyStatus(Point startLocation, string username)
+        public MyStatus(string username)
         {
             InitializeComponent();
             gbStats.Text = username + "'s statistics";
             this.StartPosition = FormStartPosition.Manual;
-            this.Location = startLocation;
+            this.Location = LocationManager.GetFormLocation();
             this.Text = gbStats.Text;
             try
             {
@@ -47,6 +47,7 @@ namespace Trivia
 
         private void btnBack_Click(object sender, EventArgs e)
         {
+            LocationManager.SetFormLocation(this.Location);
             this.Dispose();
         }
     }
