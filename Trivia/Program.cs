@@ -42,7 +42,7 @@ namespace Trivia
                 }
             }
             ApplicationConfiguration.Initialize();
-            Application.Run(new Trivia());
+            Application.Run(new Trivia(true));
         }
     }
 }
