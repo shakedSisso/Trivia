@@ -24,6 +24,8 @@ namespace Trivia
         private Newtonsoft.Json.Linq.JArray players;
         private bool isActive;
         private System.Threading.Timer timer;
+        private object communicatorLock;
+        private bool isClosed;
         public RoomAdmin(Point startLocation, string name, int maxUsers)
         {
             InitializeComponent();
@@ -34,6 +36,8 @@ namespace Trivia
             this.maxPlayers = maxUsers;
             lblRoomName.Text = "You are connected to " + this.roomName;
             lblRoomName.Left = (this.Width - lblRoomName.Width - 20) / 2;
+            this.communicatorLock = new object();
+            this.isClosed = false;
             try
             {
                 InitializeData();
@@ -62,7 +66,10 @@ namespace Trivia
         {
             if (this.IsHandleCreated)
             {
-                this.players = Program.GetCommunicator().GetRoomState().players;
+                lock(communicatorLock)
+                {
+                    this.players = Program.GetCommunicator().GetRoomState().players;
+                }
                 this.Invoke((MethodInvoker)delegate
                 {
                     updatePlayersList();
@@ -72,7 +79,11 @@ namespace Trivia
 
         private void InitializeData()
         {
-            dynamic roomState = Program.GetCommunicator().GetRoomState();
+            dynamic roomState;
+            lock(communicatorLock)
+            {
+                roomState = Program.GetCommunicator().GetRoomState();
+            }
             if (roomState != null)
             {
                 this.players = roomState.players;
@@ -124,7 +135,11 @@ namespace Trivia
 
         private void btnCloseGame_Click(object sender, EventArgs e)
         {
-            Program.GetCommunicator().CloseRoom();
+            lock(communicatorLock)
+            {
+                Program.GetCommunicator().CloseRoom();
+                this.isClosed = true;
+            }
             this.timer.Dispose();
             this.timer = null;
             this.Dispose();
@@ -132,7 +147,11 @@ namespace Trivia
 
         private void btnStartGame_Click(object sender, EventArgs e)
         {
-            Program.GetCommunicator().StartGame();
+            lock (communicatorLock)
+            {
+                Program.GetCommunicator().StartGame();
+                this.isClosed = true;
+            }
             Form fGame = new Game(this.Location, this.roomName);
             this.timer.Dispose();
             this.timer = null;
@@ -143,7 +162,13 @@ namespace Trivia
 
         private void RoomAdmin_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Program.GetCommunicator().CloseRoom();
+            if(!this.isClosed)
+            {
+                lock(communicatorLock)
+                {
+                    Program.GetCommunicator().CloseRoom();
+                }
+            }
             if (this.timer != null)
             {
                 this.timer.Dispose();
