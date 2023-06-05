@@ -1,7 +1,7 @@
 #include "RoomMemberRequestHandler.h"
 
 RoomMemberRequestHandler::RoomMemberRequestHandler(RequestHandlerFactory& handlerFactory, Room* room, LoggedUser& user, RoomManager& roomManager)
-    : m_room(room), m_user(user), m_handlerFactory(handlerFactory), m_roomManager(roomManager)
+    : m_room(room), m_user(user), m_handlerFactory(handlerFactory), m_roomManager(roomManager), m_roomId(m_room->getRoomData().id)
 {
 }
 
@@ -59,17 +59,28 @@ RequestResult RoomMemberRequestHandler::leaveRoom(const RequestInfo& info)
     RequestResult result;
     try
     {
-        this->m_room->removeUser(this->m_user);
-        result.newHandler = (IRequestHandler*)this->m_handlerFactory.createMenuRequestHandler(this->m_user);
+        this->m_roomManager.getRoom(this->m_roomId); // checking if the room still exists and that the room admin hasn't closed it
     }
     catch (const std::exception& e)
     {
-        if (result.newHandler != nullptr)
+        result.newHandler = (IRequestHandler*)this->m_handlerFactory.createMenuRequestHandler(this->m_user); // if the room has been closed we we'll divert the room memeber back to the menu
+    }
+    if (result.newHandler == nullptr) // if the room exists the newHandler won't be filled (no exception will be raised)
+    {
+        try
         {
-            delete(result.newHandler);
+            this->m_room->removeUser(this->m_user);
+            result.newHandler = (IRequestHandler*)this->m_handlerFactory.createMenuRequestHandler(this->m_user);
         }
-        result.newHandler = nullptr;
-        throw std::exception(e.what());
+        catch (const std::exception& e)
+        {
+            if (result.newHandler != nullptr)
+            {
+                delete(result.newHandler);
+            }
+            result.newHandler = nullptr;
+            throw std::exception(e.what());
+        }
     }
     LeaveRoomResponse response;
     response.status = LeaveRoom;
