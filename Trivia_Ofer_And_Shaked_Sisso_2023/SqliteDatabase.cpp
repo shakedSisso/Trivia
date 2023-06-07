@@ -98,6 +98,20 @@ bool SqliteDatabase::createTables(int& res)
 	return true;
 }
 
+int SqliteDatabase::callbackHighScores(void* list, int argc, char** argv, char** azColName)
+{
+	int i = 0;
+	std::string message;
+	for (i = 0; i < argc/2; i++)
+	{
+		message = argv[i];
+		message += "- ";
+		message += argv[i + 1];
+		((std::list<std::string>*)list)->push_back(message);
+	}
+	return 0;
+}
+
 int SqliteDatabase::callbackString(void* list, int argc, char** argv, char** azColName)
 {
 	int i = 0;
@@ -299,8 +313,8 @@ std::vector<std::string> SqliteDatabase::getHighScores()
 {
 	std::vector<std::string> highScores;
 	std::list<std::string> list;
-	std::string sqlStatement = "select username from t_statistics ORDER by correct_answers DESC LIMIT " + std::to_string(HIGH_SCORES_COUNT) + "; ";
-	int res = sqlite3_exec(this->_db, sqlStatement.c_str(), callbackString, &list, nullptr);
+	std::string sqlStatement = "select username, correct_answers from t_statistics ORDER by correct_answers DESC LIMIT " + std::to_string(HIGH_SCORES_COUNT) + "; ";
+	int res = sqlite3_exec(this->_db, sqlStatement.c_str(), callbackHighScores, &list, nullptr);
 	if (res != SQLITE_OK)
 	{
 		throw std::exception("Error- sqlite3_exec functions failed");

@@ -3,6 +3,7 @@
 #define FALSE 0
 #define TRUE !FALSE
 
+
 MenuRequestHandler::MenuRequestHandler(RequestHandlerFactory& handlerFactory, LoggedUser& user, RoomManager& roomManager, StatisticsManager& statisticsManager)
     : m_handlerFactory(handlerFactory), m_user(user), m_roomManager(roomManager), m_statisticsManager(statisticsManager)
 {
@@ -10,8 +11,8 @@ MenuRequestHandler::MenuRequestHandler(RequestHandlerFactory& handlerFactory, Lo
 
 bool MenuRequestHandler::isRequestRelevent(const RequestInfo& info)
 {
-    if (info.id == GET_PLAYERS_IN_ROOM_REQUEST || info.id == JOIN_ROOM_REQUEST || info.id == CREATE_ROOM_REQUEST
-        || info.id == HIGH_SCORE_REQUEST || info.id == LOGOUT_REQUEST || info.id == GET_ROOMS_REQUEST || info.id == GET_STATISTICS)
+    if (info.id == GetPlayersInRoom || info.id == JoinRoom || info.id == CreateRoom
+        || info.id == HighScore || info.id == Logout || info.id == GetRooms || info.id == Statistics)
     {
         return true;
     }
@@ -27,25 +28,25 @@ RequestResult MenuRequestHandler::handleRequest(const RequestInfo& info)
         {
             switch (info.id)
             {
-            case LOGOUT_REQUEST:
+            case Logout:
                 result = signout(info);
                 break;
-            case GET_ROOMS_REQUEST:
+            case GetRooms:
                 result = getRooms(info);
                 break;
-            case GET_PLAYERS_IN_ROOM_REQUEST:
+            case GetPlayersInRoom:
                 result = getPlayersInRoom(info);
                 break;
-            case GET_STATISTICS:
+            case Statistics:
                 result = getPersonalStats(info);
                 break;
-            case HIGH_SCORE_REQUEST:
+            case HighScore:
                 result = getHighScore(info);
                 break;
-            case JOIN_ROOM_REQUEST:
+            case JoinRoom:
                 result = joinRoom(info);
                 break;
-            case CREATE_ROOM_REQUEST:
+            case CreateRoom:
                 result = createRoom(info);
                 break;
 
@@ -60,7 +61,7 @@ RequestResult MenuRequestHandler::handleRequest(const RequestInfo& info)
         std::cerr << e.what() << std::endl;
         result.newHandler = this;
         ErrorResponse response;
-        response.message = "ERROR";
+        response.message = e.what();
         result.buffer = JsonResponsePacketSerializer::serializeResponse(response);
     }
     return result;
@@ -182,8 +183,9 @@ RequestResult MenuRequestHandler::joinRoom(const RequestInfo& info)
     try
     {
         JoinRoomRequest request = JsonRequestPacketDeserializer::deserializeJoinRoomRequest(info.buffer);
-        this->m_roomManager.getRoom(request.roomId).addUser(this->m_user);
-        result.newHandler = (IRequestHandler*)(this); //needs to be replaced with the correct handler
+        Room* room = &this->m_roomManager.getRoom(request.roomId);
+        room->addUser(this->m_user);
+        result.newHandler = (IRequestHandler*)this->m_handlerFactory.createRoomMemberRequestHandler(this->m_user, room);
     }
     catch (const std::exception& e)
     {
@@ -208,8 +210,9 @@ RequestResult MenuRequestHandler::createRoom(const RequestInfo& info)
     {
         CreateRoomRequest request = JsonRequestPacketDeserializer::deserializeCreateRoomRequest(info.buffer);
         id = this->m_roomManager.getRooms().size() + 1;
-        this->m_roomManager.createRoom(this->m_user, RoomData{id, request.roomName, request.maxUsers, request.questionCount, request.answerTimeout, FALSE});
-        result.newHandler = (IRequestHandler*)(this); //needs to be replaced with the correct handler
+        RoomData data = { id, request.roomName, request.maxUsers, request.questionCount, request.answerTimeout, FALSE };
+        this->m_roomManager.createRoom(this->m_user, data);
+        result.newHandler = (IRequestHandler*)this->m_handlerFactory.createRoomAdminRequestHandler(this->m_user, &this->m_roomManager.getRoom(id));
     }
     catch (const std::exception& e)
     {

@@ -1,5 +1,8 @@
 #include "Room.h"
 
+#define FALSE 0
+#define TRUE !FALSE
+
 Room::Room(const RoomData metadata)
 	:m_metadata(metadata)
 {
@@ -7,7 +10,14 @@ Room::Room(const RoomData metadata)
 
 void Room::addUser(const LoggedUser& userToAdd)
 {
-	this->m_users.push_back(userToAdd);
+	if (this->m_metadata.maxPlayers > this->m_users.size())
+	{
+		this->m_users.push_back(userToAdd);
+	}
+	else
+	{
+		throw std::exception("Room is full");
+	}
 }
 
 void Room::removeUser(const LoggedUser& userToRemove)
@@ -40,4 +50,9 @@ vector<string> Room::getAllUsers() const
 RoomData Room::getRoomData() const
 {
 	return this->m_metadata;
+}
+
+void Room::activate()
+{
+	this->m_metadata.isActive = TRUE;
 }

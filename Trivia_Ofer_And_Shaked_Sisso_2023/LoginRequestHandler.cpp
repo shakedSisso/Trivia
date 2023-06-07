@@ -9,7 +9,7 @@ LoginRequestHandler::LoginRequestHandler(RequestHandlerFactory& handlerFactory, 
 
 bool LoginRequestHandler::isRequestRelevent(const RequestInfo& info)
 {
-    if (info.id == LOGIN_REQUEST || info.id == SIGN_UP_REQUEST)
+    if (info.id == Login || info.id == Signup)
     {
         return true;
     }
@@ -23,7 +23,7 @@ RequestResult LoginRequestHandler::handleRequest(const RequestInfo& info)
     {
         if (isRequestRelevent(info))
         {
-            if (info.id == SIGN_UP_REQUEST)
+            if (info.id == Signup)
             {
                 result = signup(info);
             }
@@ -42,7 +42,7 @@ RequestResult LoginRequestHandler::handleRequest(const RequestInfo& info)
         std::cerr << e.what() << std::endl;
         result.newHandler = this;
         ErrorResponse response;
-        response.message = "ERROR";
+        response.message = e.what();
         result.buffer = JsonResponsePacketSerializer::serializeResponse(response);
     }
     return result;
