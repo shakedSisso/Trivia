@@ -59,19 +59,26 @@ RequestResult GameRequestHandler::getQuestion(const RequestInfo& info)
 {
     RequestResult result; 
     GetQuestionResponse response;
-    response.status = GetQuestion;
     try
     {
         Question question = this->m_game.getQuestionForUser(this->m_user);
         result.newHandler = (IRequestHandler*)(this);
         response.question = question.getQuestion();
-        std::vector<std::string> possibleAnswers = question.getPossibleAnswers();
-        std::map<unsigned int, std::string> answers;
-        int count = 1;
-        for (auto answer : possibleAnswers)
+            std::map<unsigned int, std::string> answers;
+        if (response.question != "")
         {
-            answers[count] = answer;
-            count++;
+            response.status = GetQuestion;
+            std::vector<std::string> possibleAnswers = question.getPossibleAnswers();
+            int count = 1;
+            for (auto answer : possibleAnswers)
+            {
+                answers[count] = answer;
+                count++;
+            }
+        }
+        else
+        {
+            response.status = GetQuestionFailed;
         }
         response.answers = answers;
     }
