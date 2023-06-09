@@ -131,8 +131,8 @@ RequestResult GameRequestHandler::getGameResults(const RequestInfo& info)
         std::map<LoggedUser, GameData> players = this->m_game.getPlayers();
         for (auto it = players.begin(); it != players.end(); ++it)
         {
-            gameData = (*it).second;
-            player.username = this->m_user.getUsename();
+            gameData = it->second;
+            player.username = it->first.getUsename();
             player.correctAnswerCount = gameData.correctAnswerCount;
             player.wrongAnswerCount = gameData.wrongAnswerCount;
             player.averageAnswerTime = gameData.averageAnswerTime;
