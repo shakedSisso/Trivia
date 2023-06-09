@@ -122,19 +122,28 @@ RequestResult GameRequestHandler::getGameResults(const RequestInfo& info)
 {
     RequestResult result;
     std::vector<PlayerResults> results;
+    GetGameResultResponse response;
     try
     {
         PlayerResults player;
         GameData gameData;
-        std::map<LoggedUser, GameData> players = this->m_game.getPlayers();
-        for (auto it = players.begin(); it != players.end(); ++it)
+        if (this->m_game.isGameFinished())
         {
-            gameData = it->second;
-            player.username = it->first.getUsename();
-            player.correctAnswerCount = gameData.correctAnswerCount;
-            player.wrongAnswerCount = gameData.wrongAnswerCount;
-            player.averageAnswerTime = gameData.averageAnswerTime;
-            results.push_back(player);
+            response.status = GetGameResultFailed;
+        }
+        else
+        {
+            response.status = GetGameResult;
+            std::map<LoggedUser, GameData> players = this->m_game.getPlayers();
+            for (auto it = players.begin(); it != players.end(); ++it)
+            {
+                gameData = it->second;
+                player.username = it->first.getUsename();
+                player.correctAnswerCount = gameData.correctAnswerCount;
+                player.wrongAnswerCount = gameData.wrongAnswerCount;
+                player.averageAnswerTime = gameData.averageAnswerTime;
+                results.push_back(player);
+            }
         }
         result.newHandler = (IRequestHandler*)(this);
     }
@@ -149,8 +158,6 @@ RequestResult GameRequestHandler::getGameResults(const RequestInfo& info)
         loginManager.logout(this->m_user.getUsename());
         throw std::exception(e.what());
     }
-    GetGameResultResponse response;
-    response.status = GetGameResult;
     response.results = results;
     result.buffer = JsonResponsePacketSerializer::serializeResponse(response);
     return result;
