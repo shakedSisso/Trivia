@@ -62,7 +62,7 @@ RequestResult GameRequestHandler::getQuestion(const RequestInfo& info)
     response.status = GetQuestion;
     try
     {
-        Question question = this->m_game.getQuestoinForUser(this->m_user);
+        Question question = this->m_game.getQuestionForUser(this->m_user);
         result.newHandler = (IRequestHandler*)(this);
         response.question = question.getQuestion();
         std::vector<std::string> possibleAnswers = question.getPossibleAnswers();
@@ -97,10 +97,8 @@ RequestResult GameRequestHandler::submitAnswer(const RequestInfo& info)
     try
     {
         SubmitAnswerRequest request = JsonRequestPacketDeserializer::deserializeSubmitAnswerRequest(info.buffer);
-        this->m_game.submitAnswer(request);
+        correctAnswerId = this->m_game.submitAnswer(request);
         result.newHandler = (IRequestHandler*)(this);
-        Question q = this->m_game.getQuestoinForUser(this->m_user);
-        correctAnswerId = q.getCorrectAnswerId();
     }
     catch (const std::exception& e)
     {
@@ -131,8 +129,8 @@ RequestResult GameRequestHandler::getGameResults(const RequestInfo& info)
         std::map<LoggedUser, GameData> players = this->m_game.getPlayers();
         for (auto it = players.begin(); it != players.end(); ++it)
         {
-            gameData = (*it).second;
-            player.username = this->m_user.getUsename();
+            gameData = it->second;
+            player.username = it->first.getUsename();
             player.correctAnswerCount = gameData.correctAnswerCount;
             player.wrongAnswerCount = gameData.wrongAnswerCount;
             player.averageAnswerTime = gameData.averageAnswerTime;
@@ -164,8 +162,11 @@ RequestResult GameRequestHandler::leaveGame(const RequestInfo& info)
     try
     {
         this->m_game.removePlayer();
-        GameManager& gameManager = this->m_handlerFactory.getGameManager();
-        gameManager.deleteGame(this->m_game.getGameId());
+        if (this->m_game.getPlayers().empty())
+        {
+            GameManager& gameManager = this->m_handlerFactory.getGameManager();
+            gameManager.deleteGame(this->m_game.getGameId());
+        }
         result.newHandler = this->m_handlerFactory.createMenuRequestHandler(this->m_user);
     }
     catch (const std::exception& e)
