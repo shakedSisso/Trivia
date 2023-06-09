@@ -129,10 +129,6 @@ RequestResult GameRequestHandler::getGameResults(const RequestInfo& info)
         GameData gameData;
         if (this->m_game.isGameFinished())
         {
-            response.status = GetGameResultFailed;
-        }
-        else
-        {
             response.status = GetGameResult;
             std::map<LoggedUser, GameData> players = this->m_game.getPlayers();
             for (auto it = players.begin(); it != players.end(); ++it)
@@ -144,6 +140,10 @@ RequestResult GameRequestHandler::getGameResults(const RequestInfo& info)
                 player.averageAnswerTime = gameData.averageAnswerTime;
                 results.push_back(player);
             }
+        }
+        else
+        {
+            response.status = GetGameResultFailed;
         }
         result.newHandler = (IRequestHandler*)(this);
     }
