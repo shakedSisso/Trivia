@@ -1,10 +1,12 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <map>
 #include "Room.h"
 
 using std::string;
 using std::vector;
+using std::map;
 
 typedef struct LoginResponse
 {
@@ -82,3 +84,36 @@ typedef struct LeaveRoomResponse
 {
 	unsigned int status;
 } LeaveRoomResponse;
+
+typedef struct LeaveGameResponse
+{
+	unsigned int status;
+} LeaveGameResponse;
+
+typedef struct GetQuestionResponse
+{
+	unsigned int status;
+	string question;
+	map<unsigned int, string> answers;
+} GetQuestionResponse;
+
+typedef struct SubmitAnswerResponse
+{
+	unsigned int status;
+	unsigned int correctAnswerId;
+} SubmitAnswerResponse;
+
+typedef struct PlayerResults
+{
+	string username;
+	unsigned int correctAnswerCount;
+	unsigned int wrongAnswerCount;
+	unsigned int averageAnswerTime;
+} PlayerResults;
+
+typedef struct GetGameResultsResponse
+{
+	unsigned int status;
+	vector<PlayerResults> results;
+} GetGameResultsResponse;
+
