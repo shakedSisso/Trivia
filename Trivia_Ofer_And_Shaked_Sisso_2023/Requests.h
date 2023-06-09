@@ -39,6 +39,11 @@ typedef struct CreateRoomRequest
 	unsigned int answerTimeout;
 }CreateRoomRequest;
 
+typedef struct SubmitAnswerRequest
+{
+	unsigned int answerId;
+}SubmitAnswerRequest;
+
 typedef struct RequestResult
 {
 	Buffer buffer;
