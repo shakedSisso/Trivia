@@ -128,7 +128,7 @@ int MongoDatabase::addNewUser(const std::string username, const std::string pass
 	documentBuilder.append(kvp("games_count", DEFAULT_STATISTICS_VALUE));
 	documentBuilder.append(kvp("correct_answers", DEFAULT_STATISTICS_VALUE));
 	documentBuilder.append(kvp("total_answers", DEFAULT_STATISTICS_VALUE));
-	documentBuilder.append(kvp("sum_playing_seconds", DEFAULT_STATISTICS_VALUE));
+	documentBuilder.append(kvp("average_answer_time", DEFAULT_STATISTICS_VALUE));
 	doc = documentBuilder.extract();
 
 	statisticsCollections.insert_one(doc.view());
@@ -136,7 +136,7 @@ int MongoDatabase::addNewUser(const std::string username, const std::string pass
 	return 0;
 }
 
-std::list<Question> MongoDatabase::getQuestions(int amountOfQuestions)
+std::list<Question> MongoDatabase::getQuestions(const int amountOfQuestions)
 {
 	mongocxx::collection collection = this->_db.collection(QUESTIONS_COLLECTION_NAME);
 	int count = collection.count_documents({});
@@ -167,32 +167,27 @@ std::list<Question> MongoDatabase::getQuestions(int amountOfQuestions)
 	return questions;
 }
 
-float MongoDatabase::getPlayerAverageAnswerTime(std::string username)
+float MongoDatabase::getPlayerAverageAnswerTime(const std::string username)
 {
-	int sum = 0, count = 0;
-	json jsonData = getUserStatisticsJson(username);
-	sum = jsonData["sum_playing_seconds"];
-	count = jsonData["total_answers"];
-
-	return (float)sum / count;
+	return getUserStatisticsJson(username)["average_answer_time"];
 }
 
-int MongoDatabase::getNumOfCorrectAnswers(std::string username)
+int MongoDatabase::getNumOfCorrectAnswers(const std::string username)
 {
 	return getUserStatisticsJson(username)["correct_answers"];
 }
 
-int MongoDatabase::getNumOfTotalAnswers(std::string username)
+int MongoDatabase::getNumOfTotalAnswers(const std::string username)
 {
 	return getUserStatisticsJson(username)["total_answers"];
 }
 
-int MongoDatabase::getNumOfPlayerGames(std::string username)
+int MongoDatabase::getNumOfPlayerGames(const std::string username)
 {
 	return getUserStatisticsJson(username)["games_count"];
 }
 
-int MongoDatabase::getPlayerScore(std::string username)
+int MongoDatabase::getPlayerScore(const std::string username)
 {
 	return getNumOfCorrectAnswers(username); //the players score is the amount of correct answers they have
 }
@@ -220,6 +215,28 @@ std::vector<std::string> MongoDatabase::getHighScores()
 	return highScores;
 }
 
+int MongoDatabase::submitGameStatistics(const std::string username, const int correctAnswerCount, const int wrongAnswerCount, const float averageAnswerTime)
+{
+	basicDocument documentBuilder;
+	json userData = getUserStatisticsJson(username);
+	float avg = (userData["average_answer_time"] + averageAnswerTime) / 2;
+	int correctAnswers = userData["correct_answers"] + correctAnswerCount;
+	int totalAnswers = userData["total_answers"] + correctAnswerCount + wrongAnswerCount;
+
+	documentBuilder.append(kvp("username", username));
+	documentBuilder.append(kvp("games_count", userData["games_count"] + 1));
+	documentBuilder.append(kvp("correct_answers", correctAnswers));
+	documentBuilder.append(kvp("total_answers", totalAnswers));
+	documentBuilder.append(kvp("average_answer_time", avg));
+	bsoncxx::document::value doc = documentBuilder.extract();
+
+	mongocxx::collection statisticsCollections = this->_db[STATISTICS_COLLECTION_NAME];
+	auto builder = streamDocument{};
+	bsoncxx::document::value filter = builder << "username" << username << finalize;
+	statisticsCollections.update_one(filter.view(), doc.view());
+
+	return 0;
+}
 
 void MongoDatabase::addQuestionsToDatabase()
 {
@@ -274,7 +291,7 @@ int MongoDatabase::addQuestion(const QuestionStruct& q)
 	return 0;
 }
 
-json MongoDatabase::getUserStatisticsJson(std::string& username)
+json MongoDatabase::getUserStatisticsJson(const std::string& username)
 {
 	if (!doesUserExist(username))
 	{

@@ -77,17 +77,7 @@ bool SqliteDatabase::createTables(int& res)
 	res = sqlite3_exec(this->_db, sqlStatemant.c_str(), nullptr, nullptr, errMessage);
 	if (res != SQLITE_OK)
 		return false;
-	sqlStatemant = "CREATE TABLE IF NOT EXISTS t_players_answers ( game_id integer NOT NULL UNIQUE, username text NOT NULL, question_id integer NOT NULL, player_answer text NOT NULL, is_correct integer NOT NULL, answer_time integer NOT NULL, PRIMARY KEY(game_id,username,question_id), FOREIGN KEY(game_id) REFERENCES t_games(game_id), FOREIGN KEY(username) REFERENCES t_users(username), FOREIGN KEY(question_id) REFERENCES t_questions(question_id));";
-	errMessage = nullptr;
-	res = sqlite3_exec(this->_db, sqlStatemant.c_str(), nullptr, nullptr, errMessage);
-	if (res != SQLITE_OK)
-		return false;
-	sqlStatemant = "CREATE TABLE IF NOT EXISTS t_games(game_id integer NOT NULL UNIQUE, status integer NOT NULL, start_time DATETIME NOT NULL, end_time DATETIME, PRIMARY KEY(game_id AUTOINCREMENT));";
-	errMessage = nullptr;
-	res = sqlite3_exec(this->_db, sqlStatemant.c_str(), nullptr, nullptr, errMessage);
-	if (res != SQLITE_OK)
-		return false;
-	sqlStatemant = "CREATE TABLE IF NOT EXISTS t_statistics (username	TEXT NOT NULL UNIQUE, games_count integer NOT NULL, correct_answers integer NOT NULL, total_answers integer NOT NULL, sum_playing_seconds integer NOT NULL, PRIMARY KEY(username), FOREIGN KEY(username) REFERENCES t_users(username)); ";
+	sqlStatemant = "CREATE TABLE IF NOT EXISTS t_statistics (username	TEXT NOT NULL UNIQUE, games_count integer NOT NULL, correct_answers integer NOT NULL, total_answers integer NOT NULL, average_answer_time integer NOT NULL, PRIMARY KEY(username), FOREIGN KEY(username) REFERENCES t_users(username)); ";
 	errMessage = nullptr;
 	res = sqlite3_exec(this->_db, sqlStatemant.c_str(), nullptr, nullptr, errMessage);
 	if (res != SQLITE_OK)
@@ -224,7 +214,7 @@ int SqliteDatabase::addNewUser(const std::string username, const std::string pas
     return 0;
 }
 
-std::list<Question> SqliteDatabase::getQuestions(int amountOfQuestions)
+std::list<Question> SqliteDatabase::getQuestions(const int amountOfQuestions)
 {
 	std::list<Question> questions;
 	std::string sqlStatement = "SELECT * FROM t_questions ORDER BY RANDOM() LIMIT " + std::to_string(amountOfQuestions)+ ";";
@@ -236,27 +226,25 @@ std::list<Question> SqliteDatabase::getQuestions(int amountOfQuestions)
 	return questions;
 }
 
-float SqliteDatabase::getPlayerAverageAnswerTime(std::string username)
+float SqliteDatabase::getPlayerAverageAnswerTime(const std::string username)
 {
 	if (!doesUserExist(username))
 	{ 
 		throw std::exception("user doesn't exist");
 	}
-	int sum = 0, count = 0;
+	float avg;
 	std::list<std::string> list;
-	std::string sqlStatement = "SELECT sum_playing_seconds, total_answers FROM t_statistics WHERE username = '" + username + "';";
+	std::string sqlStatement = "SELECT average_answer_time FROM t_statistics WHERE username = '" + username + "';";
 	int res = sqlite3_exec(this->_db, sqlStatement.c_str(), callbackString, &list, nullptr);
 	if (res != SQLITE_OK)
 	{
 		throw std::exception("Error- sqlite3_exec functions failed");
 	}
-	sum = std::atoi(list.front().c_str());
-	list.erase(list.begin()); //erase the first value to get to the second value with front()
-	count = std::atoi(list.front().c_str());
-	return (float)sum / count;
+	avg = std::atoi(list.front().c_str());
+	return avg;
 }
 
-int SqliteDatabase::getNumOfCorrectAnswers(std::string username)
+int SqliteDatabase::getNumOfCorrectAnswers(const std::string username)
 {
 	if (!doesUserExist(username))
 	{
@@ -272,7 +260,7 @@ int SqliteDatabase::getNumOfCorrectAnswers(std::string username)
 	return std::atoi(list.front().c_str());
 }
 
-int SqliteDatabase::getNumOfTotalAnswers(std::string username)
+int SqliteDatabase::getNumOfTotalAnswers(const std::string username)
 {
 	if (!doesUserExist(username))
 	{
@@ -288,7 +276,7 @@ int SqliteDatabase::getNumOfTotalAnswers(std::string username)
 	return std::atoi(list.front().c_str());
 }
 
-int SqliteDatabase::getNumOfPlayerGames(std::string username)
+int SqliteDatabase::getNumOfPlayerGames(const std::string username)
 {
 	if (!doesUserExist(username))
 	{
@@ -304,7 +292,7 @@ int SqliteDatabase::getNumOfPlayerGames(std::string username)
 	return std::atoi(list.front().c_str());
 }
 
-int SqliteDatabase::getPlayerScore(std::string username)
+int SqliteDatabase::getPlayerScore(const std::string username)
 {
 	return getNumOfCorrectAnswers(username); //the players score is the amount of correct answers they have
 }
@@ -324,4 +312,21 @@ std::vector<std::string> SqliteDatabase::getHighScores()
 		highScores.push_back(user);
 	}
 	return highScores;
+}
+
+int SqliteDatabase::submitGameStatistics(const std::string username, const int correctAnswerCount, const int wrongAnswerCount, const float averageAnswerTime)
+{
+	float averageTime = (getPlayerAverageAnswerTime(username) + averageAnswerTime) / 2;
+	int correctAnswers = getNumOfCorrectAnswers(username) + correctAnswerCount;
+	int totalAnswers = getNumOfTotalAnswers(username) + correctAnswerCount + wrongAnswerCount;
+	int gameCount = getNumOfPlayerGames(username) + 1;
+
+	std::string sqlStatement = "UPDATE t_statistics SET games_count =  "+std::to_string(gameCount) + ", correct_answers = " + std::to_string(correctAnswers) + ", total_answers = " + std::to_string(totalAnswers) + ", average_answer_time = " + std::to_string(averageTime) + " WHERE username = '" + username + "'; ";
+	int res = sqlite3_exec(this->_db, sqlStatement.c_str(), nullptr, nullptr, nullptr);
+	if (res != SQLITE_OK)
+	{
+		throw std::exception("Error- sqlite3_exec functions failed");
+	}
+
+	return 0;
 }

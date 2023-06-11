@@ -27,13 +27,14 @@ public:
 	virtual int doesUserExist(const std::string username) = 0;
 	virtual int doesPasswordMatch(const std::string username, const std::string password) = 0;
 	virtual int addNewUser(const std::string username, const std::string password, const std::string mail, const std::string address, const std::string phoneNumber, const std::string birthDate) = 0;
-	virtual std::list<Question> getQuestions(int amountOfQuestions) = 0;
-	virtual float getPlayerAverageAnswerTime(std::string username) = 0;
-	virtual int getNumOfCorrectAnswers(std::string username) = 0;
-	virtual int getNumOfTotalAnswers(std::string username) = 0;
-	virtual int getNumOfPlayerGames(std::string username) = 0;
-	virtual int getPlayerScore(std::string username) = 0;
+	virtual std::list<Question> getQuestions(const int amountOfQuestions) = 0;
+	virtual float getPlayerAverageAnswerTime(const std::string username) = 0;
+	virtual int getNumOfCorrectAnswers(const std::string username) = 0;
+	virtual int getNumOfTotalAnswers(const std::string username) = 0;
+	virtual int getNumOfPlayerGames(const std::string username) = 0;
+	virtual int getPlayerScore(const std::string username) = 0;
 	virtual std::vector<std::string> getHighScores() = 0;
+	virtual int submitGameStatistics(const std::string username, const int correctAnswerCount, const int wrongAnswerCount, const float averageAnswerTime) = 0;
 private:
 	static int instanceCount;
 };

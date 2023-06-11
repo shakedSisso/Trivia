@@ -24,6 +24,11 @@ Question::Question(const std::string question, const std::vector<std::string> an
     }
 }
 
+Question::Question()
+    : m_question("")
+{
+}
+
 std::string Question::getQuestion() const
 {
     return this->m_question;
