@@ -18,7 +18,7 @@ void GameManager::createGame(const Room& room)
 	this->m_games.push_back(Game(this->m_database, questions,usersList, room));
 }
 
-void GameManager::deleteGame(const int gameId)
+void GameManager::deleteGame(const GameID gameId)
 {
 	for (auto game = this->m_games.begin(); game != this->m_games.end(); game++)
 	{
