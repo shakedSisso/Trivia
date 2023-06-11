@@ -15,7 +15,7 @@ void GameManager::createGame(const Room& room)
 	{
 		usersList.push_back(LoggedUser(user));
 	}
-	this->m_games.push_back(Game(questions,usersList, room));
+	this->m_games.push_back(Game(this->m_database, questions,usersList, room));
 }
 
 void GameManager::deleteGame(const int gameId)
@@ -24,11 +24,6 @@ void GameManager::deleteGame(const int gameId)
 	{
 		if (game->getGameId() == gameId)
 		{
-			map<LoggedUser, GameData> gamePlayers = game->getPlayers();
-			for (auto player = gamePlayers.begin(); player != gamePlayers.end(); player++)
-			{
-				this->m_database->insertStatistics(player->first.getUsename(), player->second.correctAnswerCount, player->second.wrongAnswerCount, player->second.averageAnswerTime);
-			}
 			this->m_games.erase(game);
 			break;
 		}

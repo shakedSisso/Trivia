@@ -1,7 +1,7 @@
 #include "Game.h"
 
-Game::Game(vector<Question> questions, vector<LoggedUser> users, const Room& room)
-    : m_questions(questions), m_gameId(room.getRoomData().id), m_gameSettings(room.getRoomData())
+Game::Game(IDatabase* database, vector<Question> questions, vector<LoggedUser> users, const Room& room)
+    :m_database(database), m_questions(questions), m_gameId(room.getRoomData().id), m_gameSettings(room.getRoomData())
 {
     for (auto user = users.begin(); user != users.end(); user++)
     {
@@ -40,6 +40,9 @@ int Game::submitAnswer(const LoggedUser& user, int answerId)
 
 void Game::removePlayer(const LoggedUser& user)
 {
+    auto player = this->m_players.find(user);
+    this->m_database->submitGameStatistics(player->first.getUsename(), player->second.correctAnswerCount, player->second.wrongAnswerCount, player->second.averageAnswerTime);
+
     this->m_players.erase(user);
 }
 
