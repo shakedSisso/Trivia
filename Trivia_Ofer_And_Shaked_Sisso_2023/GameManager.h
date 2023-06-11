@@ -14,6 +14,8 @@ public:
 	void createGame(const Room& room);
 	void deleteGame(const GameID gameId);
 
+	void setDatabase(IDatabase* database);
+
 private:
 	IDatabase* m_database;
 	vector<Game> m_games;

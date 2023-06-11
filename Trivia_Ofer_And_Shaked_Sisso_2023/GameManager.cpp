@@ -29,3 +29,8 @@ void GameManager::deleteGame(const GameID gameId)
 		}
 	}
 }
+
+void GameManager::setDatabase(IDatabase* database)
+{
+	this->m_database = database;
+}
