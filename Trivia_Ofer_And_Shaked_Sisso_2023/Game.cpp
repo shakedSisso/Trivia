@@ -43,7 +43,7 @@ void Game::removePlayer(const LoggedUser& user)
     this->m_players.erase(user);
 }
 
-int Game::getGameId() const
+GameID Game::getGameId() const
 {
     return this->m_gameId;
 }

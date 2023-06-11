@@ -2,6 +2,7 @@
 #include "Question.h"
 #include "LoggedUser.h"
 #include "Room.h"
+#include "Globals.h"
 #include <map>
 #include <vector>
 
@@ -31,12 +32,12 @@ public:
 	int submitAnswer(const LoggedUser& user, int answerId);
 	void removePlayer(const LoggedUser& user);
 	
-	int getGameId() const;
+	GameID getGameId() const;
 	map<LoggedUser, GameData> getPlayers() const;
 	bool isGameFinished() const;
 private:
 	vector<Question> m_questions;
 	map<LoggedUser, GameData> m_players;
-	int m_gameId;
+	GameID m_gameId;
 	RoomData m_gameSettings;
 };
