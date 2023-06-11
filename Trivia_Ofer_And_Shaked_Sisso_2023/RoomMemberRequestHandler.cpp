@@ -120,7 +120,7 @@ RequestResult RoomMemberRequestHandler::startGame(const RequestInfo& info)
     RequestResult result;
     try
     {
-        result.newHandler = nullptr; //this needs to be replace by GameRequestHandler
+        result.newHandler = this->m_handlerFactory.createGameRequestHandler(this->m_user, *this->m_room);
     }
     catch (const std::exception& e)
     {

@@ -3,7 +3,7 @@
 int RequestHandlerFactory::instanceCount = 0;
 
 RequestHandlerFactory::RequestHandlerFactory(IDatabase* database)
-    : m_database(database), m_loginManager(database), m_roomManager(), m_statisticsManager(database)
+    : m_database(database), m_loginManager(database), m_roomManager(), m_statisticsManager(database), m_gameManager(database)
 {
     if (instanceCount != 0)
     {
@@ -32,6 +32,11 @@ RoomMemberRequestHandler* RequestHandlerFactory::createRoomMemberRequestHandler(
     return new RoomMemberRequestHandler(*this, room, user, this->m_roomManager);
 }
 
+GameRequestHandler* RequestHandlerFactory::createGameRequestHandler(LoggedUser& user, Room& room)
+{
+    return new GameRequestHandler(*this, this->m_gameManager, this->m_gameManager.createGame(room), user);
+}
+
 LoginManager& RequestHandlerFactory::getLoginManager()
 {
     return this->m_loginManager;
@@ -47,9 +52,15 @@ StatisticsManager& RequestHandlerFactory::getStatisticsManager()
     return this->m_statisticsManager;
 }
 
+GameManager& RequestHandlerFactory::getGameManager()
+{
+    return this->m_gameManager;
+}
+
 void RequestHandlerFactory::setDatabase(IDatabase* db)
 {
     this->m_database = db;
     this->m_loginManager.setDatabase(db);
     this->m_statisticsManager.setDatabase(db);
+    this->m_gameManager.setDatabase(db);
 }
