@@ -12,7 +12,7 @@ public:
 	GameManager(IDatabase* database);
 
 	void createGame(const Room& room);
-	void deleteGame(const int gameId);
+	void deleteGame(const GameID gameId);
 
 private:
 	IDatabase* m_database;
