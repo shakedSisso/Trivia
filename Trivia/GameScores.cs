@@ -40,6 +40,7 @@ namespace Trivia
                 lblError.ForeColor = Color.Maroon;
                 lblError.Left = (this.Width - lblError.Left) / 2;
                 lblError.Top = (this.Height - lblError.Top) / 2;
+                this.Controls.Add(lblError);
                 try
                 {
                     results = Program.GetCommunicator().GetGameResults();
