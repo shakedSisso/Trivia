@@ -16,20 +16,23 @@ typedef struct GameData
 	unsigned int correctAnswerCount;
 	unsigned int wrongAnswerCount;
 	float averageAnswerTime;
+	int questionIndex;
 	GameData()
 	{
 		correctAnswerCount = 0;
 		wrongAnswerCount = 0;
 		averageAnswerTime = 0.0;
+		questionIndex = 0;
 	}
 } GameData;
 
 class Game
 {
 public:
+	Game() = default;
 	Game(IDatabase* database, vector<Question> questions, vector<LoggedUser> users, const Room& room);
 
-	Question getQuestionForUser(const LoggedUser& user) const;
+	Question getQuestionForUser(const LoggedUser& user);
 	int submitAnswer(const LoggedUser& user, int answerId);
 	void removePlayer(const LoggedUser& user);
 	

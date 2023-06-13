@@ -1,19 +1,43 @@
 #include "Game.h"
 
+#define START_INDEX 0
+
 Game::Game(IDatabase* database, vector<Question> questions, vector<LoggedUser> users, const Room& room)
-    :m_database(database), m_questions(questions), m_gameId(room.getRoomData().id), m_gameSettings(room.getRoomData())
+    :m_database(database), m_gameId(room.getRoomData().id), m_gameSettings(room.getRoomData())
 {
-    for (auto user = users.begin(); user != users.end(); user++)
+    for (auto question : questions)
+    {
+        Question q = question;
+        this->m_questions.push_back(q);
+    }
+    for (auto user : users)
     {
         GameData gameData;
-        this->m_players[*user] = gameData;
+        gameData.questionIndex = START_INDEX;
+        gameData.currentQuestion = m_questions[gameData.questionIndex];
+        this->m_players.insert({ user, gameData });
         
     }
 }
 
-Question Game::getQuestionForUser(const LoggedUser& user) const
+Question Game::getQuestionForUser(const LoggedUser& user)
 {
-    return this->m_players.at(user).currentQuestion;
+    GameData gameData;
+    for (auto player : this->m_players)
+    {
+        if (player.first.getUsename() == user.getUsename())
+        {
+            gameData = player.second;
+        }
+    }
+    Question question = gameData.currentQuestion;
+    this->m_players[user].questionIndex++;
+    if (this->m_players[user].questionIndex >= this->m_questions.size())
+    {
+        return Question();
+    }
+    this->m_players[user].currentQuestion = this->m_questions[this->m_players[user].questionIndex];
+    return question;
 }
 
 int Game::submitAnswer(const LoggedUser& user, int answerId)
