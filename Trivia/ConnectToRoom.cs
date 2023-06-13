@@ -56,13 +56,21 @@ namespace Trivia
         {
             if(this.IsHandleCreated)
             {
-                lock(this.communicatorLock)
+                try
                 {
-                    this.rooms = Program.GetCommunicator().GetRooms();
+                    lock (this.communicatorLock)
+                    {
+                        this.rooms = Program.GetCommunicator().GetRooms();
+                    }
+                    this.Invoke((MethodInvoker)delegate
+                    {
+                        updateRoomsList();
+                    });
                 }
-                this.Invoke((MethodInvoker)delegate {
-                    updateRoomsList();
-                });
+                catch(Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
             }
         }
 
@@ -173,7 +181,14 @@ namespace Trivia
             this.roomId = -999;
             lock (this.communicatorLock)
             {
-                this.rooms = Program.GetCommunicator().GetRooms();
+                try
+                {
+                    this.rooms = Program.GetCommunicator().GetRooms();
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
             }
             updateRoomsList();
             btnJoinRoom.Enabled = false;

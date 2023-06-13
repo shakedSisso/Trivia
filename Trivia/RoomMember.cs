@@ -143,7 +143,7 @@ namespace Trivia
                     this.Invoke((MethodInvoker)delegate
                     {
                         LocationManager.SetFormLocation(this.Location);
-                        Form fGame = new Game(this.roomName);
+                        Form fGame = new Game(this.roomName, this.timePerQuestion, this.questionCount);
                         this.timer.Dispose();
                         this.timer = null;
                         this.Hide();
