@@ -44,10 +44,15 @@ void SqliteDatabase::addQuestionsToDatabase()
 			// Extract question details
 			q.id = i + 1;
 			q.question = questionObj["question"].get<std::string>();
+			ApiEntity::checkForHtmlEntity(q.question);
 			q.correct_ans = questionObj["correct_answer"].get<std::string>();
+			ApiEntity::checkForHtmlEntity(q.correct_ans);
 			q.ans2 = questionObj["incorrect_answers"].get<std::vector<std::string>>()[0];
+			ApiEntity::checkForHtmlEntity(q.ans2);
 			q.ans3 = questionObj["incorrect_answers"].get<std::vector<std::string>>()[1];
+			ApiEntity::checkForHtmlEntity(q.ans3);
 			q.ans4 = questionObj["incorrect_answers"].get<std::vector<std::string>>()[2];
+			ApiEntity::checkForHtmlEntity(q.ans4);
 
 			addQuestion(q);
 		}

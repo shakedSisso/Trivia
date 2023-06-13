@@ -3,9 +3,10 @@
 #include "Question.h"
 #include <list>
 #include <vector>
+#include "ApiEntity.h"
 
 #define HIGH_SCORES_COUNT 5
-#define API_URL "https://opentdb.com/api.php?amount=50&type=multiple"
+#define API_URL "https://opentdb.com/api.php?amount=50&difficulty=easy&type=multiple"
 #define ANSWER_COUNT 4
 
 typedef struct QuestionStruct
