@@ -18,7 +18,7 @@ namespace Trivia
     {
         private Socket socket;
 
-        private enum codes { Error, Login, Signup, GetPlayersInRoom, JoinRoom, CreateRoom, HighScore, Logout, GetRooms, Statistics, CloseRoom, StartGame, GetRoomState, LeaveRoom }
+        public enum codes { Error, Login, Signup, GetPlayersInRoom, JoinRoom, CreateRoom, HighScore, Logout, GetRooms, Statistics, CloseRoom, StartGame, GetRoomState, LeaveRoom, LeaveGame, GetQuestion, GetQuestionFailed, SubmitAnswer, GetGameResult, GetGameResultFailed };
         public void Connect()
         {
             try
@@ -292,6 +292,78 @@ namespace Trivia
             if (response.status == (int)codes.LeaveRoom)
             {
                 return true;
+            }
+            throw new Exception("Error while trying to make a request");
+        }
+
+        public dynamic GetQuestion()
+        {
+            var jsonObject = new { };
+            byte[] buffer = PacketSerializer.GenerateMessage((int)codes.GetQuestion, jsonObject);
+            this.socket.Send(buffer);
+            dynamic response = PacketDeserializer.ProcessSocketData(this.socket);
+            if (response.code == (int)codes.Error)
+            {
+                throw new Exception(response.message.ToString());
+            }
+            if (response.status == (int)codes.GetQuestion || response.status == (int)codes.GetQuestionFailed)
+            {
+                return response;
+            }
+            throw new Exception("Error while trying to make a request");
+        }
+
+        internal int SubmitAnswer(int id)
+        {
+            var jsonObject = new { answer_id = id };
+            byte[] buffer = PacketSerializer.GenerateMessage((int)codes.SubmitAnswer, jsonObject);
+            this.socket.Send(buffer);
+            dynamic response = PacketDeserializer.ProcessSocketData(this.socket);
+            if (response.code == (int)codes.Error)
+            {
+                throw new Exception(response.message.ToString());
+            }
+            if (response.status == (int)codes.SubmitAnswer)
+            {
+                return response.correctAnswerId;
+            }
+            throw new Exception("Error while trying to make a request");
+        }
+
+        internal void LeaveGame()
+        {
+            var jsonObject = new { };
+            byte[] buffer = PacketSerializer.GenerateMessage((int)codes.LeaveGame, jsonObject);
+            this.socket.Send(buffer);
+            dynamic response = PacketDeserializer.ProcessSocketData(this.socket);
+            if (response.code == (int)codes.Error)
+            {
+                throw new Exception(response.message.ToString());
+            }
+            if (response.code == (int)codes.LeaveGame)
+            {
+                return;
+            }
+            throw new Exception("Error while trying to make a request");
+        }
+
+        internal dynamic GetGameResults()
+        {
+            var jsonObject = new { };
+            byte[] buffer = PacketSerializer.GenerateMessage((int)codes.GetGameResult, jsonObject);
+            this.socket.Send(buffer);
+            dynamic response = PacketDeserializer.ProcessSocketData(this.socket);
+            if (response.code == (int)codes.Error)
+            {
+                throw new Exception(response.message.ToString());
+            }
+            if (response.status == (int)codes.GetGameResult)
+            {
+                return response;
+            }
+            if (response.status == (int)codes.GetGameResultFailed)
+            {
+                return null;
             }
             throw new Exception("Error while trying to make a request");
         }
