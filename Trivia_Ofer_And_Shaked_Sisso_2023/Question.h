@@ -10,6 +10,7 @@ public:
 	std::string getQuestion() const;
 	std::vector<std::string> getPossibleAnswers() const;
 	int getCorrectAnswerId() const;
+	Question& operator=(const Question& other);
 private:
 	std::string m_question;
 	std::vector<std::string> m_possibleAnswers;
