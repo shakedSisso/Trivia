@@ -41,6 +41,7 @@
             // btnJoinRoom
             // 
             btnJoinRoom.BackColor = Color.CadetBlue;
+            btnJoinRoom.Cursor = Cursors.Hand;
             btnJoinRoom.Font = new Font("Maiandra GD", 15F, FontStyle.Bold, GraphicsUnit.Point);
             btnJoinRoom.ForeColor = SystemColors.ButtonHighlight;
             btnJoinRoom.Location = new Point(40, 177);
@@ -54,6 +55,7 @@
             // btnCreateRoom
             // 
             btnCreateRoom.BackColor = Color.CadetBlue;
+            btnCreateRoom.Cursor = Cursors.Hand;
             btnCreateRoom.Font = new Font("Maiandra GD", 15F, FontStyle.Bold, GraphicsUnit.Point);
             btnCreateRoom.ForeColor = SystemColors.ButtonHighlight;
             btnCreateRoom.Location = new Point(40, 262);
@@ -67,6 +69,7 @@
             // btnStatus
             // 
             btnStatus.BackColor = Color.CadetBlue;
+            btnStatus.Cursor = Cursors.Hand;
             btnStatus.Font = new Font("Maiandra GD", 15F, FontStyle.Bold, GraphicsUnit.Point);
             btnStatus.ForeColor = SystemColors.ButtonHighlight;
             btnStatus.Location = new Point(419, 177);
@@ -80,6 +83,7 @@
             // btnBestScores
             // 
             btnBestScores.BackColor = Color.CadetBlue;
+            btnBestScores.Cursor = Cursors.Hand;
             btnBestScores.Font = new Font("Maiandra GD", 15F, FontStyle.Bold, GraphicsUnit.Point);
             btnBestScores.ForeColor = SystemColors.ButtonHighlight;
             btnBestScores.Location = new Point(419, 262);
@@ -94,6 +98,7 @@
             // btnQuit
             // 
             btnQuit.BackColor = Color.CadetBlue;
+            btnQuit.Cursor = Cursors.Hand;
             btnQuit.Font = new Font("Maiandra GD", 13F, FontStyle.Regular, GraphicsUnit.Point);
             btnQuit.ForeColor = SystemColors.ButtonHighlight;
             btnQuit.Location = new Point(207, 395);

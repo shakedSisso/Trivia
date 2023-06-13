@@ -91,6 +91,7 @@
             // btnAnswer1
             // 
             btnAnswer1.BackColor = Color.MintCream;
+            btnAnswer1.Cursor = Cursors.Hand;
             btnAnswer1.Font = new Font("Maiandra GD", 10.8F, FontStyle.Bold, GraphicsUnit.Point);
             btnAnswer1.Location = new Point(110, 190);
             btnAnswer1.Name = "btnAnswer1";
@@ -103,6 +104,7 @@
             // btnAnswer2
             // 
             btnAnswer2.BackColor = Color.MintCream;
+            btnAnswer2.Cursor = Cursors.Hand;
             btnAnswer2.Font = new Font("Maiandra GD", 10.8F, FontStyle.Bold, GraphicsUnit.Point);
             btnAnswer2.Location = new Point(110, 237);
             btnAnswer2.Name = "btnAnswer2";
@@ -115,6 +117,7 @@
             // btnAnswer3
             // 
             btnAnswer3.BackColor = Color.MintCream;
+            btnAnswer3.Cursor = Cursors.Hand;
             btnAnswer3.Font = new Font("Maiandra GD", 10.8F, FontStyle.Bold, GraphicsUnit.Point);
             btnAnswer3.Location = new Point(110, 289);
             btnAnswer3.Name = "btnAnswer3";
@@ -127,6 +130,7 @@
             // btnAnswer4
             // 
             btnAnswer4.BackColor = Color.MintCream;
+            btnAnswer4.Cursor = Cursors.Hand;
             btnAnswer4.Font = new Font("Maiandra GD", 10.8F, FontStyle.Bold, GraphicsUnit.Point);
             btnAnswer4.Location = new Point(110, 337);
             btnAnswer4.Name = "btnAnswer4";
@@ -169,6 +173,7 @@
             // btnExit
             // 
             btnExit.BackColor = Color.CadetBlue;
+            btnExit.Cursor = Cursors.Hand;
             btnExit.Font = new Font("Maiandra GD", 9F, FontStyle.Bold, GraphicsUnit.Point);
             btnExit.ForeColor = SystemColors.ButtonHighlight;
             btnExit.Location = new Point(640, 409);
