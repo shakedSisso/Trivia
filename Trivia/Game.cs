@@ -24,6 +24,7 @@ namespace Trivia
         private bool isLocked;
         private bool nextQuestion;
         private System.Threading.Timer timer;
+        private dynamic question;
         public Game(string name, int questionTimeOut, int questionCount)
         {
             InitializeComponent();
@@ -69,7 +70,13 @@ namespace Trivia
                 {
                     ChangeScore();
                 });
-                if (currentCount < questionCount)
+                lock (communicatorLock)
+                {
+                    isLocked = true;
+                    question = Program.GetCommunicator().GetQuestion();
+                    isLocked = false;
+                }
+                if (question != null && question.question != "")
                 {
                     this.Invoke((MethodInvoker)delegate
                     {
@@ -126,15 +133,6 @@ namespace Trivia
 
         private void GetQuestion()
         {
-            dynamic question;
-            lock (communicatorLock)
-            {
-                isLocked = true;
-                question = Program.GetCommunicator().GetQuestion();
-                isLocked = false;
-            }
-            if (question != null && question.question != "")
-            {
                 string q = question.question;
 
                 int charsPerLine = QUESTION_LENGTH;
@@ -168,9 +166,10 @@ namespace Trivia
         {
             Button button = (Button)sender;
             int answerId = (int)button.Tag;
+            int answerTime = questionTimeOut - remainingSeconds;
             try
             {
-                int correctAnswer = Program.GetCommunicator().SubmitAnswer(answerId);
+                int correctAnswer = Program.GetCommunicator().SubmitAnswer(answerId, answerTime);
                 if (correctAnswer == answerId)
                 {
                     button.BackColor = Color.PaleGreen;
