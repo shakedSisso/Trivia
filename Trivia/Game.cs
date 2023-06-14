@@ -14,6 +14,7 @@ namespace Trivia
     public partial class Game : Form
     {
         private const int QUESTION_LENGTH = 55;
+        private const int TIME_OUT = 999;
         private string roomName;
         private int questionTimeOut;
         private int remainingSeconds;
@@ -65,6 +66,7 @@ namespace Trivia
         {
             if (this.IsHandleCreated && nextQuestion)
             {
+                nextQuestion = false;
                 currentCount++;
                 this.Invoke((MethodInvoker)delegate
                 {
@@ -160,10 +162,10 @@ namespace Trivia
                 btnAnswer3.Text = answers["3"];
                 btnAnswer4.Text = answers["4"];
             }
-        }
 
         private void SharedButtonClick(object sender, EventArgs e)
         {
+            this.tmrCountdown.Stop();
             Button button = (Button)sender;
             int answerId = (int)button.Tag;
             int answerTime = questionTimeOut - remainingSeconds;
@@ -208,6 +210,15 @@ namespace Trivia
 
             if (remainingSeconds <= 0)
             {
+                foreach (Control control in this.Controls)
+                {
+                    if (control is Button btn && btn != btnExit)
+                    {
+                        btn.BackColor = Color.IndianRed;
+                        btn.Enabled = false;
+                    }
+                }
+                Program.GetCommunicator().SubmitAnswer(TIME_OUT, questionTimeOut);
                 nextQuestion = true;
                 tmrCountdown.Stop();
             }
