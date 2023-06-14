@@ -41,6 +41,7 @@ namespace Trivia
             try
             {
                 InitButtons();
+                CreateScreen();
                 timer = new System.Threading.Timer(ResetScreen, null, 0, 1000);
             }
             catch (Exception ex)
@@ -60,6 +61,34 @@ namespace Trivia
         private void ChangeScore()
         {
             lblScore.Text = correctAnswers.ToString() + " / " + currentCount.ToString();
+        }
+
+        private void CreateScreen()
+        {
+            currentCount = 1;
+            ChangeScore();
+            try
+            {
+                lock (communicatorLock)
+                {
+                    isLocked = true;
+                    question = Program.GetCommunicator().GetQuestion();
+                    isLocked = false;
+                }
+                if (question != null && question.question != "")
+                {
+                    
+                    NextQuestion();
+                }
+                else
+                {
+                    OpenGameScoresForm();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void ResetScreen(object state)
