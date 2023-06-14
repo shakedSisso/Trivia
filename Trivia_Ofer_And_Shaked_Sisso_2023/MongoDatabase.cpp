@@ -219,9 +219,9 @@ int MongoDatabase::submitGameStatistics(const std::string username, const int co
 {
 	basicDocument documentBuilder;
 	json userData = getUserStatisticsJson(username);
-	float avg = (userData["average_answer_time"] + averageAnswerTime) / 2;
-	int correctAnswers = userData["correct_answers"] + correctAnswerCount;
 	int totalAnswers = userData["total_answers"] + correctAnswerCount + wrongAnswerCount;
+	float avg = ((float)userData["average_answer_time"] * (int)userData["total_answers"] + averageAnswerTime) / totalAnswers;
+	int correctAnswers = userData["correct_answers"] + correctAnswerCount;
 
 	documentBuilder.append(kvp("username", username));
 	documentBuilder.append(kvp("games_count", userData["games_count"] + 1));
