@@ -28,8 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GameScores));
+            tmrShowResult = new System.Windows.Forms.Timer(components);
             SuspendLayout();
+            // 
+            // tmrShowResult
+            // 
+            tmrShowResult.Interval = 5000;
+            tmrShowResult.Tick += tmrShowResult_Tick;
             // 
             // GameScores
             // 
@@ -44,5 +51,7 @@
         }
 
         #endregion
+
+        private System.Windows.Forms.Timer tmrShowResult;
     }
 }

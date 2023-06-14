@@ -100,7 +100,7 @@ namespace Trivia
                 this.Invoke((MethodInvoker)delegate
                 {
                     ChangeScore();
-                });
+                }); 
                 lock (communicatorLock)
                 {
                     isLocked = true;
@@ -130,7 +130,8 @@ namespace Trivia
             try
             {
                 nextQuestion = false;
-                Form fGameScores = new GameScores();
+                LocationManager.SetFormLocation(this.Location);
+                Form fGameScores = new GameScores(this);
                 if (timer != null)
                 {
                     this.timer.Dispose();
@@ -164,33 +165,33 @@ namespace Trivia
 
         private void GetQuestion()
         {
-                string q = question.question;
+            string q = question.question;
 
-                int charsPerLine = QUESTION_LENGTH;
-                int currentIndex = charsPerLine;
+            int charsPerLine = QUESTION_LENGTH;
+            int currentIndex = charsPerLine;
 
-                while (currentIndex < q.Length)
+            while (currentIndex < q.Length)
+            {
+                int spaceIndex = q.LastIndexOf(' ', currentIndex, charsPerLine);
+
+                if (spaceIndex != -1)
                 {
-                    int spaceIndex = q.LastIndexOf(' ', currentIndex, charsPerLine);
-
-                    if (spaceIndex != -1)
-                    {
-                        q = q.Remove(spaceIndex, 1).Insert(spaceIndex, "\n");
-                        currentIndex = spaceIndex + charsPerLine + 1;
-                    }
-                    else
-                    {
-                        currentIndex += charsPerLine;
-                    }
+                    q = q.Remove(spaceIndex, 1).Insert(spaceIndex, "\n");
+                    currentIndex = spaceIndex + charsPerLine + 1;
                 }
-                lblQuestion.Text = q;
-                lblQuestionCount.Text = "Question " + currentCount.ToString() + "/" + questionCount.ToString();
-                dynamic answers = question.answers.First;
-                btnAnswer1.Text = answers["1"];
-                btnAnswer2.Text = answers["2"];
-                btnAnswer3.Text = answers["3"];
-                btnAnswer4.Text = answers["4"];
+                else
+                {
+                    currentIndex += charsPerLine;
+                }
             }
+            lblQuestion.Text = q;
+            lblQuestionCount.Text = "Question " + currentCount.ToString() + "/" + questionCount.ToString();
+            dynamic answers = question.answers.First;
+            btnAnswer1.Text = answers["1"];
+            btnAnswer2.Text = answers["2"];
+            btnAnswer3.Text = answers["3"];
+            btnAnswer4.Text = answers["4"];
+        }
 
         private void SharedButtonClick(object sender, EventArgs e)
         {
@@ -262,6 +263,7 @@ namespace Trivia
         {
             try
             {
+                LocationManager.SetFormLocation(this.Location);
                 Program.GetCommunicator().LeaveGame();
                 if (this.timer != null)
                 {
