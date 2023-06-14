@@ -313,9 +313,9 @@ namespace Trivia
             throw new Exception("Error while trying to make a request");
         }
 
-        internal int SubmitAnswer(int id)
+        internal int SubmitAnswer(int id, int answeringTime)
         {
-            var jsonObject = new { answer_id = id };
+            var jsonObject = new { answer_id = id, answer_time = answeringTime };
             byte[] buffer = PacketSerializer.GenerateMessage((int)codes.SubmitAnswer, jsonObject);
             this.socket.Send(buffer);
             dynamic response = PacketDeserializer.ProcessSocketData(this.socket);

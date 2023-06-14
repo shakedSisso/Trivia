@@ -42,6 +42,7 @@ typedef struct CreateRoomRequest
 typedef struct SubmitAnswerRequest
 {
 	unsigned int answerId;
+	unsigned int answerTime;
 }SubmitAnswerRequest;
 
 typedef struct RequestResult

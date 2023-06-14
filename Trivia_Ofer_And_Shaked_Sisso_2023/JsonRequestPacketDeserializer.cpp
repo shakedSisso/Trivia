@@ -90,6 +90,7 @@ SubmitAnswerRequest JsonRequestPacketDeserializer::deserializeSubmitAnswerReques
     json jsonData = json::parse(jsonString);
 
     request.answerId = jsonData["answer_id"];
+    request.answerTime = jsonData["answer_time"];
 
     return request;
 }

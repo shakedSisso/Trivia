@@ -105,7 +105,7 @@ RequestResult GameRequestHandler::submitAnswer(const RequestInfo& info)
     try
     {
         SubmitAnswerRequest request = JsonRequestPacketDeserializer::deserializeSubmitAnswerRequest(info.buffer);
-        correctAnswerId = this->m_game.submitAnswer(this->m_user, request.answerId);
+        correctAnswerId = this->m_game.submitAnswer(this->m_user, request.answerId, request.answerTime);
         result.newHandler = (IRequestHandler*)(this);
     }
     catch (const std::exception& e)

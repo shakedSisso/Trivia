@@ -13,8 +13,7 @@ Game::Game(IDatabase* database, vector<Question> questions, vector<LoggedUser> u
     for (auto user : users)
     {
         GameData gameData;
-        gameData.questionIndex = START_INDEX;
-        gameData.currentQuestion = m_questions[gameData.questionIndex];
+        gameData.currentQuestion = m_questions[START_INDEX];
         this->m_players.insert({ user, gameData });
         
     }
@@ -31,17 +30,15 @@ Question Game::getQuestionForUser(const LoggedUser& user)
         }
     }
     Question question = gameData.currentQuestion;
-    this->m_players[user].questionIndex++;
-    if (this->m_players[user].questionIndex >= this->m_questions.size())
-    {
-        return Question();
-    }
-    this->m_players[user].currentQuestion = this->m_questions[this->m_players[user].questionIndex];
     return question;
 }
 
-int Game::submitAnswer(const LoggedUser& user, int answerId)
+int Game::submitAnswer(const LoggedUser& user, int answerId, int answeringTime)
 {
+    GameData gameData = this->m_players[user];
+    int questionCount = gameData.correctAnswerCount + gameData.wrongAnswerCount;
+    this->m_players[user].averageAnswerTime = (gameData.averageAnswerTime * questionCount + answeringTime) / (questionCount + 1);
+
     int correctAnswerId = this->m_players[user].currentQuestion.getCorrectAnswerId();
     if (correctAnswerId == answerId)
     {
