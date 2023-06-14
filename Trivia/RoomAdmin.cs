@@ -75,11 +75,11 @@ namespace Trivia
                         this.isLocked = true;
                         this.players = Program.GetCommunicator().GetRoomState().players;
                         this.isLocked = false;
-                    
-                    this.Invoke((MethodInvoker)delegate
-                    {
-                        updatePlayersList();
-                    });
+
+                        this.Invoke((MethodInvoker)delegate
+                        {
+                            updatePlayersList();
+                        });
                     }
                 }
             }
@@ -191,9 +191,10 @@ namespace Trivia
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                RoomAdmin_FormClosing(sender, (FormClosingEventArgs)e);
+                this.isClosed = false;
+                this.Dispose();
             }
-            
+
         }
 
         private void RoomAdmin_FormClosing(object sender, FormClosingEventArgs e)
