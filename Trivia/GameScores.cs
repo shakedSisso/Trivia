@@ -75,7 +75,7 @@ namespace Trivia
                     string score = "Score: " + result.correctAnswerCount;
                     lblResult.Text = username + "   " + score;
                     lblResult.Width = (username + score).Length * 20;
-                    lblResult.Top = count * 30;
+                    lblResult.Top = count * 45;
                     lblResult.Font = new Font("Maiandra GD", 20, FontStyle.Bold);
                     lblResult.ForeColor = Color.Black;
                     this.Controls.Add(lblResult);
@@ -102,11 +102,11 @@ namespace Trivia
 
                 // Update the maximum label width and height if necessary
                 maxLabelWidth = Math.Max(maxLabelWidth, labelSize.Width);
-                maxLabelHeight = Math.Max(maxLabelHeight, labelSize.Height);
+                maxLabelHeight += labelSize.Height;
             }
 
             // Resize the form based on the largest label size
-            this.Size = new Size(maxLabelWidth + 200, maxLabelHeight + 200);
+            this.Size = new Size(maxLabelWidth + 25, maxLabelHeight + 50);
 
             Form parentForm = Owner;
             if (parentForm != null)
