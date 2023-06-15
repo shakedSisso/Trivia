@@ -91,6 +91,7 @@ namespace Trivia
             }
             else
             {
+                lblNoRooms.Visible = false;
                 Button btn;
                 int count = 0;
                 for (int i = 0; i < this.rooms.Length; i++)
