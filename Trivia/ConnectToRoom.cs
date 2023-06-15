@@ -93,13 +93,14 @@ namespace Trivia
             {
                 lblNoRooms.Visible = false;
                 Button btn;
+                int count = 0;
                 for (int i = 0; i < this.rooms.Length; i++)
                 {
                     if (!this.rooms[i].isActive)
                     {
                         btn = new Button();
                         btn.Left = gbRooms.Left - 55;
-                        btn.Top = gbRooms.Top + 10 + 30 * i;
+                        btn.Top = gbRooms.Top + 10 + 30 * count;
                         btn.Width = gbRooms.Width + 10;
                         btn.Height = 30;
                         btn.Text = this.rooms[i].name;
@@ -108,7 +109,12 @@ namespace Trivia
                         btn.ForeColor = Color.DarkSlateGray;
                         gbRooms.Controls.Add(btn);
                         btn.Click += Btn_Click;
+                        count++;
                     }
+                }
+                if(count == 0)
+                {
+                    lblNoRooms.Visible = true;
                 }
             }
         }

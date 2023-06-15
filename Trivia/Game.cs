@@ -31,6 +31,7 @@ namespace Trivia
             this.StartPosition = FormStartPosition.Manual;
             this.Location = LocationManager.GetFormLocation();
             this.Text = name;
+            lblRoomName.Text = name;
             this.roomName = name;
             this.questionTimeOut = questionTimeOut;
             this.questionCount = questionCount;
