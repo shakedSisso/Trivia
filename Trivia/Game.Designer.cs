@@ -82,7 +82,7 @@
             lblQuestion.AutoSize = true;
             lblQuestion.BackColor = Color.LightCyan;
             lblQuestion.Font = new Font("Segoe UI", 13F, FontStyle.Italic, GraphicsUnit.Point);
-            lblQuestion.Location = new Point(106, 119);
+            lblQuestion.Location = new Point(106, 117);
             lblQuestion.Name = "lblQuestion";
             lblQuestion.Size = new Size(103, 30);
             lblQuestion.TabIndex = 48;

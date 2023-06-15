@@ -14,7 +14,7 @@ namespace Trivia
 {
     public partial class Game : Form
     {
-        private const int QUESTION_LENGTH = 55;
+        private int questionLength;
         private const int TIME_OUT = 999;
         private string roomName;
         private int questionTimeOut;
@@ -151,28 +151,44 @@ namespace Trivia
             GetQuestion();
         }
 
-        private void GetQuestion()
+        private void FixTheQuestion()
         {
             string q = question.question;
 
-            int charsPerLine = QUESTION_LENGTH;
-            int currentIndex = charsPerLine;
+            this.questionLength = 55;
+            float questionSize;
+            if (q.Length >= this.questionLength * 2)
+            {
+                questionSize = 11F;
+                this.questionLength = 65;
+            }
+            else
+            {
+                questionSize = 13F;
+            }
+            lblQuestion.Font = new Font("Segoe UI", questionSize, FontStyle.Italic, GraphicsUnit.Point);
+            int currentIndex = this.questionLength;
 
             while (currentIndex < q.Length)
             {
-                int spaceIndex = q.LastIndexOf(' ', currentIndex, charsPerLine);
+                int spaceIndex = q.LastIndexOf(' ', currentIndex, this.questionLength);
 
                 if (spaceIndex != -1)
                 {
                     q = q.Remove(spaceIndex, 1).Insert(spaceIndex, "\n");
-                    currentIndex = spaceIndex + charsPerLine + 1;
+                    currentIndex = spaceIndex + this.questionLength + 1;
                 }
                 else
                 {
-                    currentIndex += charsPerLine;
+                    currentIndex += this.questionLength;
                 }
             }
             lblQuestion.Text = q;
+        }
+
+        private void GetQuestion()
+        {
+            FixTheQuestion();
             lblQuestionCount.Text = "Question " + currentCount.ToString() + "/" + questionCount.ToString();
             CenterLabel(lblQuestionCount);
             dynamic answers = question.answers.First;
