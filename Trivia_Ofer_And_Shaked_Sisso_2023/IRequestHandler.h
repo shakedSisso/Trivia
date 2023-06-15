@@ -2,16 +2,17 @@
 #include <iostream>
 #include "Globals.h"
 #include "Requests.h"
+#include "Responses.h"
+#include "JsonResponsePacketSerializer.h"
+#include "JsonRequestPacketDeserializer.h"
 
 struct RequestResult;
 struct RequestInfo;
 
-#define LOGIN_REQUEST 1
-#define SIGN_UP_REQUEST 2
 
 class IRequestHandler
 {
 public:
-	virtual bool isRequestRelevent(RequestInfo info) = 0;
-	virtual RequestResult handleRequest(RequestInfo info) = 0;
+	virtual bool isRequestRelevent(const RequestInfo& info) = 0;
+	virtual RequestResult handleRequest(const RequestInfo& info) = 0;
 };

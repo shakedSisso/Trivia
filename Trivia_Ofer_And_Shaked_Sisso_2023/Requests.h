@@ -16,12 +16,41 @@ typedef struct SignupRequest
 	std::string username;
 	std::string password;
 	std::string email;
+	std::string address;
+	std::string phoneNumber;
+	std::string birthDate;
 }SignupRequest;
+
+typedef struct GetPlayersInRoomRequest
+{
+	RoomID roomId;
+}GetPlayersInRoomRequest;
+
+typedef struct JoinRoomRequest
+{
+	RoomID roomId;
+}JoinRoomRequest;
+
+typedef struct CreateRoomRequest
+{
+	std::string roomName;
+	unsigned int maxUsers;
+	unsigned int questionCount;
+	unsigned int answerTimeout;
+}CreateRoomRequest;
+
+typedef struct SubmitAnswerRequest
+{
+	unsigned int answerId;
+	unsigned int answerTime;
+}SubmitAnswerRequest;
 
 typedef struct RequestResult
 {
 	Buffer buffer;
 	IRequestHandler* newHandler;
+
+	RequestResult() : newHandler(nullptr) {}
 }RequestResult;
 
 typedef struct RequestInfo

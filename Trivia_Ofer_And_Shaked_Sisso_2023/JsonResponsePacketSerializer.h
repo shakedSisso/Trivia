@@ -12,7 +12,25 @@ public:
 	static Buffer serializeResponse(const ErrorResponse& response);
 	static Buffer serializeResponse(const LoginResponse& response);
 	static Buffer serializeResponse(const SignupResponse& response);
+    
+	static Buffer serializeResponse(const LogoutResponse& response);
+	static Buffer serializeResponse(const GetRoomsResponse& response);
+	static Buffer serializeResponse(const GetPlayersInRoomResponse& response);
+	static Buffer serializeResponse(const JoinRoomResponse& response);
+	static Buffer serializeResponse(const CreateRoomResponse& response);
+	static Buffer serializeResponse(const GetHighScoreResponse& response);
+	static Buffer serializeResponse(const GetPersonalStatsResponse& response);
 
+    static Buffer serializeResponse(const CloseRoomResponse& response);
+    static Buffer serializeResponse(const StartGameResponse& response);
+    static Buffer serializeResponse(const GetRoomStateResponse& response);
+    static Buffer serializeResponse(const LeaveRoomResponse& response);
+
+    static Buffer serializeResponse(const GetGameResultsResponse& response);
+    static Buffer serializeResponse(const SubmitAnswerResponse& response);
+    static Buffer serializeResponse(const GetQuestionResponse& response);
+    static Buffer serializeResponse(const LeaveGameResponse& response);
+    
 private:
     /*
     * Function: static insertIntToBuffer

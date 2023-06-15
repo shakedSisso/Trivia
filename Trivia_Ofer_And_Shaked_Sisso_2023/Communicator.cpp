@@ -4,16 +4,27 @@
 #include "Communicator.h"
 #include <thread>
 #include <exception>
-#include "LoginRequestHandler.h"
 #include "JsonRequestPacketDeserializer.h"
 #include "IRequestHandler.h"
 #include "Requests.h"
+#include "LoginManager.h"
 
 #define PORT 1444
 #define LEN_MSG_HEADERS 5
 #define LENGTH_FIELD_INDEX 1
 #define JSON_LENGTH_FIELD_LEN 4
 #define SOCKET_SEND_ERROR -1
+
+int Communicator::instanceCount = 0;
+
+Communicator::Communicator(RequestHandlerFactory& handlerFactory) : m_clients(), m_serverSocket(), m_handlerFactory(handlerFactory)
+{
+	if (Communicator::instanceCount != 0)
+	{
+		throw std::exception("Communicator was already created once.");
+	}
+	instanceCount++;
+}
 
 Communicator::~Communicator()
 {
@@ -37,6 +48,8 @@ void Communicator::startHandleRequests()
 	}
 	bindAndListen();
 }
+
+
 
 void Communicator::bindAndListen()
 {
@@ -73,8 +86,7 @@ void Communicator::bindAndListen()
 			// the function that handle the conversation with the client
 			std::thread newClient(&Communicator::handleNewClient, this, client_socket);
 			newClient.detach();
-			LoginRequestHandler* requestHandler = new LoginRequestHandler();
-			this->m_clients.insert(std::pair<SOCKET, IRequestHandler*>(client_socket, (IRequestHandler*)requestHandler));
+			this->m_clients.insert(std::pair<SOCKET, IRequestHandler*>(client_socket, (IRequestHandler*)this->m_handlerFactory.createLoginRequestHandler()));
 		}
 		catch (std::exception e)
 		{
@@ -132,6 +144,7 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 			IRequestHandler* clientHandler = client->second;
 
 			RequestResult result = clientHandler->handleRequest(requestInfo);
+			
 			if (result.newHandler != clientHandler) //if request fails, the newHandler is the same as the original
 			{
 				delete(client->second); // deleting the current handler of the client since the handlerRequest function gives us a new handler pointer
@@ -144,6 +157,10 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 				std::string error = "Error sending message to client- " + std::to_string(clientSocket);
 				throw std::exception(error.c_str());
 			}
+			if (result.newHandler == nullptr)
+			{
+				throw std::exception("Disconnecting from client");
+			}
 		}
 	}
 	catch (const std::exception& e)
@@ -154,6 +171,9 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 
 	//client removed from the map after disconnection
 	auto client = this->m_clients.find(clientSocket);
-	delete(client->second); //the second field in the nap is a pointer to IRequestHandler
+	if (client->second != nullptr)
+	{
+		delete(client->second); //the second field in the nap is a pointer to IRequestHandler
+	}
 	this->m_clients.erase(clientSocket);
 }
