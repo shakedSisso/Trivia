@@ -13,6 +13,7 @@ namespace Trivia
     public partial class GameScores : Form
     {
         int count = 0;
+        private bool gotScores;
         private dynamic results;
         public GameScores(Form owner)
         {
@@ -32,6 +33,7 @@ namespace Trivia
             this.results = playerResults;
             if (!ShowResults())
             {
+                gotScores = false;
                 tmrShowResult.Start();
             }
         }
@@ -46,6 +48,14 @@ namespace Trivia
                     label.Dispose();
                 }
             }
+            try
+            {
+                results = Program.GetCommunicator().GetGameResults();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
             if (results == null)
             {
                 Label lblError = new Label();
@@ -56,38 +66,25 @@ namespace Trivia
                 lblError.Top = 10;
                 lblError.Height = 45;
                 this.Controls.Add(lblError);
-                try
-                {
-                    results = Program.GetCommunicator().GetGameResults();
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception(ex.Message);
-                }
+                ResizeAndRelocateForm();
+                return false;
             }
-            else
+            foreach (dynamic result in results.results)
             {
-                foreach (dynamic result in results.results)
-                {
-                    Label lblResult = new Label();
-                    lblResult.Height = 45;
-                    string username = "Username: " + result.username;
-                    string score = "Score: " + result.correctAnswerCount;
-                    lblResult.Text = username + "   " + score;
-                    lblResult.Width = (username + score).Length * 20;
-                    lblResult.Top = count * 45;
-                    lblResult.Font = new Font("Maiandra GD", 20, FontStyle.Bold);
-                    lblResult.ForeColor = Color.Black;
-                    this.Controls.Add(lblResult);
-                    count++;
-                }
+                Label lblResult = new Label();
+                lblResult.Height = 45;
+                string username = "Username: " + result.username;
+                string score = "Score: " + result.correctAnswerCount;
+                lblResult.Text = username + "   " + score;
+                lblResult.Width = (username + score).Length * 20;
+                lblResult.Top = count * 45;
+                lblResult.Font = new Font("Maiandra GD", 20, FontStyle.Bold);
+                lblResult.ForeColor = Color.Black;
+                this.Controls.Add(lblResult);
+                count++;
             }
             ResizeAndRelocateForm();
-            if (results != null)
-            {
-                return true;
-            }
-            return false;
+            return true;
         }
 
         private void ResizeAndRelocateForm()
@@ -106,7 +103,7 @@ namespace Trivia
             }
 
             // Resize the form based on the largest label size
-            this.Size = new Size(maxLabelWidth + 25, maxLabelHeight + 50);
+            this.Size = new Size(maxLabelWidth + 25, maxLabelHeight + 75);
 
             Form parentForm = Owner;
             if (parentForm != null)
@@ -128,14 +125,21 @@ namespace Trivia
 
         private void tmrShowResult_Tick(object sender, EventArgs e)
         {
-            bool result = false;
-            if (!result)
+            if (!gotScores)
             {
-                Thread.Sleep(2000);
-                results = Program.GetCommunicator().GetGameResults();
-                result = ShowResults();
+                try
+                {
+                    gotScores = ShowResults();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
             }
-            tmrShowResult.Stop();
+            else
+            {
+                tmrShowResult.Stop();
+            }
         }
     }
 }
