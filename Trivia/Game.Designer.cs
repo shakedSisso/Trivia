@@ -28,192 +28,205 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Game));
-            lblQuestionCount = new Label();
-            lblRoomName = new Label();
-            pictureBox1 = new PictureBox();
-            lblQuestion = new Label();
-            btnAnswer1 = new Button();
-            btnAnswer2 = new Button();
-            btnAnswer3 = new Button();
-            btnAnswer4 = new Button();
-            lblTimeOut = new Label();
-            lblScore = new Label();
-            label1 = new Label();
-            btnExit = new Button();
-            tmrCountdown = new System.Windows.Forms.Timer(components);
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
-            SuspendLayout();
+            this.lblQuestionCount = new System.Windows.Forms.Label();
+            this.lblRoomName = new System.Windows.Forms.Label();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.lblQuestion = new System.Windows.Forms.Label();
+            this.btnAnswer1 = new System.Windows.Forms.Button();
+            this.btnAnswer2 = new System.Windows.Forms.Button();
+            this.btnAnswer3 = new System.Windows.Forms.Button();
+            this.btnAnswer4 = new System.Windows.Forms.Button();
+            this.lblTimeOut = new System.Windows.Forms.Label();
+            this.lblScore = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.btnExit = new System.Windows.Forms.Button();
+            this.tmrCountdown = new System.Windows.Forms.Timer(this.components);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.SuspendLayout();
             // 
             // lblQuestionCount
             // 
-            lblQuestionCount.AutoSize = true;
-            lblQuestionCount.Font = new Font("Bauhaus 93", 20F, FontStyle.Regular, GraphicsUnit.Point);
-            lblQuestionCount.ForeColor = Color.DarkSlateGray;
-            lblQuestionCount.Location = new Point(269, 55);
-            lblQuestionCount.Name = "lblQuestionCount";
-            lblQuestionCount.Size = new Size(207, 39);
-            lblQuestionCount.TabIndex = 45;
-            lblQuestionCount.Text = "Question x/y";
+            this.lblQuestionCount.AutoSize = true;
+            this.lblQuestionCount.Font = new System.Drawing.Font("Bauhaus 93", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.lblQuestionCount.ForeColor = System.Drawing.Color.DarkSlateGray;
+            this.lblQuestionCount.Location = new System.Drawing.Point(336, 69);
+            this.lblQuestionCount.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblQuestionCount.Name = "lblQuestionCount";
+            this.lblQuestionCount.Size = new System.Drawing.Size(244, 45);
+            this.lblQuestionCount.TabIndex = 45;
+            this.lblQuestionCount.Text = "Question x/y";
             // 
             // lblRoomName
             // 
-            lblRoomName.AutoSize = true;
-            lblRoomName.Font = new Font("Bauhaus 93", 16F, FontStyle.Regular, GraphicsUnit.Point);
-            lblRoomName.ForeColor = Color.DarkSlateGray;
-            lblRoomName.Location = new Point(335, 25);
-            lblRoomName.Name = "lblRoomName";
-            lblRoomName.Size = new Size(80, 30);
-            lblRoomName.TabIndex = 46;
-            lblRoomName.Text = "name";
+            this.lblRoomName.AutoSize = true;
+            this.lblRoomName.Font = new System.Drawing.Font("Bauhaus 93", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.lblRoomName.ForeColor = System.Drawing.Color.DarkSlateGray;
+            this.lblRoomName.Location = new System.Drawing.Point(419, 31);
+            this.lblRoomName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblRoomName.Name = "lblRoomName";
+            this.lblRoomName.Size = new System.Drawing.Size(94, 36);
+            this.lblRoomName.TabIndex = 46;
+            this.lblRoomName.Text = "name";
             // 
             // pictureBox1
             // 
-            pictureBox1.BackColor = Color.LightCyan;
-            pictureBox1.Location = new Point(90, 107);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(600, 285);
-            pictureBox1.TabIndex = 47;
-            pictureBox1.TabStop = false;
+            this.pictureBox1.BackColor = System.Drawing.Color.LightCyan;
+            this.pictureBox1.Location = new System.Drawing.Point(112, 134);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(750, 356);
+            this.pictureBox1.TabIndex = 47;
+            this.pictureBox1.TabStop = false;
             // 
             // lblQuestion
             // 
-            lblQuestion.AutoSize = true;
-            lblQuestion.BackColor = Color.LightCyan;
-            lblQuestion.Font = new Font("Segoe UI", 13F, FontStyle.Italic, GraphicsUnit.Point);
-            lblQuestion.Location = new Point(106, 119);
-            lblQuestion.Name = "lblQuestion";
-            lblQuestion.Size = new Size(103, 30);
-            lblQuestion.TabIndex = 48;
-            lblQuestion.Text = "question?";
+            this.lblQuestion.AutoSize = true;
+            this.lblQuestion.BackColor = System.Drawing.Color.LightCyan;
+            this.lblQuestion.Font = new System.Drawing.Font("Segoe UI", 13F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point);
+            this.lblQuestion.Location = new System.Drawing.Point(132, 149);
+            this.lblQuestion.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblQuestion.Name = "lblQuestion";
+            this.lblQuestion.Size = new System.Drawing.Size(122, 36);
+            this.lblQuestion.TabIndex = 48;
+            this.lblQuestion.Text = "question?";
             // 
             // btnAnswer1
             // 
-            btnAnswer1.BackColor = Color.MintCream;
-            btnAnswer1.Cursor = Cursors.Hand;
-            btnAnswer1.Font = new Font("Maiandra GD", 10.8F, FontStyle.Bold, GraphicsUnit.Point);
-            btnAnswer1.Location = new Point(110, 190);
-            btnAnswer1.Name = "btnAnswer1";
-            btnAnswer1.Size = new Size(558, 35);
-            btnAnswer1.TabIndex = 49;
-            btnAnswer1.Text = "answer1";
-            btnAnswer1.UseVisualStyleBackColor = false;
-            btnAnswer1.Click += SharedButtonClick;
+            this.btnAnswer1.BackColor = System.Drawing.Color.MintCream;
+            this.btnAnswer1.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnAnswer1.Font = new System.Drawing.Font("Maiandra GD", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.btnAnswer1.Location = new System.Drawing.Point(138, 238);
+            this.btnAnswer1.Margin = new System.Windows.Forms.Padding(4);
+            this.btnAnswer1.Name = "btnAnswer1";
+            this.btnAnswer1.Size = new System.Drawing.Size(698, 44);
+            this.btnAnswer1.TabIndex = 49;
+            this.btnAnswer1.Text = "answer1";
+            this.btnAnswer1.UseVisualStyleBackColor = false;
+            this.btnAnswer1.Click += new System.EventHandler(this.SharedButtonClick);
             // 
             // btnAnswer2
             // 
-            btnAnswer2.BackColor = Color.MintCream;
-            btnAnswer2.Cursor = Cursors.Hand;
-            btnAnswer2.Font = new Font("Maiandra GD", 10.8F, FontStyle.Bold, GraphicsUnit.Point);
-            btnAnswer2.Location = new Point(110, 237);
-            btnAnswer2.Name = "btnAnswer2";
-            btnAnswer2.Size = new Size(558, 35);
-            btnAnswer2.TabIndex = 50;
-            btnAnswer2.Text = "answer2";
-            btnAnswer2.UseVisualStyleBackColor = false;
-            btnAnswer2.Click += SharedButtonClick;
+            this.btnAnswer2.BackColor = System.Drawing.Color.MintCream;
+            this.btnAnswer2.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnAnswer2.Font = new System.Drawing.Font("Maiandra GD", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.btnAnswer2.Location = new System.Drawing.Point(138, 296);
+            this.btnAnswer2.Margin = new System.Windows.Forms.Padding(4);
+            this.btnAnswer2.Name = "btnAnswer2";
+            this.btnAnswer2.Size = new System.Drawing.Size(698, 44);
+            this.btnAnswer2.TabIndex = 50;
+            this.btnAnswer2.Text = "answer2";
+            this.btnAnswer2.UseVisualStyleBackColor = false;
+            this.btnAnswer2.Click += new System.EventHandler(this.SharedButtonClick);
             // 
             // btnAnswer3
             // 
-            btnAnswer3.BackColor = Color.MintCream;
-            btnAnswer3.Cursor = Cursors.Hand;
-            btnAnswer3.Font = new Font("Maiandra GD", 10.8F, FontStyle.Bold, GraphicsUnit.Point);
-            btnAnswer3.Location = new Point(110, 289);
-            btnAnswer3.Name = "btnAnswer3";
-            btnAnswer3.Size = new Size(558, 35);
-            btnAnswer3.TabIndex = 51;
-            btnAnswer3.Text = "answer3";
-            btnAnswer3.UseVisualStyleBackColor = false;
-            btnAnswer3.Click += SharedButtonClick;
+            this.btnAnswer3.BackColor = System.Drawing.Color.MintCream;
+            this.btnAnswer3.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnAnswer3.Font = new System.Drawing.Font("Maiandra GD", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.btnAnswer3.Location = new System.Drawing.Point(138, 361);
+            this.btnAnswer3.Margin = new System.Windows.Forms.Padding(4);
+            this.btnAnswer3.Name = "btnAnswer3";
+            this.btnAnswer3.Size = new System.Drawing.Size(698, 44);
+            this.btnAnswer3.TabIndex = 51;
+            this.btnAnswer3.Text = "answer3";
+            this.btnAnswer3.UseVisualStyleBackColor = false;
+            this.btnAnswer3.Click += new System.EventHandler(this.SharedButtonClick);
             // 
             // btnAnswer4
             // 
-            btnAnswer4.BackColor = Color.MintCream;
-            btnAnswer4.Cursor = Cursors.Hand;
-            btnAnswer4.Font = new Font("Maiandra GD", 10.8F, FontStyle.Bold, GraphicsUnit.Point);
-            btnAnswer4.Location = new Point(110, 337);
-            btnAnswer4.Name = "btnAnswer4";
-            btnAnswer4.Size = new Size(558, 35);
-            btnAnswer4.TabIndex = 52;
-            btnAnswer4.Text = "answer4";
-            btnAnswer4.UseVisualStyleBackColor = false;
-            btnAnswer4.Click += SharedButtonClick;
+            this.btnAnswer4.BackColor = System.Drawing.Color.MintCream;
+            this.btnAnswer4.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnAnswer4.Font = new System.Drawing.Font("Maiandra GD", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.btnAnswer4.Location = new System.Drawing.Point(138, 421);
+            this.btnAnswer4.Margin = new System.Windows.Forms.Padding(4);
+            this.btnAnswer4.Name = "btnAnswer4";
+            this.btnAnswer4.Size = new System.Drawing.Size(698, 44);
+            this.btnAnswer4.TabIndex = 52;
+            this.btnAnswer4.Text = "answer4";
+            this.btnAnswer4.UseVisualStyleBackColor = false;
+            this.btnAnswer4.Click += new System.EventHandler(this.SharedButtonClick);
             // 
             // lblTimeOut
             // 
-            lblTimeOut.AutoSize = true;
-            lblTimeOut.Font = new Font("Segoe UI Semibold", 16.2F, FontStyle.Bold, GraphicsUnit.Point);
-            lblTimeOut.Location = new Point(720, 25);
-            lblTimeOut.Name = "lblTimeOut";
-            lblTimeOut.Size = new Size(49, 38);
-            lblTimeOut.TabIndex = 53;
-            lblTimeOut.Text = "00";
+            this.lblTimeOut.AutoSize = true;
+            this.lblTimeOut.Font = new System.Drawing.Font("Segoe UI Semibold", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.lblTimeOut.Location = new System.Drawing.Point(900, 31);
+            this.lblTimeOut.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblTimeOut.Name = "lblTimeOut";
+            this.lblTimeOut.Size = new System.Drawing.Size(56, 45);
+            this.lblTimeOut.TabIndex = 53;
+            this.lblTimeOut.Text = "00";
             // 
             // lblScore
             // 
-            lblScore.AutoSize = true;
-            lblScore.Font = new Font("Segoe UI Semibold", 16.2F, FontStyle.Bold, GraphicsUnit.Point);
-            lblScore.Location = new Point(128, 25);
-            lblScore.Name = "lblScore";
-            lblScore.Size = new Size(61, 38);
-            lblScore.TabIndex = 54;
-            lblScore.Text = "0/0";
+            this.lblScore.AutoSize = true;
+            this.lblScore.Font = new System.Drawing.Font("Segoe UI Semibold", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.lblScore.Location = new System.Drawing.Point(160, 31);
+            this.lblScore.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblScore.Name = "lblScore";
+            this.lblScore.Size = new System.Drawing.Size(70, 45);
+            this.lblScore.TabIndex = 54;
+            this.lblScore.Text = "0/0";
             // 
             // label1
             // 
-            label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI Semibold", 16.2F, FontStyle.Bold, GraphicsUnit.Point);
-            label1.Location = new Point(28, 25);
-            label1.Name = "label1";
-            label1.Size = new Size(94, 38);
-            label1.TabIndex = 55;
-            label1.Text = "Score:";
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Segoe UI Semibold", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.label1.Location = new System.Drawing.Point(35, 31);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(112, 45);
+            this.label1.TabIndex = 55;
+            this.label1.Text = "Score:";
             // 
             // btnExit
             // 
-            btnExit.BackColor = Color.CadetBlue;
-            btnExit.Cursor = Cursors.Hand;
-            btnExit.Font = new Font("Maiandra GD", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            btnExit.ForeColor = SystemColors.ButtonHighlight;
-            btnExit.Location = new Point(640, 409);
-            btnExit.Name = "btnExit";
-            btnExit.Size = new Size(148, 29);
-            btnExit.TabIndex = 56;
-            btnExit.Text = "exit";
-            btnExit.UseVisualStyleBackColor = false;
-            btnExit.Click += btnExit_Click;
+            this.btnExit.BackColor = System.Drawing.Color.CadetBlue;
+            this.btnExit.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnExit.Font = new System.Drawing.Font("Maiandra GD", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.btnExit.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.btnExit.Location = new System.Drawing.Point(800, 511);
+            this.btnExit.Margin = new System.Windows.Forms.Padding(4);
+            this.btnExit.Name = "btnExit";
+            this.btnExit.Size = new System.Drawing.Size(185, 36);
+            this.btnExit.TabIndex = 56;
+            this.btnExit.Text = "exit";
+            this.btnExit.UseVisualStyleBackColor = false;
+            this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
             // 
             // tmrCountdown
             // 
-            tmrCountdown.Interval = 1000;
-            tmrCountdown.Tick += tmrCountdown_Tick;
+            this.tmrCountdown.Interval = 1000;
             // 
             // Game
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
-            AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.PaleTurquoise;
-            ClientSize = new Size(800, 450);
-            Controls.Add(btnExit);
-            Controls.Add(label1);
-            Controls.Add(lblScore);
-            Controls.Add(lblTimeOut);
-            Controls.Add(btnAnswer4);
-            Controls.Add(btnAnswer3);
-            Controls.Add(btnAnswer2);
-            Controls.Add(btnAnswer1);
-            Controls.Add(lblQuestion);
-            Controls.Add(lblRoomName);
-            Controls.Add(lblQuestionCount);
-            Controls.Add(pictureBox1);
-            Icon = (Icon)resources.GetObject("$this.Icon");
-            Name = "Game";
-            Text = "Game";
-            FormClosing += Game_FormClosing;
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
-            ResumeLayout(false);
-            PerformLayout();
+            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.PaleTurquoise;
+            this.ClientSize = new System.Drawing.Size(1000, 562);
+            this.Controls.Add(this.btnExit);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.lblScore);
+            this.Controls.Add(this.lblTimeOut);
+            this.Controls.Add(this.btnAnswer4);
+            this.Controls.Add(this.btnAnswer3);
+            this.Controls.Add(this.btnAnswer2);
+            this.Controls.Add(this.btnAnswer1);
+            this.Controls.Add(this.lblQuestion);
+            this.Controls.Add(this.lblRoomName);
+            this.Controls.Add(this.lblQuestionCount);
+            this.Controls.Add(this.pictureBox1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4);
+            this.Name = "Game";
+            this.Text = "Game";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Game_FormClosing);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
         }
 
         #endregion

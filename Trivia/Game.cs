@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace Trivia
 {
@@ -23,8 +24,6 @@ namespace Trivia
         private int correctAnswers;
         private object communicatorLock;
         private bool isLocked;
-        private bool nextQuestion;
-        private System.Threading.Timer timer;
         private dynamic question;
         public Game(string name, int questionTimeOut, int questionCount)
         {
@@ -37,12 +36,10 @@ namespace Trivia
             this.questionCount = questionCount;
             this.communicatorLock = new object();
             this.isLocked = false;
-            this.nextQuestion = true;
             try
             {
                 InitButtons();
                 CreateScreen();
-                timer = new System.Threading.Timer(ResetScreen, null, 0, 1000);
             }
             catch (Exception ex)
             {
@@ -71,9 +68,7 @@ namespace Trivia
             {
                 lock (communicatorLock)
                 {
-                    isLocked = true;
                     question = Program.GetCommunicator().GetQuestion();
-                    isLocked = false;
                 }
                 if (question != null && question.question != "")
                 {
@@ -91,11 +86,11 @@ namespace Trivia
             }
         }
 
-        private void ResetScreen(object state)
+        private void ResetScreen()
         {
-            if (this.IsHandleCreated && nextQuestion)
+            System.Threading.Thread.Sleep(3000);
+            if (this.IsHandleCreated)
             {
-                nextQuestion = false;
                 currentCount++;
                 this.Invoke((MethodInvoker)delegate
                 {
@@ -103,9 +98,7 @@ namespace Trivia
                 }); 
                 lock (communicatorLock)
                 {
-                    isLocked = true;
                     question = Program.GetCommunicator().GetQuestion();
-                    isLocked = false;
                 }
                 if (question != null && question.question != "")
                 {
@@ -129,14 +122,8 @@ namespace Trivia
         {
             try
             {
-                nextQuestion = false;
                 LocationManager.SetFormLocation(this.Location);
                 Form fGameScores = new GameScores(this);
-                if (timer != null)
-                {
-                    this.timer.Dispose();
-                    this.timer = null;
-                }
                 fGameScores.ShowDialog();
                 this.Dispose();
             }
@@ -159,7 +146,6 @@ namespace Trivia
                     control.Enabled = true;
                 }
             }
-            nextQuestion = false;
             GetQuestion();
         }
 
@@ -230,7 +216,9 @@ namespace Trivia
             {
                 MessageBox.Show(ex.Message);
             }
-            nextQuestion = true;
+            Thread questionUpdateThread = new Thread(ResetScreen);
+            questionUpdateThread.IsBackground = true;
+            questionUpdateThread.Start();
         }
 
         private void tmrCountdown_Tick(object sender, EventArgs e)
@@ -249,8 +237,8 @@ namespace Trivia
                     }
                 }
                 Program.GetCommunicator().SubmitAnswer(TIME_OUT, questionTimeOut);
-                nextQuestion = true;
                 tmrCountdown.Stop();
+                ResetScreen();
             }
         }
 
@@ -265,11 +253,6 @@ namespace Trivia
             {
                 LocationManager.SetFormLocation(this.Location);
                 Program.GetCommunicator().LeaveGame();
-                if (this.timer != null)
-                {
-                    this.timer.Dispose();
-                    this.timer = null;
-                }
             }
             catch (Exception ex)
             {
