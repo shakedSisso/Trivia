@@ -46,6 +46,12 @@ namespace Trivia
             {
                 throw new Exception(ex.Message);
             }
+            CenterLabel(lblRoomName);
+        }
+
+        private void CenterLabel(Label lbl)
+        {
+            lbl.Left = (this.Width - lbl.Width - 20) / 2; //subtracting 20 to include the edge
         }
 
         private void InitButtons()
@@ -73,7 +79,6 @@ namespace Trivia
                 }
                 if (question != null && question.question != "")
                 {
-                    
                     NextQuestion();
                 }
                 else
@@ -89,14 +94,14 @@ namespace Trivia
 
         private void ResetScreen()
         {
-            System.Threading.Thread.Sleep(3000);
+            System.Threading.Thread.Sleep(2000);
             if (this.IsHandleCreated)
             {
                 currentCount++;
                 this.Invoke((MethodInvoker)delegate
                 {
                     ChangeScore();
-                }); 
+                });
                 lock (communicatorLock)
                 {
                     question = Program.GetCommunicator().GetQuestion();
@@ -115,7 +120,6 @@ namespace Trivia
                         OpenGameScoresForm();
                     });
                 }
-
             }
         }
 
@@ -173,6 +177,7 @@ namespace Trivia
             }
             lblQuestion.Text = q;
             lblQuestionCount.Text = "Question " + currentCount.ToString() + "/" + questionCount.ToString();
+            CenterLabel(lblQuestionCount);
             dynamic answers = question.answers.First;
             btnAnswer1.Text = answers["1"];
             btnAnswer2.Text = answers["2"];
@@ -239,7 +244,9 @@ namespace Trivia
                 }
                 Program.GetCommunicator().SubmitAnswer(TIME_OUT, questionTimeOut);
                 tmrCountdown.Stop();
-                ResetScreen();
+                Thread questionUpdateThread = new Thread(ResetScreen);
+                questionUpdateThread.IsBackground = true;
+                questionUpdateThread.Start();
             }
         }
 
