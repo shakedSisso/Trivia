@@ -40,23 +40,23 @@ int Game::submitAnswer(const LoggedUser& user, int answerId, int answeringTime)
 {
     GameData* gameData = this->m_players[user];
     int questionCount = gameData->correctAnswerCount + gameData->wrongAnswerCount;
-    this->m_players[user]->averageAnswerTime = (gameData->averageAnswerTime * questionCount + answeringTime) / (questionCount + 1);
-    int correctAnswerId = this->m_players[user]->currentQuestion.getCorrectAnswerId();
+    gameData->averageAnswerTime = (gameData->averageAnswerTime * questionCount + answeringTime) / (questionCount + 1);
+    int correctAnswerId = gameData->currentQuestion.getCorrectAnswerId();
     if (correctAnswerId == answerId)
     {
-        this->m_players[user]->correctAnswerCount++;
+        gameData->correctAnswerCount++;
     }
     else
     {
-        this->m_players[user]->wrongAnswerCount++;
+        gameData->wrongAnswerCount++;
     }
-    if (this->m_players[user]->correctAnswerCount + this->m_players[user]->wrongAnswerCount >= this->m_questions.size()) // checking if this is last question in the game, if it is will set the next question to an empty one so that we'll know that the user finished his questions
+    if (gameData->correctAnswerCount + gameData->wrongAnswerCount >= this->m_questions.size()) // checking if this is last question in the game, if it is will set the next question to an empty one so that we'll know that the user finished his questions
     {
-        this->m_players[user]->currentQuestion = Question();
+        gameData->currentQuestion = Question();
     }
     else
     {
-        this->m_players[user]->currentQuestion = this->m_questions[this->m_players[user]->correctAnswerCount + this->m_players[user]->wrongAnswerCount]; // setting the next question for the user in his gameData struct
+        gameData->currentQuestion = this->m_questions[gameData->correctAnswerCount + gameData->wrongAnswerCount]; // setting the next question for the user in his gameData struct
     }
     return correctAnswerId;
 }
