@@ -44,10 +44,15 @@ void SqliteDatabase::addQuestionsToDatabase()
 			// Extract question details
 			q.id = i + 1;
 			q.question = questionObj["question"].get<std::string>();
+			ApiEntity::checkForHtmlEntity(q.question);
 			q.correct_ans = questionObj["correct_answer"].get<std::string>();
+			ApiEntity::checkForHtmlEntity(q.correct_ans);
 			q.ans2 = questionObj["incorrect_answers"].get<std::vector<std::string>>()[0];
+			ApiEntity::checkForHtmlEntity(q.ans2);
 			q.ans3 = questionObj["incorrect_answers"].get<std::vector<std::string>>()[1];
+			ApiEntity::checkForHtmlEntity(q.ans3);
 			q.ans4 = questionObj["incorrect_answers"].get<std::vector<std::string>>()[2];
+			ApiEntity::checkForHtmlEntity(q.ans4);
 
 			addQuestion(q);
 		}
@@ -316,9 +321,9 @@ std::vector<std::string> SqliteDatabase::getHighScores()
 
 int SqliteDatabase::submitGameStatistics(const std::string username, const int correctAnswerCount, const int wrongAnswerCount, const float averageAnswerTime)
 {
-	float averageTime = (getPlayerAverageAnswerTime(username) + averageAnswerTime) / 2;
-	int correctAnswers = getNumOfCorrectAnswers(username) + correctAnswerCount;
 	int totalAnswers = getNumOfTotalAnswers(username) + correctAnswerCount + wrongAnswerCount;
+	float averageTime = (getPlayerAverageAnswerTime(username)*getNumOfTotalAnswers(username) + averageAnswerTime) / totalAnswers;
+	int correctAnswers = getNumOfCorrectAnswers(username) + correctAnswerCount;
 	int gameCount = getNumOfPlayerGames(username) + 1;
 
 	std::string sqlStatement = "UPDATE t_statistics SET games_count =  "+std::to_string(gameCount) + ", correct_answers = " + std::to_string(correctAnswers) + ", total_answers = " + std::to_string(totalAnswers) + ", average_answer_time = " + std::to_string(averageTime) + " WHERE username = '" + username + "'; ";

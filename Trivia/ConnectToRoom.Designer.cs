@@ -67,6 +67,7 @@
             // btnRefresh
             // 
             btnRefresh.BackColor = Color.CadetBlue;
+            btnRefresh.Cursor = Cursors.Hand;
             btnRefresh.Font = new Font("Maiandra GD", 13F, FontStyle.Regular, GraphicsUnit.Point);
             btnRefresh.ForeColor = SystemColors.ButtonHighlight;
             btnRefresh.Location = new Point(512, 58);
@@ -80,6 +81,7 @@
             // btnJoinRoom
             // 
             btnJoinRoom.BackColor = Color.CadetBlue;
+            btnJoinRoom.Cursor = Cursors.Hand;
             btnJoinRoom.Font = new Font("Maiandra GD", 15F, FontStyle.Regular, GraphicsUnit.Point);
             btnJoinRoom.ForeColor = SystemColors.ButtonHighlight;
             btnJoinRoom.Location = new Point(460, 111);
@@ -115,6 +117,7 @@
             // btnBack
             // 
             btnBack.BackColor = Color.CadetBlue;
+            btnBack.Cursor = Cursors.Hand;
             btnBack.Font = new Font("Maiandra GD", 9F, FontStyle.Bold, GraphicsUnit.Point);
             btnBack.ForeColor = SystemColors.ButtonHighlight;
             btnBack.Location = new Point(640, 409);

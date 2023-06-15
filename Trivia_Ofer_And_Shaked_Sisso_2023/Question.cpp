@@ -43,3 +43,14 @@ int Question::getCorrectAnswerId() const
 {
     return this->m_correctAnswerId;
 }
+
+Question& Question::operator=(const Question& other)
+{
+    if (this != &other)
+    {
+        this->m_question = other.getQuestion();
+        this->m_possibleAnswers = other.getPossibleAnswers();
+        this->m_correctAnswerId = other.getCorrectAnswerId();
+    }
+    return *this;
+}

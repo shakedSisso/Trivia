@@ -11,8 +11,10 @@ class GameManager
 public:
 	GameManager(IDatabase* database);
 
-	void createGame(const Room& room);
+	GameID createGame(const Room& room);
 	void deleteGame(const GameID gameId);
+
+	Game getGame(const GameID gameId);
 
 	void setDatabase(IDatabase* database);
 

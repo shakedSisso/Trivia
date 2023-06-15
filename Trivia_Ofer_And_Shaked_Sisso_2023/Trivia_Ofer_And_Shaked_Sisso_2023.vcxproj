@@ -167,6 +167,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ApiEntity.cpp" />
     <ClCompile Include="Communicator.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameManager.cpp" />
@@ -193,6 +194,7 @@
     <ClCompile Include="WSAInitializer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ApiEntity.h" />
     <ClInclude Include="Communicator.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameManager.h" />

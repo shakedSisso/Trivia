@@ -1,8 +1,9 @@
 #include "GameRequestHandler.h"
 
-GameRequestHandler::GameRequestHandler(RequestHandlerFactory& handlerFactory, GameManager& gameManager, Game game, LoggedUser& user)
-	: m_handlerFactory(handlerFactory), m_gameManager(gameManager), m_user(user), m_game(game)
+GameRequestHandler::GameRequestHandler(RequestHandlerFactory& handlerFactory, GameManager& gameManager, GameID gameId, LoggedUser& user)
+	: m_handlerFactory(handlerFactory), m_gameManager(gameManager), m_user(user)
 {
+    this->m_game = this->m_gameManager.getGame(gameId);
 }
 
 bool GameRequestHandler::isRequestRelevent(const RequestInfo& info)
@@ -64,7 +65,7 @@ RequestResult GameRequestHandler::getQuestion(const RequestInfo& info)
         Question question = this->m_game.getQuestionForUser(this->m_user);
         result.newHandler = (IRequestHandler*)(this);
         response.question = question.getQuestion();
-            std::map<unsigned int, std::string> answers;
+        std::map<unsigned int, std::string> answers;
         if (response.question != "")
         {
             response.status = GetQuestion;
@@ -104,7 +105,7 @@ RequestResult GameRequestHandler::submitAnswer(const RequestInfo& info)
     try
     {
         SubmitAnswerRequest request = JsonRequestPacketDeserializer::deserializeSubmitAnswerRequest(info.buffer);
-        correctAnswerId = this->m_game.submitAnswer(request);
+        correctAnswerId = this->m_game.submitAnswer(this->m_user, request.answerId, request.answerTime);
         result.newHandler = (IRequestHandler*)(this);
     }
     catch (const std::exception& e)
@@ -120,7 +121,7 @@ RequestResult GameRequestHandler::submitAnswer(const RequestInfo& info)
     }
     SubmitAnswerResponse response;
     response.status = SubmitAnswer;
-    response.correctAnwserId = correctAnswerId;
+    response.correctAnswerId = correctAnswerId;
     result.buffer = JsonResponsePacketSerializer::serializeResponse(response);
     return result;
 }
@@ -129,7 +130,7 @@ RequestResult GameRequestHandler::getGameResults(const RequestInfo& info)
 {
     RequestResult result;
     std::vector<PlayerResults> results;
-    GetGameResultResponse response;
+    GetGameResultsResponse response;
     try
     {
         PlayerResults player;
@@ -137,10 +138,10 @@ RequestResult GameRequestHandler::getGameResults(const RequestInfo& info)
         if (this->m_game.isGameFinished())
         {
             response.status = GetGameResult;
-            std::map<LoggedUser, GameData> players = this->m_game.getPlayers();
+            std::map<LoggedUser, GameData*> players = this->m_game.getPlayers();
             for (auto it = players.begin(); it != players.end(); ++it)
             {
-                gameData = it->second;
+                gameData = *it->second;
                 player.username = it->first.getUsename();
                 player.correctAnswerCount = gameData.correctAnswerCount;
                 player.wrongAnswerCount = gameData.wrongAnswerCount;
@@ -175,7 +176,7 @@ RequestResult GameRequestHandler::leaveGame(const RequestInfo& info)
     RequestResult result;
     try
     {
-        this->m_game.removePlayer();
+        this->m_game.removePlayer(this->m_user);
         if (this->m_game.getPlayers().empty())
         {
             GameManager& gameManager = this->m_handlerFactory.getGameManager();

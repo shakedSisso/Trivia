@@ -6,16 +6,22 @@ GameManager::GameManager(IDatabase* database)
 {
 }
 
-void GameManager::createGame(const Room& room)
+GameID GameManager::createGame(const Room& room)
 {
 	vector<LoggedUser> usersList;
 	auto questionsList = this->m_database->getQuestions(room.getRoomData().numOfQuestionsInGame);
-	vector<Question> questions(questionsList.begin(), questionsList.end());
+	vector<Question> questions;
+	for (auto& question : questionsList)
+	{
+		questions.push_back(question);
+	}
 	for (const auto& user : room.getAllUsers())
 	{
 		usersList.push_back(LoggedUser(user));
 	}
-	this->m_games.push_back(Game(this->m_database, questions,usersList, room));
+	Game game(this->m_database, questions, usersList, room);
+	this->m_games.push_back(game);
+	return game.getGameId();
 }
 
 void GameManager::deleteGame(const GameID gameId)
@@ -28,6 +34,19 @@ void GameManager::deleteGame(const GameID gameId)
 			break;
 		}
 	}
+}
+
+Game GameManager::getGame(const GameID gameId)
+{
+	Game game;
+	for (auto g : this->m_games)
+	{
+		if (g.getGameId() == gameId)
+		{
+			game = g;
+		}
+	}
+	return game;
 }
 
 void GameManager::setDatabase(IDatabase* database)

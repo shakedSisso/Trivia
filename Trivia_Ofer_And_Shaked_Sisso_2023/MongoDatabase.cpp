@@ -162,6 +162,7 @@ std::list<Question> MongoDatabase::getQuestions(const int amountOfQuestions)
 		answers.push_back(jsonData["ans3"]);
 		answers.push_back(jsonData["ans4"]);
 		questions.push_back(Question(jsonData["question"], answers, std::rand() % ANSWER_COUNT + 1));
+		answers.clear();
 	}
 
 	return questions;
@@ -219,9 +220,9 @@ int MongoDatabase::submitGameStatistics(const std::string username, const int co
 {
 	basicDocument documentBuilder;
 	json userData = getUserStatisticsJson(username);
-	float avg = (userData["average_answer_time"] + averageAnswerTime) / 2;
-	int correctAnswers = userData["correct_answers"] + correctAnswerCount;
 	int totalAnswers = userData["total_answers"] + correctAnswerCount + wrongAnswerCount;
+	float avg = ((float)userData["average_answer_time"] * (int)userData["total_answers"] + averageAnswerTime) / totalAnswers;
+	int correctAnswers = userData["correct_answers"] + correctAnswerCount;
 
 	documentBuilder.append(kvp("username", username));
 	documentBuilder.append(kvp("games_count", userData["games_count"] + 1));
@@ -233,7 +234,8 @@ int MongoDatabase::submitGameStatistics(const std::string username, const int co
 	mongocxx::collection statisticsCollections = this->_db[STATISTICS_COLLECTION_NAME];
 	auto builder = streamDocument{};
 	bsoncxx::document::value filter = builder << "username" << username << finalize;
-	statisticsCollections.update_one(filter.view(), doc.view());
+	mongocxx::options::find_one_and_update options{};
+	statisticsCollections.find_one_and_update(filter.view(), doc.view(), options);
 
 	return 0;
 }
@@ -264,10 +266,15 @@ void MongoDatabase::addQuestionsToDatabase()
 			// Extract question details
 			q.id = i + 1;
 			q.question = questionObj["question"].get<std::string>();
+			ApiEntity::checkForHtmlEntity(q.question);
 			q.correct_ans = questionObj["correct_answer"].get<std::string>();
+			ApiEntity::checkForHtmlEntity(q.correct_ans);
 			q.ans2 = questionObj["incorrect_answers"].get<std::vector<std::string>>()[0];
+			ApiEntity::checkForHtmlEntity(q.ans2);
 			q.ans3 = questionObj["incorrect_answers"].get<std::vector<std::string>>()[1];
+			ApiEntity::checkForHtmlEntity(q.ans3);
 			q.ans4 = questionObj["incorrect_answers"].get<std::vector<std::string>>()[2];
+			ApiEntity::checkForHtmlEntity(q.ans4);
 
 			addQuestion(q);
 		}
