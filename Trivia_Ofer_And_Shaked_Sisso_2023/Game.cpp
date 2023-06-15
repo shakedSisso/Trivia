@@ -5,10 +5,9 @@
 Game::Game(IDatabase* database, vector<Question> questions, vector<LoggedUser> users, const Room& room)
     :m_database(database), m_gameId(room.getRoomData().id), m_gameSettings(room.getRoomData())
 {
-    for (auto question : questions)
+    for (auto& question : questions)
     {
-        Question q = question;
-        this->m_questions.push_back(q);
+        this->m_questions.push_back(question);
     }
     for (auto user : users)
     {
@@ -35,10 +34,10 @@ Question Game::getQuestionForUser(const LoggedUser& user)
 
 int Game::submitAnswer(const LoggedUser& user, int answerId, int answeringTime)
 {
-    GameData gameData = this->m_players[user];
+    GameData& gameData = this->m_players[user];
     int questionCount = gameData.correctAnswerCount + gameData.wrongAnswerCount;
     this->m_players[user].averageAnswerTime = (gameData.averageAnswerTime * questionCount + answeringTime) / (questionCount + 1);
-
+    
     int correctAnswerId = this->m_players[user].currentQuestion.getCorrectAnswerId();
     if (correctAnswerId == answerId)
     {
