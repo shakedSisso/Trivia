@@ -11,7 +11,7 @@ GameID GameManager::createGame(const Room& room)
 	vector<LoggedUser> usersList;
 	auto questionsList = this->m_database->getQuestions(room.getRoomData().numOfQuestionsInGame);
 	vector<Question> questions;
-	for (auto question : questionsList)
+	for (auto& question : questionsList)
 	{
 		questions.push_back(question);
 	}
