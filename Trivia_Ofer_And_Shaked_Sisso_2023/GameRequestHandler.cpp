@@ -138,10 +138,10 @@ RequestResult GameRequestHandler::getGameResults(const RequestInfo& info)
         if (this->m_game.isGameFinished())
         {
             response.status = GetGameResult;
-            std::map<LoggedUser, GameData> players = this->m_game.getPlayers();
+            std::map<LoggedUser, GameData*> players = this->m_game.getPlayers();
             for (auto it = players.begin(); it != players.end(); ++it)
             {
-                gameData = it->second;
+                gameData = *it->second;
                 player.username = it->first.getUsename();
                 player.correctAnswerCount = gameData.correctAnswerCount;
                 player.wrongAnswerCount = gameData.wrongAnswerCount;

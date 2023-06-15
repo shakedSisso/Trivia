@@ -18,6 +18,7 @@ typedef struct GameData
 	float averageAnswerTime;
 	GameData()
 	{
+		currentQuestion = Question();
 		correctAnswerCount = 0;
 		wrongAnswerCount = 0;
 		averageAnswerTime = 0.0;
@@ -35,12 +36,12 @@ public:
 	void removePlayer(const LoggedUser& user);
 	
 	GameID getGameId() const;
-	map<LoggedUser, GameData> getPlayers() const;
+	map<LoggedUser, GameData*> getPlayers() const;
 	bool isGameFinished() const;
 private:
 	IDatabase* m_database;
 	vector<Question> m_questions;
-	map<LoggedUser, GameData> m_players;
+	map<LoggedUser, GameData*> m_players;
 	GameID m_gameId;
 	RoomData m_gameSettings;
 };
