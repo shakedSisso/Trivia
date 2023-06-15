@@ -98,10 +98,6 @@ namespace Trivia
             if (this.IsHandleCreated)
             {
                 currentCount++;
-                this.Invoke((MethodInvoker)delegate
-                {
-                    ChangeScore();
-                });
                 lock (communicatorLock)
                 {
                     question = Program.GetCommunicator().GetQuestion();
@@ -110,6 +106,7 @@ namespace Trivia
                 {
                     this.Invoke((MethodInvoker)delegate
                     {
+                        ChangeScore();
                         NextQuestion();
                     });
                 }
