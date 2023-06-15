@@ -38,7 +38,7 @@
             lblThirdPlace = new Label();
             lblSecondPlace = new Label();
             lblFirstPlace = new Label();
-            label2 = new Label();
+            lblTopFive = new Label();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
@@ -122,7 +122,7 @@
             // 
             lblSecondPlace.AutoSize = true;
             lblSecondPlace.Font = new Font("Maiandra GD", 15F, FontStyle.Regular, GraphicsUnit.Point);
-            lblSecondPlace.Location = new Point(219, 149);
+            lblSecondPlace.Location = new Point(219, 147);
             lblSecondPlace.Name = "lblSecondPlace";
             lblSecondPlace.Size = new Size(88, 30);
             lblSecondPlace.TabIndex = 28;
@@ -139,16 +139,16 @@
             lblFirstPlace.TabIndex = 29;
             lblFirstPlace.Text = "First";
             // 
-            // label2
+            // lblTopFive
             // 
-            label2.AutoSize = true;
-            label2.Font = new Font("Bauhaus 93", 25F, FontStyle.Regular, GraphicsUnit.Point);
-            label2.ForeColor = Color.DarkSlateGray;
-            label2.Location = new Point(323, 29);
-            label2.Name = "label2";
-            label2.Size = new Size(124, 48);
-            label2.TabIndex = 30;
-            label2.Text = "Top 5";
+            lblTopFive.AutoSize = true;
+            lblTopFive.Font = new Font("Bauhaus 93", 25F, FontStyle.Regular, GraphicsUnit.Point);
+            lblTopFive.ForeColor = Color.DarkSlateGray;
+            lblTopFive.Location = new Point(323, 29);
+            lblTopFive.Name = "lblTopFive";
+            lblTopFive.Size = new Size(124, 48);
+            lblTopFive.TabIndex = 30;
+            lblTopFive.Text = "Top 5";
             // 
             // BestScores
             // 
@@ -156,7 +156,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.PaleTurquoise;
             ClientSize = new Size(800, 450);
-            Controls.Add(label2);
+            Controls.Add(lblTopFive);
             Controls.Add(lblFirstPlace);
             Controls.Add(lblSecondPlace);
             Controls.Add(lblThirdPlace);
@@ -187,6 +187,6 @@
         private Label lblThirdPlace;
         private Label lblSecondPlace;
         private Label lblFirstPlace;
-        private Label label2;
+        private Label lblTopFive;
     }
 }
