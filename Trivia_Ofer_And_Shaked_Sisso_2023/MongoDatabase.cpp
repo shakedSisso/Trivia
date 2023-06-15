@@ -162,6 +162,7 @@ std::list<Question> MongoDatabase::getQuestions(const int amountOfQuestions)
 		answers.push_back(jsonData["ans3"]);
 		answers.push_back(jsonData["ans4"]);
 		questions.push_back(Question(jsonData["question"], answers, std::rand() % ANSWER_COUNT + 1));
+		answers.clear();
 	}
 
 	return questions;
