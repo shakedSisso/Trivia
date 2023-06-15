@@ -42,11 +42,9 @@ namespace Trivia
         {
             for (int i = this.Controls.Count - 1; i >= 0; i--)
             {
-                if (this.Controls[i] is Label label)
-                {
-                    this.Controls.RemoveAt(i);
-                    label.Dispose();
-                }
+                Control control = this.Controls[i];
+                this.Controls.RemoveAt(i);
+                control.Dispose();
             }
             try
             {
@@ -59,13 +57,20 @@ namespace Trivia
             if (results == null)
             {
                 Label lblError = new Label();
-                lblError.Text = "Game isn't over";
-                lblError.Font = new Font("Maiandra GD", 20, FontStyle.Bold);
-                lblError.ForeColor = Color.Maroon;
+                lblError.Text = "Waiting for all players to finish...";
+                lblError.Font = new Font("Maiandra GD", 20F, FontStyle.Bold);
+                lblError.ForeColor = Color.DarkSlateBlue;
                 lblError.Width = lblError.Text.Length * 20;
                 lblError.Top = 10;
                 lblError.Height = 45;
                 this.Controls.Add(lblError);
+                PictureBox pbLoading = new PictureBox();
+                pbLoading.Image = Properties.Resources.loading;
+                pbLoading.Size = new Size(150, 150);
+                pbLoading.Top = lblError.Bottom;
+                pbLoading.SizeMode = PictureBoxSizeMode.StretchImage;
+                pbLoading.Left = (lblError.Width - pbLoading.Width) / 2;
+                this.Controls.Add(pbLoading);
                 ResizeAndRelocateForm();
                 return false;
             }
