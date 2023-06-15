@@ -15,6 +15,7 @@ namespace Trivia
         int count = 0;
         private bool gotScores;
         private dynamic results;
+        private System.Drawing.Image resource;
         public GameScores(Form owner)
         {
             InitializeComponent();
@@ -22,6 +23,7 @@ namespace Trivia
             this.Location = LocationManager.GetFormLocation();
             this.Owner = owner;
             dynamic playerResults;
+            PickRandomLoadingImage();
             try
             {
                 playerResults = Program.GetCommunicator().GetGameResults();
@@ -35,6 +37,32 @@ namespace Trivia
             {
                 gotScores = false;
                 tmrShowResult.Start();
+            }
+        }
+
+        private void PickRandomLoadingImage()
+        {
+            int randomNum = new Random().Next(1, 7);
+            switch (randomNum)
+            {
+                case 1:
+                    resource = Properties.Resources.loading1;
+                    break;
+                case 2:
+                    resource = Properties.Resources.loading2;
+                    break;
+                case 3:
+                    resource = Properties.Resources.loading3;
+                    break;
+                case 4:
+                    resource = Properties.Resources.loading4;
+                    break;
+                case 5:
+                    resource = Properties.Resources.loading5;
+                    break;
+                default:
+                    resource = Properties.Resources.loading6;
+                    break;
             }
         }
 
@@ -59,14 +87,14 @@ namespace Trivia
                 Label lblError = new Label();
                 lblError.Text = "Waiting for all players to finish...";
                 lblError.Font = new Font("Maiandra GD", 20F, FontStyle.Bold);
-                lblError.ForeColor = Color.DarkSlateBlue;
+                lblError.ForeColor = Color.DarkSlateGray;
                 lblError.Width = lblError.Text.Length * 20;
                 lblError.Top = 10;
                 lblError.Height = 45;
                 this.Controls.Add(lblError);
                 PictureBox pbLoading = new PictureBox();
-                pbLoading.Image = Properties.Resources.loading;
-                pbLoading.Size = new Size(150, 150);
+                pbLoading.Image = resource;
+                pbLoading.Size = new Size(350, 350);
                 pbLoading.Top = lblError.Bottom;
                 pbLoading.SizeMode = PictureBoxSizeMode.StretchImage;
                 pbLoading.Left = (lblError.Width - pbLoading.Width) / 2;
