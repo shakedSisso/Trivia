@@ -109,6 +109,12 @@ typedef struct PlayerResults
 	unsigned int correctAnswerCount;
 	unsigned int wrongAnswerCount;
 	float averageAnswerTime;
+	bool operator>(const PlayerResults& other) const
+	{
+		if (correctAnswerCount == other.correctAnswerCount)
+			return averageAnswerTime < other.averageAnswerTime;
+		return correctAnswerCount > other.correctAnswerCount;
+	}
 } PlayerResults;
 
 typedef struct GetGameResultsResponse

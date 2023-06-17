@@ -126,6 +126,20 @@ RequestResult GameRequestHandler::submitAnswer(const RequestInfo& info)
     return result;
 }
 
+void GameRequestHandler::sortVector(std::vector<PlayerResults>& v) 
+{
+    for (size_t i = 0; i < v.size() - 1; ++i) 
+    {
+        for (size_t j = 0; j < v.size() - i - 1; ++j) 
+        {
+            if (v[j + 1] > v[j]) 
+            {
+                std::swap(v[j], v[j + 1]);
+            }
+        }
+    }
+}
+
 RequestResult GameRequestHandler::getGameResults(const RequestInfo& info)
 {
     RequestResult result;
@@ -148,6 +162,7 @@ RequestResult GameRequestHandler::getGameResults(const RequestInfo& info)
                 player.averageAnswerTime = gameData.averageAnswerTime;
                 results.push_back(player);
             }
+            sortVector(results); //sort the result according to the score
         }
         else
         {
