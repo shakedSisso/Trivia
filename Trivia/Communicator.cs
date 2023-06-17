@@ -18,12 +18,17 @@ namespace Trivia
     {
         private Socket socket;
         private const string DISCONNECTION_MESSAGE = "An existing connection was forcibly closed by the remote host.";
+        private const string ABORT_MESSAGE = "An established connection was aborted by the software in your host machine.";
+        private const string RUNTIME_MESSAGE = "Cannot perform runtime binding on a null reference";
+        private string[] errors = { DISCONNECTION_MESSAGE, ABORT_MESSAGE, RUNTIME_MESSAGE };
 
+        public bool aborted;
         public enum codes { Error, Login, Signup, GetPlayersInRoom, JoinRoom, CreateRoom, HighScore, Logout, GetRooms, Statistics, CloseRoom, StartGame, GetRoomState, LeaveRoom, LeaveGame, GetQuestion, GetQuestionFailed, SubmitAnswer, GetGameResult, GetGameResultFailed };
         public void Connect()
         {
             try
             {
+                aborted = false;
                 this.socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
                 IPAddress serverIP = IPAddress.Parse("127.0.0.1");
@@ -55,14 +60,16 @@ namespace Trivia
             }
             catch (Exception e)
             {
-                if (e.Message == DISCONNECTION_MESSAGE)
+                if (Array.Exists(errors, msg => msg == e.Message))
                 {
-                    MessageBox.Show(e.Message, "Host disconnected", MessageBoxButtons.OK);
+                    aborted = true;
+                    MessageBox.Show(e.Message, "Host disconnected", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     Application.Exit();
+                    return null;
                 }
                 else
                 {
-                    throw e;
+                    throw new Exception(e.Message);
                 }
             }
             return response;

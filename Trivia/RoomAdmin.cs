@@ -180,8 +180,11 @@ namespace Trivia
                     Program.GetCommunicator().StartGame();
                     this.isClosed = true;
                     fGame = new Game(this.roomName, this.timePerQuestion, this.questionCount);
-                    this.timer.Dispose();
-                    this.timer = null;
+                    if (this.timer != null)
+                    {
+                        this.timer.Dispose();
+                        this.timer = null;
+                    }
                     this.isLocked = false;
                 }
                 this.Hide();
@@ -199,7 +202,12 @@ namespace Trivia
 
         private void RoomAdmin_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if(!this.isClosed)
+            if (Program.GetCommunicator().aborted)
+            {
+                Application.Exit();
+                return;
+            }
+            if (!this.isClosed)
             {
                 lock(communicatorLock)
                 {
