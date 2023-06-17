@@ -65,8 +65,8 @@ void Game::removePlayer(const LoggedUser& user)
 {
     auto player = this->m_players.find(user);
     this->m_database->submitGameStatistics(player->first.getUsename(), player->second->correctAnswerCount, player->second->wrongAnswerCount, player->second->averageAnswerTime);
-    delete(this->m_players[user]);
-    this->m_players.erase(user);
+    GameData* gameData = this->m_players[user];
+    gameData->currentQuestion = Question(LOG_OUT,vector<string>(), -999); //users don't get removed with erase, so we use this to mark user's log out
 }
 
 GameID Game::getGameId() const
@@ -84,7 +84,7 @@ bool Game::isGameFinished() const
     bool isFinished = true;
     for (auto player = this->m_players.begin(); player != this->m_players.end() && isFinished; player++)
     {
-        if (player->second->currentQuestion.getQuestion() != "") // if there is a user with a currect question that the question text is not empty then the game is not finished
+        if (player->second->currentQuestion.getQuestion() != LOG_OUT && player->second->currentQuestion.getQuestion() != "") // if there is a user with a currect question that the question text is not empty then the game is not finished
         {
             isFinished = false;
             break;

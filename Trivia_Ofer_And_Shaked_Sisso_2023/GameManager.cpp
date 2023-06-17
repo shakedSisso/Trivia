@@ -30,6 +30,11 @@ void GameManager::deleteGame(const GameID gameId)
 	{
 		if (game->getGameId() == gameId)
 		{
+			auto players = game->getPlayers();
+			for (auto user : players)
+			{
+				delete(user.second);
+			}
 			this->m_games.erase(game);
 			break;
 		}

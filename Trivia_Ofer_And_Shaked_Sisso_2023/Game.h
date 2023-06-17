@@ -10,6 +10,8 @@
 using std::map;
 using std::vector;
 
+#define LOG_OUT "Logged out"
+
 typedef struct GameData
 {
 	Question currentQuestion;
