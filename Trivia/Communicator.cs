@@ -17,12 +17,18 @@ namespace Trivia
     class Communicator
     {
         private Socket socket;
+        private const string DISCONNECTION_MESSAGE = "An existing connection was forcibly closed by the remote host.";
+        private const string ABORT_MESSAGE = "An established connection was aborted by the software in your host machine.";
+        private const string RUNTIME_MESSAGE = "Cannot perform runtime binding on a null reference";
+        private string[] errors = { DISCONNECTION_MESSAGE, ABORT_MESSAGE, RUNTIME_MESSAGE };
 
+        public bool aborted;
         public enum codes { Error, Login, Signup, GetPlayersInRoom, JoinRoom, CreateRoom, HighScore, Logout, GetRooms, Statistics, CloseRoom, StartGame, GetRoomState, LeaveRoom, LeaveGame, GetQuestion, GetQuestionFailed, SubmitAnswer, GetGameResult, GetGameResultFailed };
         public void Connect()
         {
             try
             {
+                aborted = false;
                 this.socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
                 IPAddress serverIP = IPAddress.Parse("127.0.0.1");
@@ -43,12 +49,36 @@ namespace Trivia
             this.socket.Close();
         }
 
+        private dynamic GetResponse(object jsonObject, int code)
+        {
+            dynamic response = null;
+            try
+            {
+                byte[] buffer = PacketSerializer.GenerateMessage(code, jsonObject);
+                this.socket.Send(buffer);
+                response = PacketDeserializer.ProcessSocketData(this.socket);
+            }
+            catch (Exception e)
+            {
+                if (Array.Exists(errors, msg => msg == e.Message))
+                {
+                    aborted = true;
+                    MessageBox.Show(e.Message, "Host disconnected", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Application.Exit();
+                    return null;
+                }
+                else
+                {
+                    throw new Exception(e.Message);
+                }
+            }
+            return response;
+        }
+
         public bool Login(string username, string password)
         {
             var jsonObject = new { username = username, password = password};
-            byte[] buffer = PacketSerializer.GenerateMessage((int)codes.Login, jsonObject);
-            this.socket.Send(buffer);
-            dynamic response = PacketDeserializer.ProcessSocketData(this.socket);
+            dynamic response = GetResponse(jsonObject, (int)codes.Login);
             if(response.code == (int)codes.Error)
             {
                 throw new Exception(response.message.ToString());
@@ -65,9 +95,7 @@ namespace Trivia
         public bool SignUp(string username, string password, string mail, string address, string phoneNumber, string birthDate)
         {
             var jsonObject = new { username = username, password = password, mail = mail, address = address, phone_number = phoneNumber, birth_date = birthDate };
-            byte[] buffer = PacketSerializer.GenerateMessage((int)codes.Signup, jsonObject);
-            this.socket.Send(buffer);
-            dynamic response = PacketDeserializer.ProcessSocketData(this.socket);
+            dynamic response = GetResponse(jsonObject, (int)codes.Signup);
             if (response.code == (int)codes.Error)
             {
                 throw new Exception(response.message.ToString());
@@ -82,9 +110,7 @@ namespace Trivia
         public bool Logout()
         {
             var jsonObject = new { };
-            byte[] buffer = PacketSerializer.GenerateMessage((int)codes.Logout, jsonObject);
-            this.socket.Send(buffer);
-            dynamic response = PacketDeserializer.ProcessSocketData(this.socket);
+            dynamic response = GetResponse(jsonObject, (int)codes.Logout);
             if (response.code == (int)codes.Error)
             {
                 
@@ -100,9 +126,7 @@ namespace Trivia
         public string[] GetPlayersInRoom(int roomId)
         {
             var jsonObject = new { room_id = roomId};
-            byte[] buffer = PacketSerializer.GenerateMessage((int)codes.GetPlayersInRoom, jsonObject);
-            this.socket.Send(buffer);
-            dynamic response = PacketDeserializer.ProcessSocketData(this.socket);
+            dynamic response = GetResponse(jsonObject, (int)codes.GetPlayersInRoom);
             if (response.code == (int)codes.Error)
             {
                 throw new Exception(response.message.ToString());
@@ -125,9 +149,7 @@ namespace Trivia
         {
             RoomData[] rooms = null;
             var jsonObject = new { };
-            byte[] buffer = PacketSerializer.GenerateMessage((int)codes.GetRooms, jsonObject);
-            this.socket.Send(buffer);
-            dynamic response = PacketDeserializer.ProcessSocketData(this.socket);
+            dynamic response = GetResponse(jsonObject, (int)codes.GetRooms);
             if (response.code == (int)codes.Error)
             {
                 throw new Exception(response.message.ToString());
@@ -148,9 +170,7 @@ namespace Trivia
         public string[] GetHighScores()
         {
             var jsonObject = new { };
-            byte[] buffer = PacketSerializer.GenerateMessage((int)codes.HighScore, jsonObject);
-            this.socket.Send(buffer);
-            dynamic response = PacketDeserializer.ProcessSocketData(this.socket);
+            dynamic response = GetResponse(jsonObject, (int)codes.HighScore);
             if (response.code == (int)codes.Error)
             {
                 throw new Exception(response.message);
@@ -173,9 +193,7 @@ namespace Trivia
         public string[] GetStatistics()
         {
             var jsonObject = new { };
-            byte[] buffer = PacketSerializer.GenerateMessage((int)codes.Statistics, jsonObject);
-            this.socket.Send(buffer);
-            dynamic response = PacketDeserializer.ProcessSocketData(this.socket);
+            dynamic response = GetResponse(jsonObject, (int)codes.Statistics);
             if (response.code == (int)codes.Error)
             {
                 throw new Exception(response.message.ToString());
@@ -197,9 +215,7 @@ namespace Trivia
         public bool JoinRoom(int roomId)
         {
             var jsonObject = new { room_id = roomId };
-            byte[] buffer = PacketSerializer.GenerateMessage((int)codes.JoinRoom, jsonObject);
-            this.socket.Send(buffer);
-            dynamic response = PacketDeserializer.ProcessSocketData(this.socket);
+            dynamic response = GetResponse(jsonObject, (int)codes.JoinRoom);
             if (response.code == (int)codes.Error)
             {
                 throw new Exception(response.message.ToString());
@@ -214,9 +230,7 @@ namespace Trivia
         public bool CreateRoom(string roomName, int maxUsers, int questionCount, int timeOut)
         {
             var jsonObject = new { room_name = roomName, max_users = maxUsers, question_count = questionCount, time_out = timeOut };
-            byte[] buffer = PacketSerializer.GenerateMessage((int)codes.CreateRoom, jsonObject);
-            this.socket.Send(buffer);
-            dynamic response = PacketDeserializer.ProcessSocketData(this.socket);
+            dynamic response = GetResponse(jsonObject, (int)codes.CreateRoom);
             if (response.code == (int)codes.Error)
             {
                 throw new Exception(response.message.ToString());
@@ -231,9 +245,7 @@ namespace Trivia
         public bool CloseRoom()
         {
             var jsonObject = new { };
-            byte[] buffer = PacketSerializer.GenerateMessage((int)codes.CloseRoom, jsonObject);
-            this.socket.Send(buffer);
-            dynamic response = PacketDeserializer.ProcessSocketData(this.socket);
+            dynamic response = GetResponse(jsonObject, (int)codes.CloseRoom);
             if (response.code == (int)codes.Error)
             {
                 throw new Exception(response.message.ToString());
@@ -248,9 +260,7 @@ namespace Trivia
         public bool StartGame()
         {
             var jsonObject = new { };
-            byte[] buffer = PacketSerializer.GenerateMessage((int)codes.StartGame, jsonObject);
-            this.socket.Send(buffer);
-            dynamic response = PacketDeserializer.ProcessSocketData(this.socket);
+            dynamic response = GetResponse(jsonObject, (int)codes.StartGame);
             if (response.code == (int)codes.Error)
             {
                 throw new Exception(response.message.ToString());
@@ -265,9 +275,7 @@ namespace Trivia
         public dynamic GetRoomState()
         {
             var jsonObject = new { };
-            byte[] buffer = PacketSerializer.GenerateMessage((int)codes.GetRoomState, jsonObject);
-            this.socket.Send(buffer);
-            dynamic response = PacketDeserializer.ProcessSocketData(this.socket);
+            dynamic response = GetResponse(jsonObject, (int)codes.GetRoomState);
             if (response.code == (int)codes.Error)
             {
                 throw new Exception(response.message.ToString());
@@ -282,9 +290,7 @@ namespace Trivia
         public bool LeaveRoom()
         {
             var jsonObject = new { };
-            byte[] buffer = PacketSerializer.GenerateMessage((int)codes.LeaveRoom, jsonObject);
-            this.socket.Send(buffer);
-            dynamic response = PacketDeserializer.ProcessSocketData(this.socket);
+            dynamic response = GetResponse(jsonObject, (int)codes.LeaveRoom);
             if (response.code == (int)codes.Error)
             {
                 throw new Exception(response.message.ToString());
@@ -299,9 +305,7 @@ namespace Trivia
         public dynamic GetQuestion()
         {
             var jsonObject = new { };
-            byte[] buffer = PacketSerializer.GenerateMessage((int)codes.GetQuestion, jsonObject);
-            this.socket.Send(buffer);
-            dynamic response = PacketDeserializer.ProcessSocketData(this.socket);
+            dynamic response = GetResponse(jsonObject, (int)codes.GetQuestion);
             if (response.code == (int)codes.Error)
             {
                 throw new Exception(response.message.ToString());
@@ -316,9 +320,7 @@ namespace Trivia
         public int SubmitAnswer(int id, int answeringTime)
         {
             var jsonObject = new { answer_id = id, answer_time = answeringTime };
-            byte[] buffer = PacketSerializer.GenerateMessage((int)codes.SubmitAnswer, jsonObject);
-            this.socket.Send(buffer);
-            dynamic response = PacketDeserializer.ProcessSocketData(this.socket);
+            dynamic response = GetResponse(jsonObject, (int)codes.SubmitAnswer);
             if (response.code == (int)codes.Error)
             {
                 throw new Exception(response.message.ToString());
@@ -333,9 +335,7 @@ namespace Trivia
         public void LeaveGame()
         {
             var jsonObject = new { };
-            byte[] buffer = PacketSerializer.GenerateMessage((int)codes.LeaveGame, jsonObject);
-            this.socket.Send(buffer);
-            dynamic response = PacketDeserializer.ProcessSocketData(this.socket);
+            dynamic response = GetResponse(jsonObject, (int)codes.LeaveGame);
             if (response.code == (int)codes.Error)
             {
                 throw new Exception(response.message.ToString());
@@ -350,9 +350,7 @@ namespace Trivia
         public dynamic GetGameResults()
         {
             var jsonObject = new { };
-            byte[] buffer = PacketSerializer.GenerateMessage((int)codes.GetGameResult, jsonObject);
-            this.socket.Send(buffer);
-            dynamic response = PacketDeserializer.ProcessSocketData(this.socket);
+            dynamic response = GetResponse(jsonObject, (int)codes.GetGameResult);
             if (response.code == (int)codes.Error)
             {
                 throw new Exception(response.message.ToString());

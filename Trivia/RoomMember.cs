@@ -178,7 +178,12 @@ namespace Trivia
 
         private void RoomMember_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if(!this.isDisconnected)
+            if (Program.GetCommunicator().aborted)
+            {
+                Application.Exit();
+                return;
+            }
+            if (!this.isDisconnected)
             {
                 lock(this.communicatorLock)
                 {

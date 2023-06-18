@@ -12,10 +12,11 @@ namespace Trivia
 {
     public partial class GameScores : Form
     {
-        int count = 0;
+        private int count = 0;
         private bool gotScores;
         private dynamic results;
         private System.Drawing.Image resource;
+        private object communicatorLock;
         public GameScores(Form owner)
         {
             InitializeComponent();
@@ -23,6 +24,7 @@ namespace Trivia
             this.Location = LocationManager.GetFormLocation();
             this.Owner = owner;
             dynamic playerResults;
+            this.communicatorLock = new object();
             PickRandomLoadingImage();
             try
             {
@@ -76,7 +78,10 @@ namespace Trivia
             }
             try
             {
-                results = Program.GetCommunicator().GetGameResults();
+                lock (this.communicatorLock)
+                {
+                    results = Program.GetCommunicator().GetGameResults();
+                }
             }
             catch (Exception ex)
             {
@@ -94,7 +99,7 @@ namespace Trivia
                 this.Controls.Add(lblError);
                 PictureBox pbLoading = new PictureBox();
                 pbLoading.Image = resource;
-                pbLoading.Size = new Size(350, 350);
+                pbLoading.Size = new Size(300, 300);
                 pbLoading.Top = lblError.Bottom;
                 pbLoading.SizeMode = PictureBoxSizeMode.StretchImage;
                 pbLoading.Left = (lblError.Width - pbLoading.Width) / 2;
@@ -108,8 +113,8 @@ namespace Trivia
                 lblResult.Height = 45;
                 string username = "Username: " + result.username;
                 string score = "Score: " + result.correctAnswerCount;
-                lblResult.Text = username + "   " + score;
-                lblResult.Width = (username + score).Length * 20;
+                lblResult.Text = (count + 1).ToString() + ") " + username + "   " + score;
+                lblResult.Width = lblResult.Text.Length * 20;
                 lblResult.Top = count * 45;
                 lblResult.Font = new Font("Maiandra GD", 20, FontStyle.Bold);
                 lblResult.ForeColor = Color.Black;
@@ -136,7 +141,7 @@ namespace Trivia
             }
 
             // Resize the form based on the largest label size
-            this.Size = new Size(maxLabelWidth + 25, maxLabelHeight + 75);
+            this.Size = new Size(maxLabelWidth, maxLabelHeight + 75);
 
             Form parentForm = Owner;
             if (parentForm != null)
@@ -162,7 +167,10 @@ namespace Trivia
             {
                 try
                 {
-                    gotScores = ShowResults();
+                    lock (this.communicatorLock)
+                    {
+                        gotScores = ShowResults();
+                    }
                 }
                 catch (Exception ex)
                 {

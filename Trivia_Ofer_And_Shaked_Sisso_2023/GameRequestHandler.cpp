@@ -126,6 +126,20 @@ RequestResult GameRequestHandler::submitAnswer(const RequestInfo& info)
     return result;
 }
 
+void GameRequestHandler::sortVector(std::vector<PlayerResults>& v) 
+{
+    for (size_t i = 0; i < v.size() - 1; ++i) 
+    {
+        for (size_t j = 0; j < v.size() - i - 1; ++j) 
+        {
+            if (v[j + 1] > v[j]) 
+            {
+                std::swap(v[j], v[j + 1]);
+            }
+        }
+    }
+}
+
 RequestResult GameRequestHandler::getGameResults(const RequestInfo& info)
 {
     RequestResult result;
@@ -134,20 +148,24 @@ RequestResult GameRequestHandler::getGameResults(const RequestInfo& info)
     try
     {
         PlayerResults player;
-        GameData gameData;
+        GameData* gameData;
         if (this->m_game.isGameFinished())
         {
             response.status = GetGameResult;
             std::map<LoggedUser, GameData*> players = this->m_game.getPlayers();
             for (auto it = players.begin(); it != players.end(); ++it)
             {
-                gameData = *it->second;
-                player.username = it->first.getUsename();
-                player.correctAnswerCount = gameData.correctAnswerCount;
-                player.wrongAnswerCount = gameData.wrongAnswerCount;
-                player.averageAnswerTime = gameData.averageAnswerTime;
-                results.push_back(player);
+                gameData = it->second;
+                if (gameData->currentQuestion.getQuestion() != LOG_OUT) //to only show the results of users that finished the game without logging out
+                {
+                    player.username = it->first.getUsename();
+                    player.correctAnswerCount = gameData->correctAnswerCount;
+                    player.wrongAnswerCount = gameData->wrongAnswerCount;
+                    player.averageAnswerTime = gameData->averageAnswerTime;
+                    results.push_back(player);
+                }
             }
+            sortVector(results); //sort the result according to the score
         }
         else
         {
@@ -177,7 +195,7 @@ RequestResult GameRequestHandler::leaveGame(const RequestInfo& info)
     try
     {
         this->m_game.removePlayer(this->m_user);
-        if (this->m_game.getPlayers().empty())
+        if (this->m_game.isGameFinished())
         {
             GameManager& gameManager = this->m_handlerFactory.getGameManager();
             gameManager.deleteGame(this->m_game.getGameId());

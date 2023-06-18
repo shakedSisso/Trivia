@@ -28,6 +28,11 @@ namespace Trivia
         {
             try
             {
+                if (Program.GetCommunicator().aborted)
+                {
+                    Application.Exit();
+                    return;
+                }
                 Program.GetCommunicator().Logout();
                 Program.GetCommunicator().Disconnect();
             }

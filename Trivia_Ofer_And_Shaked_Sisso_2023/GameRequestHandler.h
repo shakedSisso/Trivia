@@ -18,6 +18,8 @@ private:
 	RequestHandlerFactory& m_handlerFactory;
 	GameManager& m_gameManager;
 
+	void sortVector(std::vector<PlayerResults>& v);
+
 	RequestResult getQuestion(const RequestInfo& info);
 	RequestResult submitAnswer(const RequestInfo& info);
 	RequestResult getGameResults(const RequestInfo& info);
