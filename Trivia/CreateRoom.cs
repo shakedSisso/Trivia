@@ -36,8 +36,9 @@ namespace Trivia
                     int playersCount = int.Parse(tbNumOfPlayers.Text);
                     int questionCount = int.Parse(tbNumOfQuestions.Text);
                     int timeOut = int.Parse(tbTimeForQuestions.Text);
+                    bool includeUserQuestions = cbIncludeUserQuestion.Checked;
 
-                    Program.GetCommunicator().CreateRoom(name, playersCount, questionCount, timeOut);
+                    Program.GetCommunicator().CreateRoom(name, playersCount, questionCount, timeOut, includeUserQuestions);
                     LocationManager.SetFormLocation(this.Location);
                     Form fRoomAdmin = new RoomAdmin(name, playersCount);
                     this.Hide();
