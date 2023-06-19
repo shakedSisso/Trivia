@@ -1,8 +1,8 @@
 #include "RoomManager.h"
 
-void RoomManager::createRoom(const LoggedUser& loggedUser, RoomData roomMetadata)
+void RoomManager::createRoom(const LoggedUser& loggedUser, RoomData roomMetadata, const bool includeUserQuestions)
 {
-	this->m_rooms[roomMetadata.id] = Room(roomMetadata);
+	this->m_rooms[roomMetadata.id] = Room(roomMetadata, includeUserQuestions);
 	this->m_rooms[roomMetadata.id].addUser(loggedUser);
 }
 
