@@ -1,5 +1,6 @@
 #pragma once
 #include "LoggedUser.h"
+#include "Globals.h"
 #include <vector>
 #include <string>
 
@@ -8,7 +9,7 @@ using std::string;
 
 typedef struct RoomData
 {
-	unsigned int id;
+	RoomID id;
 	string name;
 	unsigned int maxPlayers;
 	unsigned int numOfQuestionsInGame;

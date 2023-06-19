@@ -143,7 +143,8 @@ namespace Trivia
                     this.Invoke((MethodInvoker)delegate
                     {
                         LocationManager.SetFormLocation(this.Location);
-                        Form fGame = new Game(this.roomName);
+                        this.isDisconnected = true;
+                        Form fGame = new Game(this.roomName, this.timePerQuestion, this.questionCount);
                         this.timer.Dispose();
                         this.timer = null;
                         this.Hide();
@@ -177,7 +178,12 @@ namespace Trivia
 
         private void RoomMember_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if(!this.isDisconnected)
+            if (Program.GetCommunicator().aborted)
+            {
+                Application.Exit();
+                return;
+            }
+            if (!this.isDisconnected)
             {
                 lock(this.communicatorLock)
                 {

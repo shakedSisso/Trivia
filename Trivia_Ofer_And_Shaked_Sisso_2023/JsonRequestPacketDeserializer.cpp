@@ -81,6 +81,20 @@ CreateRoomRequest JsonRequestPacketDeserializer::deserializeCreateRoomRequest(co
     return request;
 }
 
+SubmitAnswerRequest JsonRequestPacketDeserializer::deserializeSubmitAnswerRequest(const Buffer& buffer)
+{
+    int jsonLength = extractIntFromBuffer(buffer, 1, LENGTH_FIELD_BYTES); //get the length of the json in the buffer
+    std::string jsonString(buffer.begin() + LENGTH_FIELD_BYTES + 1, buffer.begin() + LENGTH_FIELD_BYTES + 1 + jsonLength); //get the values of the json into a string
+
+    SubmitAnswerRequest request;
+    json jsonData = json::parse(jsonString);
+
+    request.answerId = jsonData["answer_id"];
+    request.answerTime = jsonData["answer_time"];
+
+    return request;
+}
+
 int JsonRequestPacketDeserializer::extractIntFromBuffer(const Buffer& buffer, const int index, const int bytes)
 {
     int result = 0, i = 0;

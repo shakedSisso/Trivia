@@ -86,6 +86,7 @@
             // btnSignup
             // 
             btnSignup.BackColor = Color.CadetBlue;
+            btnSignup.Cursor = Cursors.Hand;
             btnSignup.Font = new Font("Maiandra GD", 15F, FontStyle.Regular, GraphicsUnit.Point);
             btnSignup.ForeColor = SystemColors.ButtonHighlight;
             btnSignup.Location = new Point(236, 347);
@@ -184,6 +185,7 @@
             // btnBack
             // 
             btnBack.BackColor = Color.CadetBlue;
+            btnBack.Cursor = Cursors.Hand;
             btnBack.Font = new Font("Maiandra GD", 9F, FontStyle.Bold, GraphicsUnit.Point);
             btnBack.ForeColor = SystemColors.ButtonHighlight;
             btnBack.Location = new Point(640, 409);

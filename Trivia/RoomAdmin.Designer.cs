@@ -45,6 +45,7 @@
             // btnCloseGame
             // 
             btnCloseGame.BackColor = Color.CadetBlue;
+            btnCloseGame.Cursor = Cursors.Hand;
             btnCloseGame.Font = new Font("Maiandra GD", 13F, FontStyle.Regular, GraphicsUnit.Point);
             btnCloseGame.ForeColor = SystemColors.ButtonHighlight;
             btnCloseGame.Location = new Point(286, 308);
@@ -58,6 +59,7 @@
             // btnStartGame
             // 
             btnStartGame.BackColor = Color.CadetBlue;
+            btnStartGame.Cursor = Cursors.Hand;
             btnStartGame.Font = new Font("Maiandra GD", 15F, FontStyle.Regular, GraphicsUnit.Point);
             btnStartGame.ForeColor = SystemColors.ButtonHighlight;
             btnStartGame.Location = new Point(235, 361);

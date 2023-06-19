@@ -28,6 +28,11 @@ namespace Trivia
         {
             try
             {
+                if (Program.GetCommunicator().aborted)
+                {
+                    Application.Exit();
+                    return;
+                }
                 Program.GetCommunicator().Logout();
                 Program.GetCommunicator().Disconnect();
             }
@@ -68,7 +73,7 @@ namespace Trivia
             try
             {
                 LocationManager.SetFormLocation(this.Location);
-                Form fBestScores = new BestScores();
+                Form fBestScores = new BestScores(this.username);
                 this.Hide();
                 fBestScores.ShowDialog();
                 this.Location = LocationManager.GetFormLocation();

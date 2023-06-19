@@ -15,7 +15,6 @@ namespace Trivia
 {
     public partial class RoomAdmin : Form
     {
-        private Thread updateThread;
         private bool threadFlag;
         private string roomName;
         private int maxPlayers;
@@ -26,6 +25,7 @@ namespace Trivia
         private System.Threading.Timer timer;
         private object communicatorLock;
         private bool isClosed;
+        private bool isLocked;
         public RoomAdmin(string name, int maxUsers)
         {
             InitializeComponent();
@@ -38,6 +38,7 @@ namespace Trivia
             lblRoomName.Left = (this.Width - lblRoomName.Width - 20) / 2;
             this.communicatorLock = new object();
             this.isClosed = false;
+            this.isLocked = false;
             try
             {
                 InitializeData();
@@ -65,16 +66,26 @@ namespace Trivia
 
         private void refreshData(object state)
         {
-            if (this.IsHandleCreated)
+            try
             {
-                lock(communicatorLock)
+                if (this.IsHandleCreated && !isClosed)
                 {
-                    this.players = Program.GetCommunicator().GetRoomState().players;
+                    lock (communicatorLock)
+                    {
+                        this.isLocked = true;
+                        this.players = Program.GetCommunicator().GetRoomState().players;
+                        this.isLocked = false;
+
+                        this.Invoke((MethodInvoker)delegate
+                        {
+                            updatePlayersList();
+                        });
+                    }
                 }
-                this.Invoke((MethodInvoker)delegate
-                {
-                    updatePlayersList();
-                });
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
 
@@ -83,7 +94,9 @@ namespace Trivia
             dynamic roomState;
             lock(communicatorLock)
             {
+                this.isLocked = true;
                 roomState = Program.GetCommunicator().GetRoomState();
+                this.isLocked = false;
             }
             if (roomState != null)
             {
@@ -138,8 +151,17 @@ namespace Trivia
         {
             lock(communicatorLock)
             {
-                Program.GetCommunicator().CloseRoom();
-                this.isClosed = true;
+                try
+                {
+                    this.isLocked = false;
+                    Program.GetCommunicator().CloseRoom();
+                    this.isLocked = true;
+                    this.isClosed = true;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
             }
             this.timer.Dispose();
             this.timer = null;
@@ -148,27 +170,57 @@ namespace Trivia
 
         private void btnStartGame_Click(object sender, EventArgs e)
         {
-            lock (communicatorLock)
+            try
             {
-                Program.GetCommunicator().StartGame();
-                this.isClosed = true;
+                LocationManager.SetFormLocation(this.Location);
+                Form fGame = new Form(); //putting new Form() in the value to avoid error
+                lock (communicatorLock)
+                {
+                    this.isLocked = true;
+                    Program.GetCommunicator().StartGame();
+                    this.isClosed = true;
+                    fGame = new Game(this.roomName, this.timePerQuestion, this.questionCount);
+                    if (this.timer != null)
+                    {
+                        this.timer.Dispose();
+                        this.timer = null;
+                    }
+                    this.isLocked = false;
+                }
+                this.Hide();
+                fGame.ShowDialog();
+                this.Dispose();
             }
-            LocationManager.SetFormLocation(this.Location);
-            Form fGame = new Game(this.roomName);
-            this.timer.Dispose();
-            this.timer = null;
-            this.Hide();
-            fGame.ShowDialog();
-            this.Dispose();
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                this.isClosed = false;
+                this.Dispose();
+            }
+
         }
 
         private void RoomAdmin_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if(!this.isClosed)
+            if (Program.GetCommunicator().aborted)
+            {
+                Application.Exit();
+                return;
+            }
+            if (!this.isClosed)
             {
                 lock(communicatorLock)
                 {
-                    Program.GetCommunicator().CloseRoom();
+                    try
+                    {
+                        this.isLocked= true;
+                        Program.GetCommunicator().CloseRoom();
+                        this.isLocked = false;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
                 }
             }
             if (this.timer != null)

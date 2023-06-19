@@ -74,6 +74,7 @@
             // btnLeaveGame
             // 
             btnLeaveGame.BackColor = Color.CadetBlue;
+            btnLeaveGame.Cursor = Cursors.Hand;
             btnLeaveGame.Font = new Font("Maiandra GD", 15F, FontStyle.Regular, GraphicsUnit.Point);
             btnLeaveGame.ForeColor = SystemColors.ButtonHighlight;
             btnLeaveGame.Location = new Point(221, 329);

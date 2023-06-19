@@ -12,7 +12,7 @@ namespace Trivia
 {
     public partial class BestScores : Form
     {
-        public BestScores()
+        public BestScores(string username)
         {
             InitializeComponent();
             this.StartPosition = FormStartPosition.Manual;
@@ -28,9 +28,13 @@ namespace Trivia
                 string[] highScores = Program.GetCommunicator().GetHighScores();
                 int len = highScores.Length;
                 if (len >= 5)
+                {
                     lblFifthPlace.Text = highScores[4];
+                }
                 if (len >= 4)
+                {
                     lblFourthPlace.Text = highScores[3];
+                }
                 if (len >= 3)
                 {
                     currectX = lblThirdPlace.Left;
@@ -48,6 +52,18 @@ namespace Trivia
                     currectX = lblFirstPlace.Left;
                     lblFirstPlace.Text = highScores[0];
                     lblFirstPlace.Left = currectX - lblFirstPlace.Width / 2;
+                }
+                foreach (Control control in this.Controls)
+                {
+                    if (control is Label lbl && lbl != lblTopFive)
+                    {
+                        if (lbl.Text.IndexOf(username + "- ") != -1)
+                        {
+                            lbl.BackColor = Color.DarkSlateGray;
+                            lbl.ForeColor = Color.Honeydew;
+                            lbl.BorderStyle = BorderStyle.FixedSingle;
+                        }
+                    }
                 }
             }
             catch (Exception ex)

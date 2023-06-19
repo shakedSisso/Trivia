@@ -29,9 +29,9 @@ namespace Trivia
             }
             catch (Exception ex)
             {
-                DialogResult result = MessageBox.Show("There is no running server\n\n OK- retry\nCancel- close client", "Error", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
+                DialogResult result = MessageBox.Show("There is no running server", "Error", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
 
-                if (result == DialogResult.OK)
+                if (result == DialogResult.Retry)
                 {
                     Main();
                     return;

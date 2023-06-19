@@ -45,6 +45,7 @@
             // btnBack
             // 
             btnBack.BackColor = Color.CadetBlue;
+            btnBack.Cursor = Cursors.Hand;
             btnBack.Font = new Font("Maiandra GD", 9F, FontStyle.Bold, GraphicsUnit.Point);
             btnBack.ForeColor = SystemColors.ButtonHighlight;
             btnBack.Location = new Point(640, 409);

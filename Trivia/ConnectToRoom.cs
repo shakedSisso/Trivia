@@ -56,13 +56,21 @@ namespace Trivia
         {
             if(this.IsHandleCreated)
             {
-                lock(this.communicatorLock)
+                try
                 {
-                    this.rooms = Program.GetCommunicator().GetRooms();
+                    lock (this.communicatorLock)
+                    {
+                        this.rooms = Program.GetCommunicator().GetRooms();
+                    }
+                    this.Invoke((MethodInvoker)delegate
+                    {
+                        updateRoomsList();
+                    });
                 }
-                this.Invoke((MethodInvoker)delegate {
-                    updateRoomsList();
-                });
+                catch(Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
             }
         }
 
@@ -85,13 +93,14 @@ namespace Trivia
             {
                 lblNoRooms.Visible = false;
                 Button btn;
+                int count = 0;
                 for (int i = 0; i < this.rooms.Length; i++)
                 {
                     if (!this.rooms[i].isActive)
                     {
                         btn = new Button();
                         btn.Left = gbRooms.Left - 55;
-                        btn.Top = gbRooms.Top + 10 + 30 * i;
+                        btn.Top = gbRooms.Top + 10 + 30 * count;
                         btn.Width = gbRooms.Width + 10;
                         btn.Height = 30;
                         btn.Text = this.rooms[i].name;
@@ -100,7 +109,12 @@ namespace Trivia
                         btn.ForeColor = Color.DarkSlateGray;
                         gbRooms.Controls.Add(btn);
                         btn.Click += Btn_Click;
+                        count++;
                     }
+                }
+                if(count == 0)
+                {
+                    lblNoRooms.Visible = true;
                 }
             }
         }
@@ -173,7 +187,14 @@ namespace Trivia
             this.roomId = -999;
             lock (this.communicatorLock)
             {
-                this.rooms = Program.GetCommunicator().GetRooms();
+                try
+                {
+                    this.rooms = Program.GetCommunicator().GetRooms();
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
             }
             updateRoomsList();
             btnJoinRoom.Enabled = false;
