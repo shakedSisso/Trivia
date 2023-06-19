@@ -36,6 +36,7 @@
             btnQuit = new Button();
             lblUsername = new Label();
             lblErrorMessage = new Label();
+            btnAddQuestion = new Button();
             SuspendLayout();
             // 
             // btnJoinRoom
@@ -44,7 +45,7 @@
             btnJoinRoom.Cursor = Cursors.Hand;
             btnJoinRoom.Font = new Font("Maiandra GD", 15F, FontStyle.Bold, GraphicsUnit.Point);
             btnJoinRoom.ForeColor = SystemColors.ButtonHighlight;
-            btnJoinRoom.Location = new Point(40, 177);
+            btnJoinRoom.Location = new Point(40, 154);
             btnJoinRoom.Name = "btnJoinRoom";
             btnJoinRoom.Size = new Size(347, 63);
             btnJoinRoom.TabIndex = 0;
@@ -58,7 +59,7 @@
             btnCreateRoom.Cursor = Cursors.Hand;
             btnCreateRoom.Font = new Font("Maiandra GD", 15F, FontStyle.Bold, GraphicsUnit.Point);
             btnCreateRoom.ForeColor = SystemColors.ButtonHighlight;
-            btnCreateRoom.Location = new Point(40, 262);
+            btnCreateRoom.Location = new Point(40, 223);
             btnCreateRoom.Name = "btnCreateRoom";
             btnCreateRoom.Size = new Size(347, 63);
             btnCreateRoom.TabIndex = 1;
@@ -72,7 +73,7 @@
             btnStatus.Cursor = Cursors.Hand;
             btnStatus.Font = new Font("Maiandra GD", 15F, FontStyle.Bold, GraphicsUnit.Point);
             btnStatus.ForeColor = SystemColors.ButtonHighlight;
-            btnStatus.Location = new Point(419, 177);
+            btnStatus.Location = new Point(419, 154);
             btnStatus.Name = "btnStatus";
             btnStatus.Size = new Size(347, 63);
             btnStatus.TabIndex = 2;
@@ -86,7 +87,7 @@
             btnBestScores.Cursor = Cursors.Hand;
             btnBestScores.Font = new Font("Maiandra GD", 15F, FontStyle.Bold, GraphicsUnit.Point);
             btnBestScores.ForeColor = SystemColors.ButtonHighlight;
-            btnBestScores.Location = new Point(419, 262);
+            btnBestScores.Location = new Point(419, 223);
             btnBestScores.Margin = new Padding(3, 2, 3, 2);
             btnBestScores.Name = "btnBestScores";
             btnBestScores.Size = new Size(347, 63);
@@ -131,12 +132,27 @@
             lblErrorMessage.Size = new Size(0, 20);
             lblErrorMessage.TabIndex = 6;
             // 
+            // btnAddQuestion
+            // 
+            btnAddQuestion.BackColor = Color.CadetBlue;
+            btnAddQuestion.Cursor = Cursors.Hand;
+            btnAddQuestion.Font = new Font("Maiandra GD", 15F, FontStyle.Bold, GraphicsUnit.Point);
+            btnAddQuestion.ForeColor = SystemColors.ButtonHighlight;
+            btnAddQuestion.Location = new Point(40, 292);
+            btnAddQuestion.Name = "btnAddQuestion";
+            btnAddQuestion.Size = new Size(347, 63);
+            btnAddQuestion.TabIndex = 7;
+            btnAddQuestion.Text = "Add question";
+            btnAddQuestion.UseVisualStyleBackColor = false;
+            btnAddQuestion.Click += btnAddQuestion_Click;
+            // 
             // Menu
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.PaleTurquoise;
             ClientSize = new Size(800, 450);
+            Controls.Add(btnAddQuestion);
             Controls.Add(lblErrorMessage);
             Controls.Add(lblUsername);
             Controls.Add(btnQuit);
@@ -160,5 +176,6 @@
         private Button btnQuit;
         private Label lblUsername;
         private Label lblErrorMessage;
+        private Button btnAddQuestion;
     }
 }

@@ -144,5 +144,15 @@ namespace Trivia
                 ChangeErrorText(ex.Message);
             }
         }
+
+        private void btnAddQuestion_Click(object sender, EventArgs e)
+        {
+            LocationManager.SetFormLocation(this.Location);
+            Form fAddQuestion = new AddQuestion(this.username);
+            this.Hide();
+            fAddQuestion.ShowDialog();
+            this.Location = LocationManager.GetFormLocation();
+            this.Show();
+        }
     }
 }
