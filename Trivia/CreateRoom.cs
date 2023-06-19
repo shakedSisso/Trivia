@@ -61,5 +61,21 @@ namespace Trivia
             lblErrorMessage.Text = message;
             lblErrorMessage.Left = (this.Width - lblErrorMessage.Width - 20) / 2; //subtracting 20 to include the edge 
         }
+
+        private void cbIncludeUserQuestion_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cbIncludeUserQuestion.Checked)
+            {
+                DialogResult result = MessageBox.Show("Those questions were written by users so they might include:\n* bad language\n* personal opinions\n* politics\n* religion\n* sexuality", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (result == DialogResult.Yes)
+                {
+                    cbIncludeUserQuestion.Checked = true;
+                }
+                else
+                {
+                    cbIncludeUserQuestion.Checked = false;
+                }
+            }
+        }
     }
 }
