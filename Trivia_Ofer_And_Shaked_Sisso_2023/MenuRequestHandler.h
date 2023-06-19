@@ -2,16 +2,18 @@
 #include <iostream>
 #include "IRequestHandler.h"
 #include "RequestHandlerFactory.h"
+#include "IDatabase.h"
 
 class RequestHandlerFactory;
 
 class MenuRequestHandler : public IRequestHandler
 {
 public:
-	MenuRequestHandler(RequestHandlerFactory& handlerFactory, LoggedUser& user, RoomManager& roomManager, StatisticsManager& statisticsManager);
+	MenuRequestHandler(RequestHandlerFactory& handlerFactory, IDatabase* database, LoggedUser& user, RoomManager& roomManager, StatisticsManager& statisticsManager);
 	bool isRequestRelevent(const RequestInfo& info) override;
 	RequestResult handleRequest(const RequestInfo& info) override;
 private:
+	IDatabase* m_database;
 	LoggedUser m_user;
 	RoomManager& m_roomManager;
 	StatisticsManager& m_statisticsManager;
@@ -24,4 +26,5 @@ private:
 	RequestResult getHighScore(const RequestInfo& info);
 	RequestResult joinRoom(const RequestInfo& info);
 	RequestResult createRoom(const RequestInfo& info);
+	RequestResult addQuestion(const RequestInfo& info);
 };

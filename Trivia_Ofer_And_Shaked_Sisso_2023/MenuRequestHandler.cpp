@@ -4,15 +4,15 @@
 #define TRUE !FALSE
 
 
-MenuRequestHandler::MenuRequestHandler(RequestHandlerFactory& handlerFactory, LoggedUser& user, RoomManager& roomManager, StatisticsManager& statisticsManager)
-    : m_handlerFactory(handlerFactory), m_user(user), m_roomManager(roomManager), m_statisticsManager(statisticsManager)
+MenuRequestHandler::MenuRequestHandler(RequestHandlerFactory& handlerFactory, IDatabase* database, LoggedUser& user, RoomManager& roomManager, StatisticsManager& statisticsManager)
+    : m_database(database), m_handlerFactory(handlerFactory), m_user(user), m_roomManager(roomManager), m_statisticsManager(statisticsManager)
 {
 }
 
 bool MenuRequestHandler::isRequestRelevent(const RequestInfo& info)
 {
-    if (info.id == GetPlayersInRoom || info.id == JoinRoom || info.id == CreateRoom
-        || info.id == HighScore || info.id == Logout || info.id == GetRooms || info.id == Statistics)
+    if (info.id == GetPlayersInRoom || info.id == JoinRoom || info.id == CreateRoom || info.id == HighScore
+        || info.id == Logout || info.id == GetRooms || info.id == Statistics || info.id == AddQuestion)
     {
         return true;
     }
@@ -49,7 +49,9 @@ RequestResult MenuRequestHandler::handleRequest(const RequestInfo& info)
             case CreateRoom:
                 result = createRoom(info);
                 break;
-
+            case AddQuestion:
+                result = addQuestion(info);
+                break;
             default:
                 throw std::exception("irrelevent request");
                 break;
@@ -211,7 +213,7 @@ RequestResult MenuRequestHandler::createRoom(const RequestInfo& info)
         CreateRoomRequest request = JsonRequestPacketDeserializer::deserializeCreateRoomRequest(info.buffer);
         id = this->m_roomManager.getRooms().size() + 1;
         RoomData data = { id, request.roomName, request.maxUsers, request.questionCount, request.answerTimeout, FALSE };
-        this->m_roomManager.createRoom(this->m_user, data);
+        this->m_roomManager.createRoom(this->m_user, data, request.includeUserQuestion);
         result.newHandler = (IRequestHandler*)this->m_handlerFactory.createRoomAdminRequestHandler(this->m_user, &this->m_roomManager.getRoom(id));
     }
     catch (const std::exception& e)
@@ -225,6 +227,30 @@ RequestResult MenuRequestHandler::createRoom(const RequestInfo& info)
     }
     CreateRoomResponse response;
     response.status = CreateRoom;
+    result.buffer = JsonResponsePacketSerializer::serializeResponse(response);
+    return result;
+}
+
+RequestResult MenuRequestHandler::addQuestion(const RequestInfo& info)
+{
+    RequestResult result;
+    try
+    {
+        AddQuestionRequest request = JsonRequestPacketDeserializer::deserializeAddQuestionRequest(info.buffer);
+        this->m_database->addUserQuestion(request.author, request.question, request.correctAnswer, request.ans2, request.ans3, request.ans4);
+        result.newHandler = (IRequestHandler*)this;
+    }
+    catch (const std::exception& e)
+    {
+        if (result.newHandler != nullptr)
+        {
+            delete(result.newHandler);
+        }
+        result.newHandler = nullptr;
+        throw std::exception(e.what());
+    }
+    AddQuestionResponse response;
+    response.status = AddQuestion;
     result.buffer = JsonResponsePacketSerializer::serializeResponse(response);
     return result;
 }
