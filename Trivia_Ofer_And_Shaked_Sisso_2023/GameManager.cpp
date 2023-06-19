@@ -9,7 +9,7 @@ GameManager::GameManager(IDatabase* database)
 GameID GameManager::createGame(const Room& room)
 {
 	vector<LoggedUser> usersList;
-	auto questionsList = this->m_database->getQuestions(room.getRoomData().numOfQuestionsInGame);
+	auto questionsList = this->m_database->getQuestions(room.getRoomData().numOfQuestionsInGame, room.getIfIncludeUserQuestions());
 	vector<Question> questions;
 	for (auto& question : questionsList)
 	{
