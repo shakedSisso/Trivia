@@ -23,7 +23,7 @@ namespace Trivia
         private string[] errors = { DISCONNECTION_MESSAGE, ABORT_MESSAGE, RUNTIME_MESSAGE };
 
         public bool aborted;
-        public enum codes { Error, Login, Signup, GetPlayersInRoom, JoinRoom, CreateRoom, HighScore, Logout, GetRooms, Statistics, CloseRoom, StartGame, GetRoomState, LeaveRoom, LeaveGame, GetQuestion, GetQuestionFailed, SubmitAnswer, GetGameResult, GetGameResultFailed };
+        public enum codes { Error, Login, Signup, GetPlayersInRoom, JoinRoom, CreateRoom, HighScore, Logout, GetRooms, Statistics, CloseRoom, StartGame, GetRoomState, LeaveRoom, LeaveGame, GetQuestion, GetQuestionFailed, SubmitAnswer, GetGameResult, GetGameResultFailed, AddQuestion };
         public void Connect()
         {
             try
@@ -227,7 +227,7 @@ namespace Trivia
             throw new Exception("Error while trying to make a request");
         }
 
-        public bool CreateRoom(string roomName, int maxUsers, int questionCount, int timeOut)
+        public bool CreateRoom(string roomName, int maxUsers, int questionCount, int timeOut, bool includeUserQuestion)
         {
             var jsonObject = new { room_name = roomName, max_users = maxUsers, question_count = questionCount, time_out = timeOut };
             dynamic response = GetResponse(jsonObject, (int)codes.CreateRoom);
@@ -362,6 +362,24 @@ namespace Trivia
             if (response.status == (int)codes.GetGameResultFailed)
             {
                 return null;
+            }
+            throw new Exception("Error while trying to make a request");
+        }
+
+        internal void AddQuestion(string author, string question, string correctAnswer, string answer2, string answer3, string answer4 )
+        {
+
+            var jsonObject = new { author = author, question = question, correctAns = correctAnswer, ans2 = answer2, ans3 = answer3, ans4 = answer4 };
+            byte[] buffer = PacketSerializer.GenerateMessage((int)codes.AddQuestion, jsonObject);
+            this.socket.Send(buffer);
+            dynamic response = PacketDeserializer.ProcessSocketData(this.socket);
+            if (response.code == (int)codes.Error)
+            {
+                throw new Exception(response.message.ToString());
+            }
+            if (response.status == (int)codes.AddQuestion)
+            {
+                return;
             }
             throw new Exception("Error while trying to make a request");
         }
