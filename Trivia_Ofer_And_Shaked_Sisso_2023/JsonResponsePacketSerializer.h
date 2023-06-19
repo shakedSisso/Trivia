@@ -31,6 +31,7 @@ public:
     static Buffer serializeResponse(const GetQuestionResponse& response);
     static Buffer serializeResponse(const LeaveGameResponse& response);
     
+	static Buffer serializeResponse(const AddQuestionResponse& response);
 private:
     /*
     * Function: static insertIntToBuffer
