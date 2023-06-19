@@ -21,15 +21,17 @@ class Room
 {
 public:
 	Room() = default;
-	Room(const RoomData metadata);
+	Room(const RoomData metadata, const bool includeUserQuestions);
 	void addUser(const LoggedUser& userToAdd);
 	void removeUser(const LoggedUser& userToRemove);
 	vector<string> getAllUsers() const;
 	RoomData getRoomData() const;
+	bool getIfIncludeUserQuestions() const;
 	void activate();
 
 private:
 	RoomData m_metadata;
 	vector<LoggedUser> m_users;
+	bool m_includeUserQuestions;
 
 };
