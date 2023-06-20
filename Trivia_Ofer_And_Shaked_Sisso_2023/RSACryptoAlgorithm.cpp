@@ -2,7 +2,7 @@
 #include <random>
 #include <cmath>
 
-#define BLOCK_SIZE 20
+#define BLOCK_SIZE 5
 
 Buffer RSACryptoAlgorithm::encrypt(const Buffer& message, const int& key, const int& modulus)
 {

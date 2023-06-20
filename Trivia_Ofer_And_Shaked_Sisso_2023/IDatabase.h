@@ -39,6 +39,6 @@ public:
 	virtual int submitGameStatistics(const std::string username, const int correctAnswerCount, const int wrongAnswerCount, const float averageAnswerTime) = 0;
 	virtual std::list<int> getUserKeys(SOCKET userSocket) = 0;
 	virtual void insertServerKeys(const int publicKey, const int modulus) = 0;
-.private:
+private:
 	static int instanceCount;
 };

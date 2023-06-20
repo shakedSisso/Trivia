@@ -13,6 +13,7 @@ constexpr char DATABASE_NAME[] = "triviaDB";
 #define USERS_COLLECTION_NAME "users"
 #define QUESTIONS_COLLECTION_NAME "questions"
 #define STATISTICS_COLLECTION_NAME "statistics"
+#define KEYS_COLLECTION_NAME "keys"
 
 #define DEFAULT_STATISTICS_VALUE 0
 
@@ -58,6 +59,11 @@ bool MongoDatabase::open()
 	{
 		this->_client[DATABASE_NAME].create_collection(STATISTICS_COLLECTION_NAME);
 		std::cout << "Created collection: " << STATISTICS_COLLECTION_NAME << std::endl;
+	}
+	if (!this->_db.has_collection(KEYS_COLLECTION_NAME))
+	{
+		this->_client[DATABASE_NAME].create_collection(KEYS_COLLECTION_NAME);
+		std::cout << "Created collection: " << KEYS_COLLECTION_NAME << std::endl;
 	}
 
 	return true;
@@ -238,6 +244,41 @@ int MongoDatabase::submitGameStatistics(const std::string username, const int co
 	statisticsCollections.find_one_and_update(filter.view(), doc.view(), options);
 
 	return 0;
+}
+
+std::list<int> MongoDatabase::getUserKeys(SOCKET userSocket)
+{
+	std::list<int> keys;
+	mongocxx::collection keysColl = this->_db[KEYS_COLLECTION_NAME];
+	auto builder = streamDocument{};
+	bsoncxx::document::value queryDocument = builder << "socket" << userSocket << finalize;
+
+	mongocxx::cursor cursor = keysColl.find(queryDocument.view());
+	auto& doc = *cursor.begin(); //only needs to access the beginning of the cursor because there is only one user with each username 
+	
+	std::string jsonString = bsoncxx::to_json(doc);
+	auto jsonData = json::parse(jsonString);
+
+	keys.push_back(jsonData["public_key"]);
+	keys.push_back(jsonData["modulus"]);
+	return keys;
+}
+
+void MongoDatabase::insertServerKeys(const int publicKey, const int modulus)
+{
+	basicDocument documentBuilder;
+	mongocxx::collection keysCollection = this->_db[KEYS_COLLECTION_NAME];
+
+	documentBuilder.append(kvp("public_key", publicKey));
+	documentBuilder.append(kvp("modulus", modulus));
+	documentBuilder.append(kvp("socket", "server"));
+	bsoncxx::document::value doc = documentBuilder.extract();
+
+	auto builder = streamDocument{};
+	bsoncxx::document::value filter = builder << "socket" << "server" << finalize;
+	mongocxx::options::find_one_and_update options{};
+
+	keysCollection.find_one_and_update(filter.view(), doc.view(), options);
 }
 
 void MongoDatabase::addQuestionsToDatabase()
