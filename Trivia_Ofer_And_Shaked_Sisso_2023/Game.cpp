@@ -1,6 +1,11 @@
 #include "Game.h"
 
 #define START_INDEX 0
+#define DEFAULT_VALUE 999
+
+Game::Game() : m_database(nullptr), m_questions(), m_gameId(DEFAULT_VALUE), m_gameSettings(RoomData()), m_players()
+{
+}
 
 Game::Game(IDatabase* database, vector<Question> questions, vector<LoggedUser> users, const Room& room)
     :m_database(database), m_gameId(room.getRoomData().id), m_gameSettings(room.getRoomData())
