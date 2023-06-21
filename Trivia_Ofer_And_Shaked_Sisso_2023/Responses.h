@@ -74,7 +74,7 @@ typedef struct StartGameResponse
 typedef struct GetRoomStateResponse
 {
 	unsigned int status;
-	bool hasGameBegun;
+	bool isActive;
 	vector<string> players;
 	unsigned int questionCount;
 	unsigned int answerTimeout;

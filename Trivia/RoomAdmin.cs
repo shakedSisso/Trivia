@@ -103,7 +103,7 @@ namespace Trivia
                 this.players = roomState.players;
                 this.questionCount = roomState.questionCount;
                 this.timePerQuestion = roomState.answerTimeOut;
-                this.isActive = roomState.hasGameBegun;
+                this.isActive = roomState.isActive;
                 lblMaxNumber.Text = lblMaxNumber.Text + " " + this.maxPlayers;
                 lblQuestionCount.Text = lblQuestionCount.Text + " " + this.questionCount;
                 lblTimeOut.Text = lblTimeOut.Text + " " + this.timePerQuestion;

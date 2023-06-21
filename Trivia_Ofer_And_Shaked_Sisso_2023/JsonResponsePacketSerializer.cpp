@@ -232,7 +232,7 @@ Buffer JsonResponsePacketSerializer::serializeResponse(const GetRoomStateRespons
 
     responseBuffer.push_back((unsigned char)GetRoomState); // adding the response code to the first byte of the buffer
     responseData["status"] = response.status;
-    responseData["hasGameBegun"] = response.hasGameBegun;
+    responseData["isActive"] = response.isActive;
     responseData["players"] = response.players;
     responseData["questionCount"] = response.questionCount;
     responseData["answerTimeOut"] = response.answerTimeout;
