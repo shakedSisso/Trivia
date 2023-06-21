@@ -144,5 +144,19 @@ namespace Trivia
                 ChangeErrorText(ex.Message);
             }
         }
+
+        private void btnHeadToHead_Click(object sender, EventArgs e)
+        {
+            DialogResult result = MessageBox.Show("This game includes 15 questions with 10 seconds for each question", "Head to Head", MessageBoxButtons.OKCancel,MessageBoxIcon.Information);
+            if (result == DialogResult.OK)
+            {
+                LocationManager.SetFormLocation(this.Location);
+                Form fHeadToHead = new HeadToHead();
+                this.Hide();
+                fHeadToHead.ShowDialog();
+                this.Location = LocationManager.GetFormLocation();
+                this.Show();
+            }
+        }
     }
 }
