@@ -13,10 +13,11 @@ namespace Trivia
 {
     class PacketDeserializer
     {
-        public static dynamic ProcessSocketData(Socket socket)
+        public static dynamic ProcessSocketData(Socket socket, RSACryptoAlgorithm rsaAlgorithm)
         {
             byte[] headerBytes = new byte[5];
             socket.Receive(headerBytes);
+            headerBytes = rsaAlgorithm.decrypt(headerBytes);
 
             // Extract code from the first byte
             byte code = headerBytes[0];
@@ -28,6 +29,7 @@ namespace Trivia
 
             byte[] dataBytes = new byte[length];
             socket.Receive(dataBytes);
+            dataBytes = rsaAlgorithm.decrypt(dataBytes); 
 
             string jsonString = System.Text.Encoding.UTF8.GetString(dataBytes);
             dynamic jsonObject = JsonConvert.DeserializeObject(jsonString);

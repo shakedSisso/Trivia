@@ -56,11 +56,19 @@ namespace Trivia
 
             foreach (byte[] block in blocks)
             {
-                BigInteger plaintextValue = new BigInteger(block);
-                BigInteger encryptedValue = BigInteger.ModPow(plaintextValue, key, modulus);
-                byte[] encryptedBlock = encryptedValue.ToByteArray();
+                //byte[] encryptedBlock = new byte[block.Length];
+                //List<byte[]> encryptedBlock = new List<byte[]>();
+                //int i = 0;
+                foreach(byte blockByte in block)
+                {
 
-                encryptedBlocks.Add(encryptedBlock);
+                    BigInteger plaintextValue = new BigInteger(blockByte);
+                    BigInteger encryptedValue = BigInteger.ModPow(plaintextValue, key, modulus);
+                    //encryptedBlock[i] = encryptedValue.ToByteArray();
+                    encryptedBlocks.Add(encryptedValue.ToByteArray());
+                    //i++;
+                }
+
             }
 
             return mergeBlocks(encryptedBlocks);

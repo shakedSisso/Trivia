@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using Newtonsoft.Json;
 using System.Text.Json;
 using Newtonsoft.Json.Linq;
+using System.Numerics;
 
 
 namespace Trivia
@@ -17,6 +18,12 @@ namespace Trivia
     class Communicator
     {
         private Socket socket;
+        private RSACryptoAlgorithm rsaAlgorithm;
+        //private MongoDB mongoDB;
+        //private dynamic keysDocId;
+        //private dynamic serverKeys;
+        private int serverPublicKey;
+        private int serverModulus;
         private const string DISCONNECTION_MESSAGE = "An existing connection was forcibly closed by the remote host.";
         private const string ABORT_MESSAGE = "An established connection was aborted by the software in your host machine.";
         private const string RUNTIME_MESSAGE = "Cannot perform runtime binding on a null reference";
@@ -36,6 +43,15 @@ namespace Trivia
 
                 // Connect to the server
                 this.socket.Connect(new IPEndPoint(serverIP, serverPort));
+                rsaAlgorithm = new RSACryptoAlgorithm();
+                //mongoDB = new MongoDB();
+                rsaAlgorithm.createKeys(10);
+                this.sendKeys();
+                this.getServerKeys();
+                //keysDocId = mongoDB.insertKeys(rsaAlgorithm.getPublicKey(), rsaAlgorithm.getModulus());
+                //byte[] key = Encoding.ASCII.GetBytes(keysDocId.ToString());
+                //this.socket.Send(key);
+                //serverKeys = mongoDB.getServerKeys();
             }
             catch (Exception ex)
             {
@@ -43,8 +59,51 @@ namespace Trivia
             }
         }
 
+        public void getServerKeys()
+        {
+            byte[] serverPublicKeyHeader = new byte[4];
+            byte[] serverModulusHeader = new byte[4];
+            int serverModulus = 0;
+            int serverKeyLength = 0;
+            int serverModulusLength = 0;
+
+            socket.Receive(serverPublicKeyHeader);
+            Array.Reverse(serverPublicKeyHeader);
+            serverKeyLength = BitConverter.ToInt32(serverPublicKeyHeader);
+            byte[] serverPublicKeyMessage = new byte[serverKeyLength];
+            socket.Receive(serverPublicKeyMessage);
+            this.serverPublicKey = int.Parse(Encoding.ASCII.GetString(serverPublicKeyMessage));
+
+            socket.Receive(serverModulusHeader);
+            Array.Reverse(serverModulusHeader);
+            serverModulusLength = BitConverter.ToInt32(serverModulusHeader);
+            byte[] serverModulusMessage = new byte[serverModulusLength];
+            socket.Receive(serverModulusMessage);
+            this.serverModulus = int.Parse(Encoding.ASCII.GetString(serverModulusMessage));
+        }
+
+        public void sendKeys()
+        {
+            List<byte> keyMessageBuffer = new List<byte>();
+            List<byte> modulusMessageBuffer = new List<byte>();
+            BigInteger publicKey = this.rsaAlgorithm.getPublicKey();
+            BigInteger modulus = this.rsaAlgorithm.getModulus();
+            int publicKeyLen = publicKey.ToString().Length;
+            int modulusLen = modulus.ToString().Length;
+
+            PacketSerializer.InsertIntToBuffer(keyMessageBuffer, ((int)publicKeyLen), 4);
+            keyMessageBuffer.AddRange(Encoding.ASCII.GetBytes(publicKey.ToString()));
+            this.socket.Send(keyMessageBuffer.ToArray());
+
+            PacketSerializer.InsertIntToBuffer(modulusMessageBuffer, ((int)modulusLen), 4);
+            modulusMessageBuffer.AddRange(Encoding.ASCII.GetBytes(modulus.ToString()));
+            this.socket.Send(modulusMessageBuffer.ToArray());
+
+        }
+
         public void Disconnect()
         {
+            //this.mongoDB.deleteDocument(this.keysDocId);
             this.socket.Shutdown(SocketShutdown.Both);
             this.socket.Close();
         }
@@ -55,8 +114,9 @@ namespace Trivia
             try
             {
                 byte[] buffer = PacketSerializer.GenerateMessage(code, jsonObject);
-                this.socket.Send(buffer);
-                response = PacketDeserializer.ProcessSocketData(this.socket);
+                byte[] encryptedBuffer = this.rsaAlgorithm.encrypt(buffer, serverPublicKey, serverModulus);
+                this.socket.Send(encryptedBuffer);
+                response = PacketDeserializer.ProcessSocketData(this.socket, this.rsaAlgorithm);
             }
             catch (Exception e)
             {
