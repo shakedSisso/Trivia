@@ -3,12 +3,24 @@
 #include <cmath>
 
 #define BLOCK_SIZE 5
+#define KEY_SIZE 10
+
+RSACryptoAlgorithm::RSACryptoAlgorithm(IDatabase* database)
+    : m_database(database)
+{
+   // this->createKeys(KEY_SIZE);
+}
 
 Buffer RSACryptoAlgorithm::encrypt(const Buffer& message, const int& key, const int& modulus)
 {
     Buffer ciphertext;
     Buffer block;
     int blockSize = GetBlockSize();
+
+    //std::list<int> keysList = this->m_database->getUserKeys(userDocId);
+    //std::vector<int> keys(keysList.begin(), keysList.end());
+    //int key = keys[0];
+    //int modulus = keys[1];
 
     for (Byte c : message) 
     {
@@ -55,6 +67,11 @@ Buffer RSACryptoAlgorithm::decrypt(const Buffer& message)
     }
 
     return decryptedText;
+}
+
+void RSACryptoAlgorithm::setDatabase(IDatabase* database)
+{
+    this->m_database = database;
 }
 
 Buffer RSACryptoAlgorithm::EncryptBlock(const Buffer& block, const int& key, const int& modulus)
@@ -130,6 +147,15 @@ void RSACryptoAlgorithm::createKeys(int keyLength)
 
     // Calculate the private key using modular inverse
     this->m_privateKey = ModInverse(this->m_publicKey, phi);
+    this->m_database->insertServerKeys(this->m_publicKey, this->m_modulus);
+}
+
+std::vector<int> RSACryptoAlgorithm::getKey()
+{
+    std::vector<int> keys;
+    keys.push_back(this->m_publicKey);
+    keys.push_back(this->m_modulus);
+    return keys;
 }
 
 bool RSACryptoAlgorithm::isPrime(int number)

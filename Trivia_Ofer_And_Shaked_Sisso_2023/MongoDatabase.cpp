@@ -246,12 +246,13 @@ int MongoDatabase::submitGameStatistics(const std::string username, const int co
 	return 0;
 }
 
-std::list<int> MongoDatabase::getUserKeys(SOCKET userSocket)
+std::list<int> MongoDatabase::getUserKeys(const std::string userDocId)
 {
 	std::list<int> keys;
 	mongocxx::collection keysColl = this->_db[KEYS_COLLECTION_NAME];
 	auto builder = streamDocument{};
-	bsoncxx::document::value queryDocument = builder << "socket" << userSocket << finalize;
+	bsoncxx::oid docObjectId(userDocId);
+	bsoncxx::document::value queryDocument = builder << "_id" << docObjectId << finalize;
 
 	mongocxx::cursor cursor = keysColl.find(queryDocument.view());
 	auto& doc = *cursor.begin(); //only needs to access the beginning of the cursor because there is only one user with each username 
@@ -264,21 +265,39 @@ std::list<int> MongoDatabase::getUserKeys(SOCKET userSocket)
 	return keys;
 }
 
-void MongoDatabase::insertServerKeys(const int publicKey, const int modulus)
+std::string MongoDatabase::insertServerKeys(const int publicKey, const int modulus)
 {
 	basicDocument documentBuilder;
 	mongocxx::collection keysCollection = this->_db[KEYS_COLLECTION_NAME];
 
 	documentBuilder.append(kvp("public_key", publicKey));
 	documentBuilder.append(kvp("modulus", modulus));
-	documentBuilder.append(kvp("socket", "server"));
+	documentBuilder.append(kvp("isServer", 1));
 	bsoncxx::document::value doc = documentBuilder.extract();
 
 	auto builder = streamDocument{};
-	bsoncxx::document::value filter = builder << "socket" << "server" << finalize;
+	bsoncxx::document::value filter = builder << "isServer" << 1 << finalize;
 	mongocxx::options::find_one_and_update options{};
+	mongocxx::options::find findOptions;
+	findOptions.projection(bsoncxx::builder::basic::make_document(bsoncxx::builder::basic::kvp("_id", 1)));
 
 	keysCollection.find_one_and_update(filter.view(), doc.view(), options);
+
+	std::optional<bsoncxx::document::value> result = keysCollection.find_one(filter.view());
+
+	if (result)
+	{
+		bsoncxx::document::view view = result->view();
+		bsoncxx::document::element idElement = view["_id"];
+		if (idElement && idElement.type() == bsoncxx::type::k_oid)
+		{
+			bsoncxx::oid id = idElement.get_oid().value;
+			return id.to_string();
+		}
+	}
+
+	// Return an empty oid if no document was found
+	return bsoncxx::oid{}.to_string();
 }
 
 void MongoDatabase::addQuestionsToDatabase()

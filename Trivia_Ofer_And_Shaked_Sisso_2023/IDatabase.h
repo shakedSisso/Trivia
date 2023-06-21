@@ -4,7 +4,6 @@
 #include <list>
 #include <vector>
 #include "ApiEntity.h"
-#include <WinSock2.h>
 
 #define HIGH_SCORES_COUNT 5
 #define API_URL "https://opentdb.com/api.php?amount=50&difficulty=easy&type=multiple"
@@ -37,8 +36,8 @@ public:
 	virtual int getPlayerScore(const std::string username) = 0;
 	virtual std::vector<std::string> getHighScores() = 0;
 	virtual int submitGameStatistics(const std::string username, const int correctAnswerCount, const int wrongAnswerCount, const float averageAnswerTime) = 0;
-	virtual std::list<int> getUserKeys(SOCKET userSocket) = 0;
-	virtual void insertServerKeys(const int publicKey, const int modulus) = 0;
+	virtual std::list<int> getUserKeys(const std::string userDocId) = 0;
+	virtual std::string insertServerKeys(const int publicKey, const int modulus) = 0;
 private:
 	static int instanceCount;
 };

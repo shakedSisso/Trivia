@@ -4,48 +4,83 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MongoDB.Driver;
+using MongoDB.Bson;
+using System.Numerics;
 
 namespace Trivia
 {
     class MongoDB
     {
-        private dynamic client;
-        private dynamic database;
+        private MongoClient client;
+        private IMongoDatabase database;
         private string keysCollectionName;
         private string databaseName;
 
         public MongoDB()
         {
+            MongoClientSettings settings = MongoClientSettings.FromUrl(new MongoUrl("mongodb://localhost:27017"));
+            
             string connectionString = "mongodb://localhost:27017";
             this.databaseName = "triviaDB";
             this.keysCollectionName = "keys";
-
-            this.client = new MongoClient(connectionString);
+            this.client = new MongoClient(settings);
+            //this.client = new MongoClient(connectionString);
             this.database = client.GetDatabase(databaseName);
         }
-        public int[] RetrieveKeyFromMongoDB()
+        public ObjectId insertKeys(BigInteger publicKey, BigInteger modulus)
         {
             
-            var collection = database.GetCollection<KeyDocument>(this.keysCollectionName);
+            var collection = database.GetCollection<BsonDocument>("keys");
 
-            var filter = Builders<KeyDocument>.Filter.Empty;
-            var options = new FindOptions<KeyDocument>()
+            var document = new BsonDocument
+        {
+            { "public_key", publicKey.ToString() },
+            { "modulus", modulus.ToString() },
+            { "isServer", 0 }
+        };
+
+            collection.InsertOne(document);
+
+            return document["_id"].AsObjectId;
+        }
+
+        public BsonDocument getServerKeys()
+        {
+            IMongoCollection<BsonDocument> collection = database.GetCollection<BsonDocument>("keys");
+            //database.GetCollection<BsonDocument>("keys");
+            //database.GetCollection<BsonDocument>("keys")
+            
+
+            var findOptions = new FindOptions
             {
-                Limit = 1
+                BatchSize = 1
             };
 
-            var keyDocument = collection.Find(filter, options).FirstOrDefault();
-
-            if (keyDocument != null)
-            {
-                return keyDocument.Key;
-            }
-            else
-            {
-                // Handle case when key is not found in MongoDB
-                // You may choose to throw an exception or return a default key
-                return "defaultKey";
-            }
+            var filter = Builders<BsonDocument>.Filter.Eq("isServer", 1);
+            IFindFluent<BsonDocument, BsonDocument> document = collection.Find(filter);
+            //collection.Find(filter);
+            //using (var cursor = collection.Find(filter, findOptions).ToCursor())
+            //{
+            //    cursor.MoveNext();
+            //    return cursor;
+            //    //Console.WriteLine($"Number of documents in cursor: {cursor.Current.Count()}");
+            //}
+            return document.ToCursor().MoveNext().ToBsonDocument();
         }
+
+        public void deleteDocument(ObjectId documentId)
+        { 
+            var collection = database.GetCollection<BsonDocument>("keys");
+
+            var filter = Builders<BsonDocument>.Filter.Eq("_id", documentId);
+            collection.DeleteOne(filter);
+        }
+    }
+    public class KeyDocument
+    {
+        public ObjectId Id { get; set; }
+        public int PublicKey { get; set; }
+        public int Modulus { get; set; }
+        public bool isServer { get; set; }
     }
 }
