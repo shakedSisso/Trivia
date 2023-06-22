@@ -61,6 +61,11 @@ typedef struct CreateRoomResponse
 	unsigned int status;
 } CreateRoomResponse;
 
+typedef struct HeadToHeadResponse
+{
+	unsigned int status;
+}HeadToHeadResponse;
+
 typedef struct CloseRoomResponse
 {
 	unsigned int status;
