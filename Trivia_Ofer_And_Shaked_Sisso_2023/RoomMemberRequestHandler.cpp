@@ -70,6 +70,12 @@ RequestResult RoomMemberRequestHandler::leaveRoom(const RequestInfo& info)
         try
         {
             this->m_room->removeUser(this->m_user);
+
+            if (this->m_room->getAllUsers().empty()) //Used in the head to head room since all the players are members
+            {
+                this->m_roomManager.deleteRoom(this->m_roomId);
+            }
+
             result.newHandler = (IRequestHandler*)this->m_handlerFactory.createMenuRequestHandler(this->m_user);
         }
         catch (const std::exception& e)
