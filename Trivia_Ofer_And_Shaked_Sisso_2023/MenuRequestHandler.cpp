@@ -107,6 +107,7 @@ RequestResult MenuRequestHandler::getRooms(const RequestInfo& info)
     try
     {
         rooms = this->m_roomManager.getRooms();
+        removeHeadToHeadRoomsFromTheList(rooms);
         result.newHandler = (IRequestHandler*)(this);
     }
     catch (const std::exception& e)
@@ -276,6 +277,20 @@ RequestResult MenuRequestHandler::joinHeadToHead(const RequestInfo& info)
     return result;
 }
 
+void MenuRequestHandler::removeHeadToHeadRoomsFromTheList(std::vector<RoomData>& rooms)
+{
+    for (auto it = rooms.begin(); it != rooms.end(); ) 
+    {
+        if ((*it).isDuo) 
+        {
+            it = rooms.erase(it); // Remove the element and advance the iterator
+        }
+        else 
+        {
+            ++it; // Move to the next element
+        }
+    }
+}
 
 int MenuRequestHandler::findHeadToHeadRoom(std::vector<RoomData> rooms) const
 {
