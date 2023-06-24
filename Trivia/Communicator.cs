@@ -18,7 +18,6 @@ namespace Trivia
     class Communicator
     {
         private Socket socket;
-        private RSACryptoAlgorithm rsaAlgorithm;
         //private MongoDB mongoDB;
         //private dynamic keysDocId;
         //private dynamic serverKeys;
@@ -43,11 +42,11 @@ namespace Trivia
 
                 // Connect to the server
                 this.socket.Connect(new IPEndPoint(serverIP, serverPort));
-                rsaAlgorithm = new RSACryptoAlgorithm();
+                //rsaAlgorithm = new RSACryptoAlgorithm();
                 //mongoDB = new MongoDB();
-                rsaAlgorithm.createKeys(10);
-                this.sendKeys();
-                this.getServerKeys();
+                RSACryptoAlgorithm.createKeys(10);
+                sendKeys();
+                getServerKeys();
                 //keysDocId = mongoDB.insertKeys(rsaAlgorithm.getPublicKey(), rsaAlgorithm.getModulus());
                 //byte[] key = Encoding.ASCII.GetBytes(keysDocId.ToString());
                 //this.socket.Send(key);
@@ -63,7 +62,6 @@ namespace Trivia
         {
             byte[] serverPublicKeyHeader = new byte[4];
             byte[] serverModulusHeader = new byte[4];
-            int serverModulus = 0;
             int serverKeyLength = 0;
             int serverModulusLength = 0;
 
@@ -72,22 +70,22 @@ namespace Trivia
             serverKeyLength = BitConverter.ToInt32(serverPublicKeyHeader);
             byte[] serverPublicKeyMessage = new byte[serverKeyLength];
             socket.Receive(serverPublicKeyMessage);
-            this.serverPublicKey = int.Parse(Encoding.ASCII.GetString(serverPublicKeyMessage));
+            serverPublicKey = int.Parse(Encoding.ASCII.GetString(serverPublicKeyMessage));
 
             socket.Receive(serverModulusHeader);
             Array.Reverse(serverModulusHeader);
             serverModulusLength = BitConverter.ToInt32(serverModulusHeader);
             byte[] serverModulusMessage = new byte[serverModulusLength];
             socket.Receive(serverModulusMessage);
-            this.serverModulus = int.Parse(Encoding.ASCII.GetString(serverModulusMessage));
+            serverModulus = int.Parse(Encoding.ASCII.GetString(serverModulusMessage));
         }
 
         public void sendKeys()
         {
             List<byte> keyMessageBuffer = new List<byte>();
             List<byte> modulusMessageBuffer = new List<byte>();
-            BigInteger publicKey = this.rsaAlgorithm.getPublicKey();
-            BigInteger modulus = this.rsaAlgorithm.getModulus();
+            BigInteger publicKey = RSACryptoAlgorithm.getPublicKey();
+            BigInteger modulus = RSACryptoAlgorithm.getModulus();
             int publicKeyLen = publicKey.ToString().Length;
             int modulusLen = modulus.ToString().Length;
 
@@ -113,10 +111,10 @@ namespace Trivia
             dynamic response = null;
             try
             {
-                byte[] buffer = PacketSerializer.GenerateMessage(code, jsonObject);
-                byte[] encryptedBuffer = this.rsaAlgorithm.encrypt(buffer, serverPublicKey, serverModulus);
-                this.socket.Send(encryptedBuffer);
-                response = PacketDeserializer.ProcessSocketData(this.socket, this.rsaAlgorithm);
+                byte[] buffer = PacketSerializer.GenerateMessage(code, jsonObject, serverPublicKey ,serverModulus);
+                //byte[] encryptedBuffer = this.rsaAlgorithm.encrypt(buffer, serverPublicKey, serverModulus);
+                this.socket.Send(buffer);
+                response = PacketDeserializer.ProcessSocketData(this.socket);
             }
             catch (Exception e)
             {

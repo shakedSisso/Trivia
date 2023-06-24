@@ -7,13 +7,13 @@ namespace Trivia
 {
     class RSACryptoAlgorithm
     {
-        private BigInteger m_modulus;
-        private BigInteger m_publicKey;
-        private BigInteger m_privateKey;
+        private static BigInteger m_modulus;
+        private static BigInteger m_publicKey;
+        private static BigInteger m_privateKey;
 
-        private Random random = new Random();
+        private static Random random = new Random();
 
-        public void createKeys(int keyLength)
+        public static void createKeys(int keyLength)
         {
             int p = getRandomPrime(2, 100);
             int q = getRandomPrime(2, 100);
@@ -22,33 +22,33 @@ namespace Trivia
                 q = getRandomPrime(2, 100);
             }
 
-            this.m_modulus = p * q;
+            m_modulus = p * q;
             int phi = (p - 1) * (q - 1);
 
             // Choose a public key (usually a prime number)
-            this.m_publicKey = getRandomPrime(2, phi);
+            m_publicKey = getRandomPrime(2, phi);
 
             // Ensure public key and phi are coprime
-            while (GCD(this.m_publicKey, phi) != 1)
+            while (GCD(m_publicKey, phi) != 1)
             {
-                this.m_publicKey = getRandomPrime(2, phi);
+                m_publicKey = getRandomPrime(2, phi);
             }
 
             // Calculate the private key using modular inverse
-            this.m_privateKey = ModInverse(this.m_publicKey, phi);
+            m_privateKey = ModInverse(m_publicKey, phi);
         }
 
-        public BigInteger getPublicKey()
+        public static BigInteger getPublicKey()
         {
-            return this.m_publicKey;
+            return m_publicKey;
         }
 
-        public BigInteger getModulus()
+        public static BigInteger getModulus()
         {
-            return this.m_modulus;
+            return m_modulus;
         }
 
-        public byte[] encrypt(byte[] plaintext, int key, int modulus)
+        public static byte[] encrypt(byte[] plaintext, int key, int modulus)
         {
             int blockSize = getBlockSize();
             List<byte[]> blocks = splitIntoBlocks(plaintext, blockSize);
@@ -74,7 +74,7 @@ namespace Trivia
             return mergeBlocks(encryptedBlocks);
         }
 
-        public byte[] decrypt(byte[] ciphertext)
+        public static byte[] decrypt(byte[] ciphertext)
         {
             int blockSize = getBlockSize();
             List<byte[]> blocks = splitIntoBlocks(ciphertext, blockSize);
@@ -83,7 +83,7 @@ namespace Trivia
             foreach (byte[] block in blocks)
             {
                 BigInteger encryptedValue = new BigInteger(block);
-                BigInteger decryptedValue = BigInteger.ModPow(encryptedValue, this.m_privateKey, this.m_modulus);
+                BigInteger decryptedValue = BigInteger.ModPow(encryptedValue, m_privateKey, m_modulus);
                 byte[] decryptedBlock = decryptedValue.ToByteArray();
 
                 decryptedBlocks.Add(decryptedBlock);
@@ -92,7 +92,7 @@ namespace Trivia
             return mergeBlocks(decryptedBlocks);
         }
 
-        private List<byte[]> splitIntoBlocks(byte[] data, int blockSize)
+        private static List<byte[]> splitIntoBlocks(byte[] data, int blockSize)
         {
             List<byte[]> blocks = new List<byte[]>();
 
@@ -110,7 +110,7 @@ namespace Trivia
             return blocks;
         }
 
-        private byte[] mergeBlocks(List<byte[]> blocks)
+        private static byte[] mergeBlocks(List<byte[]> blocks)
         {
             int totalLength = 0;
             foreach (byte[] block in blocks)
@@ -130,13 +130,12 @@ namespace Trivia
             return merged;
         }
 
-        private int getBlockSize()
+        private static int getBlockSize()
         {
-            // Calculate the block size based on the key length
             return 5;
         }
 
-        private bool isPrime(int number)
+        private static bool isPrime(int number)
         {
             if (number <= 1)
             {
@@ -154,7 +153,7 @@ namespace Trivia
             return true;
         }
 
-        private int getRandomPrime(int min, int max)
+        private static int getRandomPrime(int min, int max)
         {
             int num = random.Next(min, max);
             while(!isPrime(num))
@@ -164,7 +163,7 @@ namespace Trivia
             return num;
         }
 
-        private BigInteger GCD(BigInteger a, BigInteger b)
+        private static BigInteger GCD(BigInteger a, BigInteger b)
         {
             if (b == 0)
             {
@@ -173,7 +172,7 @@ namespace Trivia
             return GCD(b, a % b);
         }
 
-        private int ModInverse(BigInteger a, int m)
+        private static int ModInverse(BigInteger a, int m)
         {
             a = a % m;
 
