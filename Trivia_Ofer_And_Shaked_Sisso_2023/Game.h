@@ -40,6 +40,7 @@ public:
 	GameID getGameId() const;
 	map<LoggedUser, GameData*> getPlayers() const;
 	bool isGameFinished() const;
+	bool areAllPlayersLoggedOut() const;
 private:
 	IDatabase* m_database;
 	vector<Question> m_questions;

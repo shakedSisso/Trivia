@@ -87,7 +87,7 @@ map<LoggedUser, GameData*> Game::getPlayers() const
 bool Game::isGameFinished() const
 {
     bool isFinished = true;
-    for (auto player = this->m_players.begin(); player != this->m_players.end() && isFinished; player++)
+    for (auto player = this->m_players.begin(); player != this->m_players.end(); player++)
     {
         if (player->second->currentQuestion.getQuestion() != LOG_OUT && player->second->currentQuestion.getQuestion() != "") // if there is a user with a currect question that the question text is not empty then the game is not finished
         {
@@ -96,4 +96,18 @@ bool Game::isGameFinished() const
         }
     }
     return isFinished;
+}
+
+bool Game::areAllPlayersLoggedOut() const
+{
+    bool allLoggedOut = true;
+    for (auto player = this->m_players.begin(); player != this->m_players.end(); player++)
+    {
+        if (player->second->currentQuestion.getQuestion() != LOG_OUT)
+        {
+            allLoggedOut = false;
+            break;
+        }
+    }
+    return allLoggedOut;
 }
