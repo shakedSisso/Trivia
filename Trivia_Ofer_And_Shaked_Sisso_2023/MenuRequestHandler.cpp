@@ -252,14 +252,15 @@ RequestResult MenuRequestHandler::joinHeadToHead(const RequestInfo& info)
             RoomData data = { id, HEAD_TO_HEAD_ROOM_NAME, HEAD_TO_HEAD_MAX_PLAYERS, HEAD_TO_HEAD_QUESTION_COUNT, HEAD_TO_HEAD_QUESTION_TIME_OUT, FALSE, TRUE };
             this->m_roomManager.createRoom(this->m_user, data);
             room = &this->m_roomManager.getRoom(id);
-            this->m_handlerFactory.getGameManager().createGame(*room); //creating the head to head game
             result.newHandler = (IRequestHandler*)this->m_handlerFactory.createRoomMemberRequestHandler(this->m_user, room);
         }
         else
         {
             room = &this->m_roomManager.getRoom(id);
+            room->addUser(this->m_user);
             room->activate(); //head to head rooms needs to be activated when there are 2 users in the room
             result.newHandler = (IRequestHandler*)this->m_handlerFactory.createRoomMemberRequestHandler(this->m_user, room);
+            this->m_handlerFactory.getGameManager().createGame(*room); //creating the head to head game
         }
     }
     catch (const std::exception& e)
