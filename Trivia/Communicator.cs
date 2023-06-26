@@ -229,7 +229,7 @@ namespace Trivia
 
         public bool CreateRoom(string roomName, int maxUsers, int questionCount, int timeOut, bool includeUserQuestion)
         {
-            var jsonObject = new { room_name = roomName, max_users = maxUsers, question_count = questionCount, time_out = timeOut };
+            var jsonObject = new { room_name = roomName, max_users = maxUsers, question_count = questionCount, time_out = timeOut, include_user_questions = includeUserQuestion };
             dynamic response = GetResponse(jsonObject, (int)codes.CreateRoom);
             if (response.code == (int)codes.Error)
             {
