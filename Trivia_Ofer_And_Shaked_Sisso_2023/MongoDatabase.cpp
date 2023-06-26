@@ -148,7 +148,7 @@ std::list<Question> MongoDatabase::getQuestions(const int amountOfQuestions, con
 	mongocxx::collection questionsColl = this->_db.collection(QUESTIONS_COLLECTION_NAME);
 	mongocxx::collection userQuestionsColl = this->_db.collection(USER_QUESTIONS_COLLECTION_NAME);
 	int questionCount = userQuestionsColl.count_documents({});
-	if (includeUserQuestions)
+	if (includeUserQuestions && questionCount != 0)
 	{
 		do
 		{
