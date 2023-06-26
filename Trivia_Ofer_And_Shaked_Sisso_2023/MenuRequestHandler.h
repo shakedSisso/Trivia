@@ -24,4 +24,8 @@ private:
 	RequestResult getHighScore(const RequestInfo& info);
 	RequestResult joinRoom(const RequestInfo& info);
 	RequestResult createRoom(const RequestInfo& info);
+	RequestResult joinHeadToHead(const RequestInfo& info);
+
+	int findHeadToHeadRoom(std::vector<RoomData> rooms) const;
+	void removeHeadToHeadRoomsFromTheList(std::vector<RoomData>& rooms);
 };

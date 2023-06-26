@@ -23,7 +23,7 @@ namespace Trivia
         private string[] errors = { DISCONNECTION_MESSAGE, ABORT_MESSAGE, RUNTIME_MESSAGE };
 
         public bool aborted;
-        public enum codes { Error, Login, Signup, GetPlayersInRoom, JoinRoom, CreateRoom, HighScore, Logout, GetRooms, Statistics, CloseRoom, StartGame, GetRoomState, LeaveRoom, LeaveGame, GetQuestion, GetQuestionFailed, SubmitAnswer, GetGameResult, GetGameResultFailed };
+        public enum codes { Error, Login, Signup, GetPlayersInRoom, JoinRoom, CreateRoom, HighScore, Logout, GetRooms, Statistics, CloseRoom, StartGame, GetRoomState, LeaveRoom, LeaveGame, GetQuestion, GetQuestionFailed, SubmitAnswer, GetGameResult, GetGameResultFailed, HeadToHead };
         public void Connect()
         {
             try
@@ -362,6 +362,23 @@ namespace Trivia
             if (response.status == (int)codes.GetGameResultFailed)
             {
                 return null;
+            }
+            throw new Exception("Error while trying to make a request");
+        }
+
+        internal void JoinHeadToHead()
+        {
+            var jsonObject = new { };
+            byte[] buffer = PacketSerializer.GenerateMessage((int)codes.HeadToHead, jsonObject);
+            this.socket.Send(buffer);
+            dynamic response = PacketDeserializer.ProcessSocketData(this.socket);
+            if (response.code == (int)codes.Error)
+            {
+                throw new Exception(response.message.ToString());
+            }
+            if (response.status == (int)codes.HeadToHead)
+            {
+                return;
             }
             throw new Exception("Error while trying to make a request");
         }

@@ -61,6 +61,11 @@ typedef struct CreateRoomResponse
 	unsigned int status;
 } CreateRoomResponse;
 
+typedef struct HeadToHeadResponse
+{
+	unsigned int status;
+}HeadToHeadResponse;
+
 typedef struct CloseRoomResponse
 {
 	unsigned int status;
@@ -74,7 +79,7 @@ typedef struct StartGameResponse
 typedef struct GetRoomStateResponse
 {
 	unsigned int status;
-	bool hasGameBegun;
+	bool isActive;
 	vector<string> players;
 	unsigned int questionCount;
 	unsigned int answerTimeout;
