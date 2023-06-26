@@ -30,7 +30,7 @@ typedef struct GameData
 class Game
 {
 public:
-	Game() = default;
+	Game();
 	Game(IDatabase* database, vector<Question> questions, vector<LoggedUser> users, const Room& room);
 
 	Question getQuestionForUser(const LoggedUser& user);
@@ -40,6 +40,7 @@ public:
 	GameID getGameId() const;
 	map<LoggedUser, GameData*> getPlayers() const;
 	bool isGameFinished() const;
+	bool areAllPlayersLoggedOut() const;
 private:
 	IDatabase* m_database;
 	vector<Question> m_questions;

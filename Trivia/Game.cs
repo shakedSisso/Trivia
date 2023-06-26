@@ -77,7 +77,11 @@ namespace Trivia
                 {
                     question = Program.GetCommunicator().GetQuestion();
                 }
-                if (question != null && question.question != "")
+                if (question == null)
+                {
+                    throw new Exception("Getting a questions as failed");
+                }
+                if (question.question != "")
                 {
                     NextQuestion();
                 }
@@ -88,7 +92,7 @@ namespace Trivia
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                throw ex;
             }
         }
 
@@ -102,20 +106,31 @@ namespace Trivia
                 {
                     question = Program.GetCommunicator().GetQuestion();
                 }
-                if (question != null && question.question != "")
+                if (question == null)
                 {
                     this.Invoke((MethodInvoker)delegate
                     {
-                        ChangeScore();
-                        NextQuestion();
+                        MessageBox.Show("Getting a questions as failed");
                     });
                 }
                 else
                 {
-                    this.Invoke((MethodInvoker)delegate
+                    if (question.question != "")
                     {
-                        OpenGameScoresForm();
-                    });
+
+                        this.Invoke((MethodInvoker)delegate
+                        {
+                            ChangeScore();
+                            NextQuestion();
+                        });
+                    }
+                    else
+                    {
+                        this.Invoke((MethodInvoker)delegate
+                        {
+                            OpenGameScoresForm();
+                        });
+                    }
                 }
             }
         }
