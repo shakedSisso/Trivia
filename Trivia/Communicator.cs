@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,7 +23,7 @@ namespace Trivia
         private string[] errors = { DISCONNECTION_MESSAGE, ABORT_MESSAGE, RUNTIME_MESSAGE };
 
         public bool aborted;
-        public enum codes { Error, Login, Signup, GetPlayersInRoom, JoinRoom, CreateRoom, HighScore, Logout, GetRooms, Statistics, CloseRoom, StartGame, GetRoomState, LeaveRoom, LeaveGame, GetQuestion, GetQuestionFailed, SubmitAnswer, GetGameResult, GetGameResultFailed, AddQuestion };
+        public enum codes { Error, Login, Signup, GetPlayersInRoom, JoinRoom, CreateRoom, HighScore, Logout, GetRooms, Statistics, CloseRoom, StartGame, GetRoomState, LeaveRoom, LeaveGame, GetQuestion, GetQuestionFailed, SubmitAnswer, GetGameResult, GetGameResultFailed, AddQuestion, HeadToHead };
         public void Connect()
         {
             try
@@ -366,18 +366,29 @@ namespace Trivia
             throw new Exception("Error while trying to make a request");
         }
 
+<<<<<<< Trivia/Communicator.cs
         internal void AddQuestion(string author, string question, string correctAnswer, string answer2, string answer3, string answer4 )
         {
 
             var jsonObject = new { author = author, question = question, correctAns = correctAnswer, ans2 = answer2, ans3 = answer3, ans4 = answer4 };
             byte[] buffer = PacketSerializer.GenerateMessage((int)codes.AddQuestion, jsonObject);
+=======
+        internal void JoinHeadToHead()
+        {
+            var jsonObject = new { };
+            byte[] buffer = PacketSerializer.GenerateMessage((int)codes.HeadToHead, jsonObject);
+>>>>>>> Trivia/Communicator.cs
             this.socket.Send(buffer);
             dynamic response = PacketDeserializer.ProcessSocketData(this.socket);
             if (response.code == (int)codes.Error)
             {
                 throw new Exception(response.message.ToString());
             }
+<<<<<<< Trivia/Communicator.cs
             if (response.status == (int)codes.AddQuestion)
+=======
+            if (response.status == (int)codes.HeadToHead)
+>>>>>>> Trivia/Communicator.cs
             {
                 return;
             }

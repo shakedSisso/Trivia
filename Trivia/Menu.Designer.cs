@@ -1,4 +1,4 @@
-﻿namespace Trivia
+namespace Trivia
 {
     partial class Menu
     {
@@ -37,6 +37,7 @@
             lblUsername = new Label();
             lblErrorMessage = new Label();
             btnAddQuestion = new Button();
+            btnHeadToHead = new Button();
             SuspendLayout();
             // 
             // btnJoinRoom
@@ -132,6 +133,7 @@
             lblErrorMessage.Size = new Size(0, 20);
             lblErrorMessage.TabIndex = 6;
             // 
+<<<<<<< Trivia/Menu.Designer.cs
             // btnAddQuestion
             // 
             btnAddQuestion.BackColor = Color.CadetBlue;
@@ -145,6 +147,21 @@
             btnAddQuestion.Text = "Add question";
             btnAddQuestion.UseVisualStyleBackColor = false;
             btnAddQuestion.Click += btnAddQuestion_Click;
+=======
+            // btnHeadToHead
+            // 
+            btnHeadToHead.BackColor = Color.CadetBlue;
+            btnHeadToHead.Cursor = Cursors.Hand;
+            btnHeadToHead.Font = new Font("Maiandra GD", 15F, FontStyle.Bold, GraphicsUnit.Point);
+            btnHeadToHead.ForeColor = SystemColors.ButtonHighlight;
+            btnHeadToHead.Location = new Point(419, 291);
+            btnHeadToHead.Name = "btnHeadToHead";
+            btnHeadToHead.Size = new Size(347, 63);
+            btnHeadToHead.TabIndex = 7;
+            btnHeadToHead.Text = "Head to Head";
+            btnHeadToHead.UseVisualStyleBackColor = false;
+            btnHeadToHead.Click += btnHeadToHead_Click;
+>>>>>>> Trivia/Menu.Designer.cs
             // 
             // Menu
             // 
@@ -152,7 +169,11 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.PaleTurquoise;
             ClientSize = new Size(800, 450);
+<<<<<<< Trivia/Menu.Designer.cs
             Controls.Add(btnAddQuestion);
+=======
+            Controls.Add(btnHeadToHead);
+>>>>>>> Trivia/Menu.Designer.cs
             Controls.Add(lblErrorMessage);
             Controls.Add(lblUsername);
             Controls.Add(btnQuit);
@@ -176,6 +197,10 @@
         private Button btnQuit;
         private Label lblUsername;
         private Label lblErrorMessage;
+<<<<<<< Trivia/Menu.Designer.cs
         private Button btnAddQuestion;
+=======
+        private Button btnHeadToHead;
+>>>>>>> Trivia/Menu.Designer.cs
     }
 }
