@@ -77,13 +77,13 @@ namespace Trivia
 
         public bool Login(string username, string password)
         {
-            var jsonObject = new { username = username, password = password};
+            var jsonObject = new { username = username, password = password };
             dynamic response = GetResponse(jsonObject, (int)codes.Login);
-            if(response.code == (int)codes.Error)
+            if (response.code == (int)codes.Error)
             {
                 throw new Exception(response.message.ToString());
             }
-            if(response.status == (int)codes.Login)
+            if (response.status == (int)codes.Login)
             {
                 return true;
             }
@@ -113,7 +113,7 @@ namespace Trivia
             dynamic response = GetResponse(jsonObject, (int)codes.Logout);
             if (response.code == (int)codes.Error)
             {
-                
+
                 throw new Exception(response.message.ToString());
             }
             if (response.status == (int)codes.Logout)
@@ -125,7 +125,7 @@ namespace Trivia
 
         public string[] GetPlayersInRoom(int roomId)
         {
-            var jsonObject = new { room_id = roomId};
+            var jsonObject = new { room_id = roomId };
             dynamic response = GetResponse(jsonObject, (int)codes.GetPlayersInRoom);
             if (response.code == (int)codes.Error)
             {
@@ -164,7 +164,7 @@ namespace Trivia
             }
             throw new Exception("Error while trying to make a request");
         }
-        
+
 
 
         public string[] GetHighScores()
@@ -204,7 +204,7 @@ namespace Trivia
                 {
                     return ((JArray)response.statistics).ToObject<string[]>();
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     return null;
                 }
@@ -366,32 +366,34 @@ namespace Trivia
             throw new Exception("Error while trying to make a request");
         }
 
-<<<<<<< Trivia/Communicator.cs
-        internal void AddQuestion(string author, string question, string correctAnswer, string answer2, string answer3, string answer4 )
+        internal void AddQuestion(string author, string question, string correctAnswer, string answer2, string answer3, string answer4)
         {
 
             var jsonObject = new { author = author, question = question, correctAns = correctAnswer, ans2 = answer2, ans3 = answer3, ans4 = answer4 };
-            byte[] buffer = PacketSerializer.GenerateMessage((int)codes.AddQuestion, jsonObject);
-=======
-        internal void JoinHeadToHead()
-        {
-            var jsonObject = new { };
-            byte[] buffer = PacketSerializer.GenerateMessage((int)codes.HeadToHead, jsonObject);
->>>>>>> Trivia/Communicator.cs
-            this.socket.Send(buffer);
-            dynamic response = PacketDeserializer.ProcessSocketData(this.socket);
+            dynamic response = GetResponse(jsonObject, (int)codes.AddQuestion);
             if (response.code == (int)codes.Error)
             {
                 throw new Exception(response.message.ToString());
             }
-<<<<<<< Trivia/Communicator.cs
             if (response.status == (int)codes.AddQuestion)
-=======
-            if (response.status == (int)codes.HeadToHead)
->>>>>>> Trivia/Communicator.cs
             {
                 return;
             }
+            throw new Exception("Error while trying to make a request");
+        }
+        internal void JoinHeadToHead()
+        {
+            var jsonObject = new { };
+            dynamic response = GetResponse(jsonObject, (int)codes.HeadToHead);
+            if (response.code == (int)codes.Error)
+            {
+                throw new Exception(response.message.ToString());
+            }
+            if (response.status == (int)codes.HeadToHead)
+            {
+                return;
+            }
+
             throw new Exception("Error while trying to make a request");
         }
     }

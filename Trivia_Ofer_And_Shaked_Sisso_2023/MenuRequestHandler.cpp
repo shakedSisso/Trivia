@@ -54,13 +54,10 @@ RequestResult MenuRequestHandler::handleRequest(const RequestInfo& info)
             case CreateRoom:
                 result = createRoom(info);
                 break;
-<<<<<<< Trivia_Ofer_And_Shaked_Sisso_2023/MenuRequestHandler.cpp
             case AddQuestion:
                 result = addQuestion(info);
-=======
             case HeadToHead:
                 result = joinHeadToHead(info);
->>>>>>> Trivia_Ofer_And_Shaked_Sisso_2023/MenuRequestHandler.cpp
                 break;
             default:
                 throw std::exception("irrelevent request");
@@ -242,7 +239,6 @@ RequestResult MenuRequestHandler::createRoom(const RequestInfo& info)
     return result;
 }
 
-<<<<<<< Trivia_Ofer_And_Shaked_Sisso_2023/MenuRequestHandler.cpp
 RequestResult MenuRequestHandler::addQuestion(const RequestInfo& info)
 {
     RequestResult result;
@@ -251,21 +247,36 @@ RequestResult MenuRequestHandler::addQuestion(const RequestInfo& info)
         AddQuestionRequest request = JsonRequestPacketDeserializer::deserializeAddQuestionRequest(info.buffer);
         this->m_database->addUserQuestion(request.author, request.question, request.correctAnswer, request.ans2, request.ans3, request.ans4);
         result.newHandler = (IRequestHandler*)this;
-=======
+    }
+    catch (const std::exception& e)
+    {
+        if (result.newHandler != nullptr)
+        {
+            delete(result.newHandler);
+        }
+        result.newHandler = nullptr;
+        throw std::exception(e.what());
+    }
+    AddQuestionResponse response;
+    response.status = AddQuestion;
+    result.buffer = JsonResponsePacketSerializer::serializeResponse(response);
+    return result;
+}
+
 RequestResult MenuRequestHandler::joinHeadToHead(const RequestInfo& info)
 {
     RequestResult result;
     unsigned int id = 0;
+    Room* room = nullptr;
     try
     {
-        Room* room = nullptr;
         std::vector<RoomData> rooms = this->m_roomManager.getRooms();
         id = findHeadToHeadRoom(rooms);
         if (id == HEAD_TO_HEAD_DOES_NOT_EXIST)
         {
             id = rooms.size() + 1;
             RoomData data = { id, HEAD_TO_HEAD_ROOM_NAME, HEAD_TO_HEAD_MAX_PLAYERS, HEAD_TO_HEAD_QUESTION_COUNT, HEAD_TO_HEAD_QUESTION_TIME_OUT, FALSE, TRUE };
-            this->m_roomManager.createRoom(this->m_user, data);
+            this->m_roomManager.createRoom(this->m_user, data, FALSE);
             room = &this->m_roomManager.getRoom(id);
             result.newHandler = (IRequestHandler*)this->m_handlerFactory.createRoomMemberRequestHandler(this->m_user, room);
         }
@@ -277,7 +288,6 @@ RequestResult MenuRequestHandler::joinHeadToHead(const RequestInfo& info)
             result.newHandler = (IRequestHandler*)this->m_handlerFactory.createRoomMemberRequestHandler(this->m_user, room);
             this->m_handlerFactory.getGameManager().createGame(*room); //creating the head to head game
         }
->>>>>>> Trivia_Ofer_And_Shaked_Sisso_2023/MenuRequestHandler.cpp
     }
     catch (const std::exception& e)
     {
@@ -288,13 +298,6 @@ RequestResult MenuRequestHandler::joinHeadToHead(const RequestInfo& info)
         result.newHandler = nullptr;
         throw std::exception(e.what());
     }
-<<<<<<< Trivia_Ofer_And_Shaked_Sisso_2023/MenuRequestHandler.cpp
-    AddQuestionResponse response;
-    response.status = AddQuestion;
-    result.buffer = JsonResponsePacketSerializer::serializeResponse(response);
-    return result;
-}
-=======
     HeadToHeadResponse response;
     response.status = HeadToHead;
     result.buffer = JsonResponsePacketSerializer::serializeResponse(response);
@@ -327,4 +330,3 @@ int MenuRequestHandler::findHeadToHeadRoom(std::vector<RoomData> rooms) const
     }
     return HEAD_TO_HEAD_DOES_NOT_EXIST;
 }
->>>>>>> Trivia_Ofer_And_Shaked_Sisso_2023/MenuRequestHandler.cpp

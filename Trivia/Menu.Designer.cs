@@ -133,7 +133,6 @@ namespace Trivia
             lblErrorMessage.Size = new Size(0, 20);
             lblErrorMessage.TabIndex = 6;
             // 
-<<<<<<< Trivia/Menu.Designer.cs
             // btnAddQuestion
             // 
             btnAddQuestion.BackColor = Color.CadetBlue;
@@ -147,7 +146,7 @@ namespace Trivia
             btnAddQuestion.Text = "Add question";
             btnAddQuestion.UseVisualStyleBackColor = false;
             btnAddQuestion.Click += btnAddQuestion_Click;
-=======
+            //
             // btnHeadToHead
             // 
             btnHeadToHead.BackColor = Color.CadetBlue;
@@ -161,7 +160,6 @@ namespace Trivia
             btnHeadToHead.Text = "Head to Head";
             btnHeadToHead.UseVisualStyleBackColor = false;
             btnHeadToHead.Click += btnHeadToHead_Click;
->>>>>>> Trivia/Menu.Designer.cs
             // 
             // Menu
             // 
@@ -169,11 +167,8 @@ namespace Trivia
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.PaleTurquoise;
             ClientSize = new Size(800, 450);
-<<<<<<< Trivia/Menu.Designer.cs
             Controls.Add(btnAddQuestion);
-=======
             Controls.Add(btnHeadToHead);
->>>>>>> Trivia/Menu.Designer.cs
             Controls.Add(lblErrorMessage);
             Controls.Add(lblUsername);
             Controls.Add(btnQuit);
@@ -197,10 +192,7 @@ namespace Trivia
         private Button btnQuit;
         private Label lblUsername;
         private Label lblErrorMessage;
-<<<<<<< Trivia/Menu.Designer.cs
         private Button btnAddQuestion;
-=======
         private Button btnHeadToHead;
->>>>>>> Trivia/Menu.Designer.cs
     }
 }
