@@ -31,6 +31,15 @@ public:
 	StatisticsManager& getStatisticsManager();
 	GameManager& getGameManager();
 
+	/*
+	* Function: setDatabase
+	* ----------------------------
+	*   The function gets a pointer to an IDatabase object and sets the m_database pointer to the given pointer
+	*
+	*   IDatabase* database: The new pointer to the database to set
+	*
+	*   returns: void.
+	*/
 	void setDatabase(IDatabase* db);
 
 private:

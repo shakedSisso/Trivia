@@ -51,7 +51,7 @@ namespace Trivia
                 this.players = roomState.players;
                 this.questionCount = roomState.questionCount;
                 this.timePerQuestion = roomState.answerTimeOut;
-                this.isActive = roomState.hasGameBegun;
+                this.isActive = roomState.isActive;
                 lblQuestionCount.Text = lblQuestionCount.Text + " " + this.questionCount;
                 lblTimeOut.Text = lblTimeOut.Text + " " + this.timePerQuestion;
             }
@@ -117,7 +117,7 @@ namespace Trivia
                     try
                     {
                         roomState = Program.GetCommunicator().GetRoomState();
-                        isActive = (bool)roomState.hasGameBegun;
+                        isActive = (bool)roomState.isActive;
                         playerArray = roomState.players;
                     }
                     catch(Exception ex)
@@ -134,12 +134,12 @@ namespace Trivia
                         return;
                     }
                 }
-                if(isActive)
+                if (isActive)
                 {
-                    lock(this.communicatorLock)
+                    lock (this.communicatorLock)
                     {
                         Program.GetCommunicator().StartGame();
-                    }    
+                    }
                     this.Invoke((MethodInvoker)delegate
                     {
                         LocationManager.SetFormLocation(this.Location);

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,7 +23,7 @@ namespace Trivia
         private string[] errors = { DISCONNECTION_MESSAGE, ABORT_MESSAGE, RUNTIME_MESSAGE };
 
         public bool aborted;
-        public enum codes { Error, Login, Signup, GetPlayersInRoom, JoinRoom, CreateRoom, HighScore, Logout, GetRooms, Statistics, CloseRoom, StartGame, GetRoomState, LeaveRoom, LeaveGame, GetQuestion, GetQuestionFailed, SubmitAnswer, GetGameResult, GetGameResultFailed };
+        public enum codes { Error, Login, Signup, GetPlayersInRoom, JoinRoom, CreateRoom, HighScore, Logout, GetRooms, Statistics, CloseRoom, StartGame, GetRoomState, LeaveRoom, LeaveGame, GetQuestion, GetQuestionFailed, SubmitAnswer, GetGameResult, GetGameResultFailed, AddQuestion, HeadToHead };
         public void Connect()
         {
             try
@@ -77,13 +77,13 @@ namespace Trivia
 
         public bool Login(string username, string password)
         {
-            var jsonObject = new { username = username, password = password};
+            var jsonObject = new { username = username, password = password };
             dynamic response = GetResponse(jsonObject, (int)codes.Login);
-            if(response.code == (int)codes.Error)
+            if (response.code == (int)codes.Error)
             {
                 throw new Exception(response.message.ToString());
             }
-            if(response.status == (int)codes.Login)
+            if (response.status == (int)codes.Login)
             {
                 return true;
             }
@@ -113,7 +113,7 @@ namespace Trivia
             dynamic response = GetResponse(jsonObject, (int)codes.Logout);
             if (response.code == (int)codes.Error)
             {
-                
+
                 throw new Exception(response.message.ToString());
             }
             if (response.status == (int)codes.Logout)
@@ -125,7 +125,7 @@ namespace Trivia
 
         public string[] GetPlayersInRoom(int roomId)
         {
-            var jsonObject = new { room_id = roomId};
+            var jsonObject = new { room_id = roomId };
             dynamic response = GetResponse(jsonObject, (int)codes.GetPlayersInRoom);
             if (response.code == (int)codes.Error)
             {
@@ -164,7 +164,7 @@ namespace Trivia
             }
             throw new Exception("Error while trying to make a request");
         }
-        
+
 
 
         public string[] GetHighScores()
@@ -204,7 +204,7 @@ namespace Trivia
                 {
                     return ((JArray)response.statistics).ToObject<string[]>();
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     return null;
                 }
@@ -227,9 +227,9 @@ namespace Trivia
             throw new Exception("Error while trying to make a request");
         }
 
-        public bool CreateRoom(string roomName, int maxUsers, int questionCount, int timeOut)
+        public bool CreateRoom(string roomName, int maxUsers, int questionCount, int timeOut, bool includeUserQuestion)
         {
-            var jsonObject = new { room_name = roomName, max_users = maxUsers, question_count = questionCount, time_out = timeOut };
+            var jsonObject = new { room_name = roomName, max_users = maxUsers, question_count = questionCount, time_out = timeOut, include_user_questions = includeUserQuestion };
             dynamic response = GetResponse(jsonObject, (int)codes.CreateRoom);
             if (response.code == (int)codes.Error)
             {
@@ -363,6 +363,37 @@ namespace Trivia
             {
                 return null;
             }
+            throw new Exception("Error while trying to make a request");
+        }
+
+        internal void AddQuestion(string author, string question, string correctAnswer, string answer2, string answer3, string answer4)
+        {
+
+            var jsonObject = new { author = author, question = question, correctAns = correctAnswer, ans2 = answer2, ans3 = answer3, ans4 = answer4 };
+            dynamic response = GetResponse(jsonObject, (int)codes.AddQuestion);
+            if (response.code == (int)codes.Error)
+            {
+                throw new Exception(response.message.ToString());
+            }
+            if (response.status == (int)codes.AddQuestion)
+            {
+                return;
+            }
+            throw new Exception("Error while trying to make a request");
+        }
+        internal void JoinHeadToHead()
+        {
+            var jsonObject = new { };
+            dynamic response = GetResponse(jsonObject, (int)codes.HeadToHead);
+            if (response.code == (int)codes.Error)
+            {
+                throw new Exception(response.message.ToString());
+            }
+            if (response.status == (int)codes.HeadToHead)
+            {
+                return;
+            }
+
             throw new Exception("Error while trying to make a request");
         }
     }

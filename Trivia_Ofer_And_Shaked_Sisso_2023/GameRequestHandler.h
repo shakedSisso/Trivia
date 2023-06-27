@@ -18,6 +18,15 @@ private:
 	RequestHandlerFactory& m_handlerFactory;
 	GameManager& m_gameManager;
 
+	/*
+	* Function: sortVector
+	* ----------------------------
+	*   The function gets an std::vector of PlayerResults and sorts the vector by the results of the players
+	*
+	*   std::vector<PlayerResults>& v: the vector to sort 
+	*
+	*   returns: void.
+	*/
 	void sortVector(std::vector<PlayerResults>& v);
 
 	RequestResult getQuestion(const RequestInfo& info);

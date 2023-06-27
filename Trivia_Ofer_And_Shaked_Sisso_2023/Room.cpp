@@ -3,8 +3,8 @@
 #define FALSE 0
 #define TRUE !FALSE
 
-Room::Room(const RoomData metadata)
-	:m_metadata(metadata)
+Room::Room(const RoomData metadata, const bool includeUserQuestions)
+	:m_metadata(metadata), m_includeUserQuestions(includeUserQuestions)
 {
 }
 
@@ -50,6 +50,11 @@ vector<string> Room::getAllUsers() const
 RoomData Room::getRoomData() const
 {
 	return this->m_metadata;
+}
+
+bool Room::getIfIncludeUserQuestions() const
+{
+	return this->m_includeUserQuestions;
 }
 
 void Room::activate()

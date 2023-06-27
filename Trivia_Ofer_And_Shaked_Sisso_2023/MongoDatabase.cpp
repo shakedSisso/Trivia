@@ -12,6 +12,7 @@ constexpr char MONGO_DB_URI[] = "mongodb://localhost:27017";
 constexpr char DATABASE_NAME[] = "triviaDB";
 #define USERS_COLLECTION_NAME "users"
 #define QUESTIONS_COLLECTION_NAME "questions"
+#define USER_QUESTIONS_COLLECTION_NAME "user_questions"
 #define STATISTICS_COLLECTION_NAME "statistics"
 
 #define DEFAULT_STATISTICS_VALUE 0
@@ -53,6 +54,11 @@ bool MongoDatabase::open()
 		this->_client[DATABASE_NAME].create_collection(QUESTIONS_COLLECTION_NAME);
 		std::cout << "Created collection: " << QUESTIONS_COLLECTION_NAME << std::endl;
 		addQuestionsToDatabase();
+	}
+	if (!this->_db.has_collection(USER_QUESTIONS_COLLECTION_NAME))
+	{
+		this->_client[DATABASE_NAME].create_collection(USER_QUESTIONS_COLLECTION_NAME);
+		std::cout << "Created collection: " << USER_QUESTIONS_COLLECTION_NAME << std::endl;
 	}
 	if (!this->_db.has_collection(STATISTICS_COLLECTION_NAME))
 	{
@@ -136,20 +142,26 @@ int MongoDatabase::addNewUser(const std::string username, const std::string pass
 	return 0;
 }
 
-std::list<Question> MongoDatabase::getQuestions(const int amountOfQuestions)
+std::list<Question> MongoDatabase::getQuestions(const int amountOfQuestions, const bool includeUserQuestions)
 {
-	mongocxx::collection collection = this->_db.collection(QUESTIONS_COLLECTION_NAME);
-	int count = collection.count_documents({});
-	if (count < amountOfQuestions || count == 0)
+	int userQuestions = 0, regularQuestions = amountOfQuestions;
+	mongocxx::collection questionsColl = this->_db.collection(QUESTIONS_COLLECTION_NAME);
+	mongocxx::collection userQuestionsColl = this->_db.collection(USER_QUESTIONS_COLLECTION_NAME);
+	int questionCount = userQuestionsColl.count_documents({});
+	if (includeUserQuestions && questionCount > 0)
 	{
-		throw std::exception("There are not enough questions");
+		do
+		{
+			userQuestions = std::rand() % amountOfQuestions;
+		} while (userQuestions >= questionCount || userQuestions == 0);
+		regularQuestions -= userQuestions;
 	}
 
 	mongocxx::pipeline pipe;
-	pipe.sample(amountOfQuestions);
-	mongocxx::cursor cursor = collection.aggregate(pipe);
+	pipe.sample(regularQuestions);
+	mongocxx::cursor cursor = questionsColl.aggregate(pipe);
 
-	std::list<Question> questions;
+	std::list<Question> questions, temp;
 	std::vector<std::string> answers;
 	std::string jsonString;
 	json jsonData;
@@ -161,8 +173,37 @@ std::list<Question> MongoDatabase::getQuestions(const int amountOfQuestions)
 		answers.push_back(jsonData["ans2"]);
 		answers.push_back(jsonData["ans3"]);
 		answers.push_back(jsonData["ans4"]);
-		questions.push_back(Question(jsonData["question"], answers, std::rand() % ANSWER_COUNT + 1));
+		temp.push_back(Question(jsonData["question"], answers, std::rand() % ANSWER_COUNT + 1));
 		answers.clear();
+	}
+	pipe.sample(userQuestions);
+	cursor = userQuestionsColl.aggregate(pipe);
+	for (auto& doc : cursor)
+	{
+		jsonString = bsoncxx::to_json(doc);
+		jsonData = json::parse(jsonString);
+		answers.push_back(jsonData["correct_ans"]);
+		answers.push_back(jsonData["ans2"]);
+		answers.push_back(jsonData["ans3"]);
+		answers.push_back(jsonData["ans4"]);
+		temp.push_back(Question(jsonData["question"], answers, std::rand() % ANSWER_COUNT + 1));
+		answers.clear();
+	}
+
+	if (temp.empty() || temp.size() < amountOfQuestions)
+	{
+		throw std::exception("There are not enough questions");
+	}
+
+	//mix the order of the questions for random order of user and regular questions (if chosen to include user questions)
+	int index = 0;
+	while (!temp.empty())
+	{
+		index = rand() % temp.size();
+		auto it = temp.begin();
+		std::advance(it, index);
+		questions.push_back(*it);
+		temp.erase(it);
 	}
 
 	return questions;
@@ -240,6 +281,24 @@ int MongoDatabase::submitGameStatistics(const std::string username, const int co
 	return 0;
 }
 
+int MongoDatabase::addUserQuestion(const std::string author, const std::string question, const std::string correctAnswer, const std::string ans2, const std::string ans3, const std::string ans4)
+{
+	int questionCount = 0;
+	mongocxx::collection questionsCollections = this->_db[USER_QUESTIONS_COLLECTION_NAME];
+	bsoncxx::document::view_or_value filter{};  // Empty filter to count all documents
+	questionCount = questionsCollections.count_documents(filter);
+	UserQuestionStruct q;
+	q.id = questionCount + 1;
+	q.author = author;
+	q.question = question;
+	q.correct_ans = correctAnswer;
+	q.ans2 = ans2;
+	q.ans3 = ans3;
+	q.ans4 = ans4;
+	addUserQuestion(q);
+	return 0;
+}
+
 void MongoDatabase::addQuestionsToDatabase()
 {
 	curlpp::Cleanup cleaner;
@@ -287,6 +346,24 @@ int MongoDatabase::addQuestion(const QuestionStruct& q)
 
 	basicDocument documentBuilder{};
 	documentBuilder.append(kvp("question_id", q.id));
+	documentBuilder.append(kvp("question", q.question));
+	documentBuilder.append(kvp("correct_ans", q.correct_ans));
+	documentBuilder.append(kvp("ans2", q.ans2));
+	documentBuilder.append(kvp("ans3", q.ans3));
+	documentBuilder.append(kvp("ans4", q.ans4));
+	bsoncxx::document::value doc = documentBuilder.extract();
+
+	questionsCollections.insert_one(doc.view());
+	return 0;
+}
+
+int MongoDatabase::addUserQuestion(const UserQuestionStruct& q)
+{
+	mongocxx::collection questionsCollections = this->_db[USER_QUESTIONS_COLLECTION_NAME];
+
+	basicDocument documentBuilder{};
+	documentBuilder.append(kvp("question_id", q.id));
+	documentBuilder.append(kvp("author", q.author));
 	documentBuilder.append(kvp("question", q.question));
 	documentBuilder.append(kvp("correct_ans", q.correct_ans));
 	documentBuilder.append(kvp("ans2", q.ans2));

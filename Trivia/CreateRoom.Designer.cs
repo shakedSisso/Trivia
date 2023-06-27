@@ -42,6 +42,7 @@
             btnCreateRoom = new Button();
             label5 = new Label();
             lblErrorMessage = new Label();
+            cbIncludeUserQuestion = new CheckBox();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
@@ -62,9 +63,9 @@
             // pictureBox1
             // 
             pictureBox1.BackColor = Color.LightCyan;
-            pictureBox1.Location = new Point(106, 27);
+            pictureBox1.Location = new Point(103, 47);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(593, 294);
+            pictureBox1.Size = new Size(593, 300);
             pictureBox1.TabIndex = 23;
             pictureBox1.TabStop = false;
             // 
@@ -184,12 +185,27 @@
             lblErrorMessage.Size = new Size(0, 20);
             lblErrorMessage.TabIndex = 34;
             // 
+            // cbIncludeUserQuestion
+            // 
+            cbIncludeUserQuestion.AutoSize = true;
+            cbIncludeUserQuestion.BackColor = Color.LightCyan;
+            cbIncludeUserQuestion.Cursor = Cursors.Hand;
+            cbIncludeUserQuestion.Font = new Font("Segoe UI", 11F, FontStyle.Italic, GraphicsUnit.Point);
+            cbIncludeUserQuestion.Location = new Point(139, 309);
+            cbIncludeUserQuestion.Name = "cbIncludeUserQuestion";
+            cbIncludeUserQuestion.Size = new Size(208, 29);
+            cbIncludeUserQuestion.TabIndex = 35;
+            cbIncludeUserQuestion.Text = "include user question";
+            cbIncludeUserQuestion.UseVisualStyleBackColor = false;
+            cbIncludeUserQuestion.CheckedChanged += cbIncludeUserQuestion_CheckedChanged;
+            // 
             // CreateRoom
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.PaleTurquoise;
             ClientSize = new Size(800, 450);
+            Controls.Add(cbIncludeUserQuestion);
             Controls.Add(lblErrorMessage);
             Controls.Add(label5);
             Controls.Add(btnCreateRoom);
@@ -226,5 +242,6 @@
         private Button btnCreateRoom;
         private Label label5;
         private Label lblErrorMessage;
+        private CheckBox cbIncludeUserQuestion;
     }
 }
