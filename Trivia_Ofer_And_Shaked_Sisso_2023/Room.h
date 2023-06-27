@@ -26,8 +26,27 @@ public:
 	void addUser(const LoggedUser& userToAdd);
 	void removeUser(const LoggedUser& userToRemove);
 	vector<string> getAllUsers() const;
+
 	RoomData getRoomData() const;
+	/*
+	* Function: getIfIncludeUserQuestions const
+	* ----------------------------
+	*   The function returns true if the admin of the room included user's added questions and false otherwise
+	*
+	*   input: none
+	*
+	*   returns: bool. true if the admin of the room included user's added questions and false otherwise
+	*/
 	bool getIfIncludeUserQuestions() const;
+	/*
+	* Function: activate
+	* ----------------------------
+	*   The function sets the isActive field of the RoomData to true
+	*
+	*   input: none
+	*
+	*   returns: void.
+	*/
 	void activate();
 
 private:
