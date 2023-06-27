@@ -155,7 +155,6 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 			}
 			requestHeadersString = std::string(headers, LEN_MSG_HEADERS); // converting the headers to a string in order to create a buffer out if it
 			requestHeaderEncryptedBuffer = Buffer(requestHeadersString.begin(), requestHeadersString.end());
-			//requestBuffer = Buffer(requestHeadersString.begin(), requestHeadersString.end());
 			requestBuffer = this->m_cryptoAlgorithm->decrypt(requestHeaderEncryptedBuffer);
 			jsonLength = JsonRequestPacketDeserializer::extractIntFromBuffer(requestBuffer, LENGTH_FIELD_INDEX, JSON_LENGTH_FIELD_LEN); // using function of the desrializer class to get the length of the json
 			data = new char[jsonLength];
@@ -185,7 +184,6 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 				this->m_clients[clientSocket] = result.newHandler;
 			}
 			responseEncryptedBuffer = this->m_cryptoAlgorithm->encrypt(result.buffer, userKeys[0], userKeys[1]);
-			//responseString = std::string(result.buffer.begin(), result.buffer.end()); // converting the response buffer to a string in order that we'll be able to send it in the socket
 			responseString = std::string(responseEncryptedBuffer.begin(), responseEncryptedBuffer.end());
 			sendingResult = send(clientSocket, responseString.c_str(), responseString.size(), 0);
 			if (sendingResult == SOCKET_SEND_ERROR)
