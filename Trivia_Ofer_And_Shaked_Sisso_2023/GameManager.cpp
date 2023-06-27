@@ -9,7 +9,7 @@ GameManager::GameManager(IDatabase* database)
 GameID GameManager::createGame(const Room& room)
 {
 	vector<LoggedUser> usersList;
-	auto questionsList = this->m_database->getQuestions(room.getRoomData().numOfQuestionsInGame);
+	auto questionsList = this->m_database->getQuestions(room.getRoomData().numOfQuestionsInGame, room.getIfIncludeUserQuestions());
 	vector<Question> questions;
 	for (auto& question : questionsList)
 	{
@@ -41,7 +41,7 @@ void GameManager::deleteGame(const GameID gameId)
 	}
 }
 
-Game GameManager::getGame(const GameID gameId)
+Game GameManager::getGame(const GameID& gameId) const
 {
 	Game game;
 	for (auto g : this->m_games)

@@ -65,6 +65,24 @@ JoinRoomRequest JsonRequestPacketDeserializer::deserializeJoinRoomRequest(const 
     return request;
 }
 
+AddQuestionRequest JsonRequestPacketDeserializer::deserializeAddQuestionRequest(const Buffer& buffer)
+{
+    int jsonLength = extractIntFromBuffer(buffer, 1, LENGTH_FIELD_BYTES); //get the length of the json in the buffer
+    std::string jsonString(buffer.begin() + LENGTH_FIELD_BYTES + 1, buffer.begin() + LENGTH_FIELD_BYTES + 1 + jsonLength); //get the values of the json into a string
+
+    AddQuestionRequest request;
+    json jsonData = json::parse(jsonString);
+
+    request.author = jsonData["author"];
+    request.question = jsonData["question"];
+    request.correctAnswer = jsonData["correctAns"];
+    request.ans2 = jsonData["ans2"];
+    request.ans3 = jsonData["ans3"];
+    request.ans4 = jsonData["ans4"];
+
+    return request;
+}
+
 CreateRoomRequest JsonRequestPacketDeserializer::deserializeCreateRoomRequest(const Buffer& buffer)
 {
     int jsonLength = extractIntFromBuffer(buffer, 1, LENGTH_FIELD_BYTES); //get the length of the json in the buffer
@@ -77,6 +95,7 @@ CreateRoomRequest JsonRequestPacketDeserializer::deserializeCreateRoomRequest(co
     request.maxUsers = jsonData["max_users"];
     request.questionCount = jsonData["question_count"];
     request.answerTimeout = jsonData["time_out"];
+    request.includeUserQuestion = jsonData["include_user_questions"];
 
     return request;
 }

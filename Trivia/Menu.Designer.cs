@@ -1,4 +1,4 @@
-﻿namespace Trivia
+namespace Trivia
 {
     partial class Menu
     {
@@ -36,6 +36,7 @@
             btnQuit = new Button();
             lblUsername = new Label();
             lblErrorMessage = new Label();
+            btnAddQuestion = new Button();
             btnHeadToHead = new Button();
             SuspendLayout();
             // 
@@ -132,6 +133,20 @@
             lblErrorMessage.Size = new Size(0, 20);
             lblErrorMessage.TabIndex = 6;
             // 
+            // btnAddQuestion
+            // 
+            btnAddQuestion.BackColor = Color.CadetBlue;
+            btnAddQuestion.Cursor = Cursors.Hand;
+            btnAddQuestion.Font = new Font("Maiandra GD", 15F, FontStyle.Bold, GraphicsUnit.Point);
+            btnAddQuestion.ForeColor = SystemColors.ButtonHighlight;
+            btnAddQuestion.Location = new Point(40, 292);
+            btnAddQuestion.Name = "btnAddQuestion";
+            btnAddQuestion.Size = new Size(347, 63);
+            btnAddQuestion.TabIndex = 7;
+            btnAddQuestion.Text = "Add question";
+            btnAddQuestion.UseVisualStyleBackColor = false;
+            btnAddQuestion.Click += btnAddQuestion_Click;
+            //
             // btnHeadToHead
             // 
             btnHeadToHead.BackColor = Color.CadetBlue;
@@ -152,6 +167,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.PaleTurquoise;
             ClientSize = new Size(800, 450);
+            Controls.Add(btnAddQuestion);
             Controls.Add(btnHeadToHead);
             Controls.Add(lblErrorMessage);
             Controls.Add(lblUsername);
@@ -176,6 +192,7 @@
         private Button btnQuit;
         private Label lblUsername;
         private Label lblErrorMessage;
+        private Button btnAddQuestion;
         private Button btnHeadToHead;
     }
 }

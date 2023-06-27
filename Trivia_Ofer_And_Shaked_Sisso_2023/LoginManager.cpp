@@ -55,7 +55,7 @@ void LoginManager::setDatabase(IDatabase* database)
 	this->m_database = database;
 }
 
-bool LoginManager::isUserLoggedIn(const std::string username)
+bool LoginManager::isUserLoggedIn(const std::string& username) const
 {
 	for (auto it = this->m_loggedUsers.begin(); it != this->m_loggedUsers.end(); ++it)
 	{
