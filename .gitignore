@@ -435,3 +435,9 @@ FodyWeavers.xsd
 # Additional files built by Visual Studio
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudio,c++
+/Trivia-ServerDesign.xml
+/Trivia_Ofer_And_Shaked_Sisso_2023/test.py
+/.idea
+/Trivia_Ofer_And_Shaked_Sisso_2023/output.bin
+/Trivia_Ofer_And_Shaked_Sisso_2023/test.cpp
+/Trivia_Ofer_And_Shaked_Sisso_2023/triviaDB.sqlite
