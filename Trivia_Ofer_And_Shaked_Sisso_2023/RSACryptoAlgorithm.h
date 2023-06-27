@@ -12,23 +12,19 @@ public:
 	Buffer encrypt(const Buffer& message, const int& key, const int& modulus) override;
 	Buffer decrypt(const Buffer& message) override;
 	void setDatabase(IDatabase* database) override;
-	void createKeys(int keyLength) override;
+	void createKeys() override;
 	std::vector<int> getKey() override;
 
 private:
-	Buffer EncryptBlock(const Buffer& block, const int& key, const int& modulus);
-	Buffer DecryptBlock(const Buffer& block);
-	int GetBlockSize();
 
-	
-	bool isPrime(int number);
-	int getRandomPrime(int min, int max);
-	int GCD(int a, int b);
-	int ModInverse(int a, int m);
-	int ModPow(int base, int exponent, int modulus);
+	void findKeys(long int phi, long int p, long int q);
+	long int findPrivateKey(long int phi);
+	bool isPrime(long int number);
+	int getRandomPrime(int min, int max); 
+	long int ModPow(int base, int exponent, int modulus);
 
 	IDatabase* m_database;
-	int m_publicKey;
-	int m_privateKey;
-	int m_modulus;
+	long int m_publicKey;
+	long int m_privateKey;
+	long int m_modulus;
 };

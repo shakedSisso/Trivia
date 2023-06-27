@@ -1,153 +1,108 @@
 #include "RSACryptoAlgorithm.h"
 #include <random>
 #include <cmath>
+#include <math.h>
 
-#define BLOCK_SIZE 5
-#define KEY_SIZE 10
+#define ASCCII_VLUE_LOWER_THAN_A 96
 
 RSACryptoAlgorithm::RSACryptoAlgorithm(IDatabase* database)
     : m_database(database)
 {
-   // this->createKeys(KEY_SIZE);
 }
 
 Buffer RSACryptoAlgorithm::encrypt(const Buffer& message, const int& key, const int& modulus)
 {
-    Buffer ciphertext;
-    Buffer block;
-    int blockSize = GetBlockSize();
+    Buffer ecrypted;
+    Byte cipherText;
 
-    //std::list<int> keysList = this->m_database->getUserKeys(userDocId);
-    //std::vector<int> keys(keysList.begin(), keysList.end());
-    //int key = keys[0];
-    //int modulus = keys[1];
-
-    for (Byte c : message) 
+    for (const Byte& ch : message)
     {
-        block.push_back(c);
-
-        if (block.size() == blockSize) 
-        {
-            Buffer encryptedBlock = EncryptBlock(block, key, modulus);
-            ciphertext.insert(ciphertext.end(), encryptedBlock.begin(), encryptedBlock.end());
-            block.clear();
-        }
+        cipherText = static_cast<Byte>(ModPow(ch-ASCCII_VLUE_LOWER_THAN_A, key, modulus));
+        ecrypted.push_back(cipherText);
     }
 
-    if (!block.empty()) 
-    {
-        Buffer encryptedBlock = EncryptBlock(block, key, modulus);
-        ciphertext.insert(ciphertext.end(), encryptedBlock.begin(), encryptedBlock.end());
-    }
-
-    return ciphertext;
+    return ecrypted;
 }
 
 Buffer RSACryptoAlgorithm::decrypt(const Buffer& message)
 {
-    Buffer decryptedText;
-    Buffer block;
-    int blockSize = GetBlockSize();
-
-    for (Byte c : message) 
+    Buffer decrypted;
+    Byte plainText;
+    for (const Byte& ch : message)
     {
-        block.push_back(c);
-
-        if (block.size() == blockSize) 
+        if (ch == '\0')
         {
-            Buffer decryptedBlock = DecryptBlock(block);
-            decryptedText.insert(decryptedText.end(), decryptedBlock.begin(), decryptedBlock.end());
-            block.clear();
+            plainText = ch;
         }
+        else
+        {
+            plainText = static_cast<Byte>(ModPow(ch + ASCCII_VLUE_LOWER_THAN_A, m_privateKey, m_modulus));
+        }
+        decrypted.push_back(plainText);
     }
 
-    if (!block.empty()) {
-        Buffer decryptedBlock = DecryptBlock(block);
-        decryptedText.insert(decryptedText.end(), decryptedBlock.begin(), decryptedBlock.end());
-    }
-
-    return decryptedText;
+    return decrypted;
 }
 
 void RSACryptoAlgorithm::setDatabase(IDatabase* database)
 {
     this->m_database = database;
 }
-
-Buffer RSACryptoAlgorithm::EncryptBlock(const Buffer& block, const int& key, const int& modulus)
+void RSACryptoAlgorithm::createKeys()
 {
-    Buffer encryptedBlock;
-
-    int blockSize = block.size();
-    std::vector<int> plaintextValues(blockSize);
-
-    for (int i = 0; i < blockSize; ++i) {
-        plaintextValues[i] = static_cast<int>(block[i]);
-    }
-
-    // Perform the encryption on the block of plaintext values
-    // using the RSA algorithm
-
-    for (int plaintextValue : plaintextValues) {
-        int encryptedValue = ModPow(plaintextValue, key, modulus);
-        encryptedBlock.push_back(static_cast<unsigned char>(encryptedValue));
-    }
-
-    return encryptedBlock;
-}
-
-Buffer RSACryptoAlgorithm::DecryptBlock(const Buffer& block)
-{
-    Buffer decryptedBlock;
-
-    int blockSize = block.size();
-    std::vector<int> encryptedValues(blockSize);
-
-    for (int i = 0; i < blockSize; ++i) {
-        encryptedValues[i] = static_cast<int>(block[i]);
-    }
-
-    // Perform the decryption on the block of encrypted values
-    // using the RSA algorithm
-
-    for (int encryptedValue : encryptedValues) {
-        int decryptedValue = ModPow(encryptedValue, this->m_privateKey, this->m_modulus);
-        decryptedBlock.push_back(static_cast<unsigned char>(decryptedValue));
-    }
-
-    return decryptedBlock;
-}
-
-int RSACryptoAlgorithm::GetBlockSize()
-{
-    return BLOCK_SIZE;
-}
-
-void RSACryptoAlgorithm::createKeys(int keyLength)
-{
-    //vector<string> keys;
-    //keys.reserve(2);
-    int p = getRandomPrime(2, 100);
-    int q = getRandomPrime(2, 100);
+    vector<string> keys;
+    keys.reserve(2);
+    int p = getRandomPrime(100, 1000);
+    int q = getRandomPrime(100, 1000);
     while (p == q) {
         q = getRandomPrime(2, 100);
     }
 
     this->m_modulus = p * q;
-    int phi = (p - 1) * (q - 1);
+    long int phi = (p - 1) * (q - 1);
 
-    // Choose a public key (usually a prime number)
-    this->m_publicKey = getRandomPrime(2, phi);
-
-    // Ensure public key and phi are coprime
-    while (GCD(this->m_publicKey, phi) != 1) 
-    {
-        this->m_publicKey = getRandomPrime(2, phi);
-    }
-
-    // Calculate the private key using modular inverse
-    this->m_privateKey = ModInverse(this->m_publicKey, phi);
+    findKeys(phi, p, q);
     this->m_database->insertServerKeys(this->m_publicKey, this->m_modulus);
+}
+
+void RSACryptoAlgorithm::findKeys(long int phi, long int p, long int q)
+{
+    int i, d;
+    bool flag;
+    i = getRandomPrime(2, 200);
+    while (i > phi)
+    {
+        i = getRandomPrime(2, 200);
+    }
+    for (;i < phi; i++)
+    {
+        if (phi % i == 0)
+            continue;
+        flag = isPrime(i);
+        if (flag && i != p && i != q)
+        {
+            this->m_publicKey = i;
+            d = findPrivateKey(phi);
+            if (d > 0)
+            {
+                this->m_privateKey = d;
+                break;
+            }
+        }
+    }
+}
+
+long int RSACryptoAlgorithm::findPrivateKey(long int phi)
+{
+    long int i = 1;
+    while (true)
+    {
+        i += phi;
+        if (i % this->m_publicKey == 0)
+        {
+            return (i / this->m_publicKey);
+        }
+    }
 }
 
 std::vector<int> RSACryptoAlgorithm::getKey()
@@ -158,21 +113,15 @@ std::vector<int> RSACryptoAlgorithm::getKey()
     return keys;
 }
 
-bool RSACryptoAlgorithm::isPrime(int number)
+bool RSACryptoAlgorithm::isPrime(long int number)
 {
-    if (number <= 1)
-    {
-        return false;
-    }
-
-    for (int i = 2; i <= std::sqrt(number); i++) 
+    int i;
+    double j = sqrt(number);
+    for (i = 2; i <= j; i++)
     {
         if (number % i == 0)
-        {
             return false;
-        }
     }
-
     return true;
 }
 
@@ -191,45 +140,13 @@ int RSACryptoAlgorithm::getRandomPrime(int min, int max)
     return prime;
 }
 
-int RSACryptoAlgorithm::GCD(int a, int b)
+long int RSACryptoAlgorithm::ModPow(int base, int exponent, int modulus)
 {
-    if (b == 0)
+    long int result = base, i = 0, j = 1;
+    for (i = 0; i < exponent; i++)
     {
-        return a;
+        j *= result;
+        j %= modulus;
     }
-    return GCD(b, a % b);
-}
-
-int RSACryptoAlgorithm::ModInverse(int a, int m)
-{
-    a = a % m;
-
-    for (int x = 1; x < m; ++x) 
-    {
-        if ((a * x) % m == 1)
-        {
-            return x;
-        }
-    }
-
-    return -1; // Modular inverse does not exist
-}
-
-int RSACryptoAlgorithm::ModPow(int base, int exponent, int modulus)
-{
-    int result = 1;
-    base = base % modulus;
-
-    while (exponent > 0) 
-    {
-        if (exponent % 2 == 1) 
-        {
-            result = (result * base) % modulus;
-        }
-
-        exponent = exponent >> 1;
-        base = (base * base) % modulus;
-    }
-
     return result;
 }
