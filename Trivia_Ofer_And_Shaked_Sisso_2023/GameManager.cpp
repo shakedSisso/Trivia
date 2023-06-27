@@ -41,7 +41,7 @@ void GameManager::deleteGame(const GameID gameId)
 	}
 }
 
-Game GameManager::getGame(const GameID gameId)
+Game GameManager::getGame(const GameID& gameId) const
 {
 	Game game;
 	for (auto g : this->m_games)
