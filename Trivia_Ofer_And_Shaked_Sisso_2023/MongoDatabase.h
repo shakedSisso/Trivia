@@ -42,10 +42,46 @@ private:
 	mongocxx::client _client;
 	mongocxx::database _db;
 
+	/*
+	* Function: addQuestionToDatabase
+	* ----------------------------
+	*   The function uses curl and gets questions from the API and inserts them to the database
+	*
+	*   input: none
+	*
+	*   returns: void.
+	*/
 	void addQuestionsToDatabase();
+	/*
+	* Function: addQuestion
+	* ----------------------------
+	*   The function gets a QuestionStruct refernce and inserts the question to the database in the question collection
+	*
+	*   const QuestionStruct& q: The refernce to the question to add
+	*
+	*   returns: int.
+	*/
 	int addQuestion(const QuestionStruct& q);
 
+	/*
+	* Function: addUserQuestion
+	* ----------------------------
+	*   The function gets a UserQuestionStruct refernce and inserts the question to the database in the user questions collection
+	*
+	*   const QuestionStruct& q: The refernce to the question to add
+	*
+	*   returns: int.
+	*/
 	int addUserQuestion(const UserQuestionStruct& q);
 
+	/*
+	* Function: getUserStatisticsJson
+	* ----------------------------
+	*   The function gets a username and the function returns a json object with the user's stats
+	*
+	*   const std::string& username: the string of the user to get the stats for
+	*
+	*   returns: json. The json object of the user's stats
+	*/
 	json getUserStatisticsJson(const std::string& username);
 };
