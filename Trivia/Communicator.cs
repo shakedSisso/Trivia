@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using Newtonsoft.Json;
 using System.Text.Json;
 using Newtonsoft.Json.Linq;
+using System.Numerics;
 
 
 namespace Trivia
@@ -17,6 +18,8 @@ namespace Trivia
     class Communicator
     {
         private Socket socket;
+        private int serverPublicKey;
+        private int serverModulus;
         private const string DISCONNECTION_MESSAGE = "An existing connection was forcibly closed by the remote host.";
         private const string ABORT_MESSAGE = "An established connection was aborted by the software in your host machine.";
         private const string RUNTIME_MESSAGE = "Cannot perform runtime binding on a null reference";
@@ -36,11 +39,55 @@ namespace Trivia
 
                 // Connect to the server
                 this.socket.Connect(new IPEndPoint(serverIP, serverPort));
+                RSACryptoAlgorithm.CreateKeys();
+                sendKeys();
+                getServerKeys();
             }
             catch (Exception ex)
             {
                 throw new Exception("An error occurred while trying to connect to server: " + ex.Message);
             }
+        }
+
+        public void getServerKeys()
+        {
+            byte[] serverPublicKeyHeader = new byte[4];
+            byte[] serverModulusHeader = new byte[4];
+            int serverKeyLength = 0;
+            int serverModulusLength = 0;
+
+            socket.Receive(serverPublicKeyHeader);
+            Array.Reverse(serverPublicKeyHeader);
+            serverKeyLength = BitConverter.ToInt32(serverPublicKeyHeader);
+            byte[] serverPublicKeyMessage = new byte[serverKeyLength];
+            socket.Receive(serverPublicKeyMessage);
+            serverPublicKey = int.Parse(Encoding.ASCII.GetString(serverPublicKeyMessage));
+
+            socket.Receive(serverModulusHeader);
+            Array.Reverse(serverModulusHeader);
+            serverModulusLength = BitConverter.ToInt32(serverModulusHeader);
+            byte[] serverModulusMessage = new byte[serverModulusLength];
+            socket.Receive(serverModulusMessage);
+            serverModulus = int.Parse(Encoding.ASCII.GetString(serverModulusMessage));
+        }
+
+        public void sendKeys()
+        {
+            List<byte> keyMessageBuffer = new List<byte>();
+            List<byte> modulusMessageBuffer = new List<byte>();
+            long publicKey = RSACryptoAlgorithm.getPublicKey();
+            long modulus = RSACryptoAlgorithm.getModulus();
+            int publicKeyLen = publicKey.ToString().Length;
+            int modulusLen = modulus.ToString().Length;
+
+            PacketSerializer.InsertIntToBuffer(keyMessageBuffer, ((int)publicKeyLen), 4);
+            keyMessageBuffer.AddRange(Encoding.ASCII.GetBytes(publicKey.ToString()));
+            this.socket.Send(keyMessageBuffer.ToArray());
+
+            PacketSerializer.InsertIntToBuffer(modulusMessageBuffer, ((int)modulusLen), 4);
+            modulusMessageBuffer.AddRange(Encoding.ASCII.GetBytes(modulus.ToString()));
+            this.socket.Send(modulusMessageBuffer.ToArray());
+
         }
 
         public void Disconnect()
@@ -54,7 +101,7 @@ namespace Trivia
             dynamic response = null;
             try
             {
-                byte[] buffer = PacketSerializer.GenerateMessage(code, jsonObject);
+                byte[] buffer = PacketSerializer.GenerateMessage(code, jsonObject, serverPublicKey ,serverModulus);
                 this.socket.Send(buffer);
                 response = PacketDeserializer.ProcessSocketData(this.socket);
             }

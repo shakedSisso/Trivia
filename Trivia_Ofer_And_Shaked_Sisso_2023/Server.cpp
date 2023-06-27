@@ -4,7 +4,7 @@
 
 int Server::instanceCount = 0;
 
-Server::Server() : m_handlerFactory(nullptr), m_communicator(m_handlerFactory)
+Server::Server() : m_handlerFactory(nullptr), m_communicator(m_handlerFactory, nullptr)
 //putting null in the the database variable because the database doesn't exist yet
 {
 	if (instanceCount != 0)
@@ -15,6 +15,7 @@ Server::Server() : m_handlerFactory(nullptr), m_communicator(m_handlerFactory)
 	mongocxx::instance mongoInstance{};
 	this->m_database->open();
 	this->m_handlerFactory.setDatabase(this->m_database);
+	this->m_communicator.setDatabase(this->m_database);
 	instanceCount++;
 }
 

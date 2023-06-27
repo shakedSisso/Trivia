@@ -17,6 +17,7 @@ namespace Trivia
         {
             byte[] headerBytes = new byte[5];
             socket.Receive(headerBytes);
+            headerBytes = RSACryptoAlgorithm.Decrypt(headerBytes);
 
             // Extract code from the first byte
             byte code = headerBytes[0];
@@ -28,6 +29,7 @@ namespace Trivia
 
             byte[] dataBytes = new byte[length];
             socket.Receive(dataBytes);
+            dataBytes = RSACryptoAlgorithm.Decrypt(dataBytes); 
 
             string jsonString = System.Text.Encoding.UTF8.GetString(dataBytes);
             dynamic jsonObject = JsonConvert.DeserializeObject(jsonString);

@@ -42,6 +42,8 @@ public:
 	*/
 	void setDatabase(IDatabase* db);
 
+	IDatabase* getDatabase();
+
 private:
 	static int instanceCount;
 	LoginManager m_loginManager;

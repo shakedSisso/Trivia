@@ -64,3 +64,8 @@ void RequestHandlerFactory::setDatabase(IDatabase* db)
     this->m_statisticsManager.setDatabase(db);
     this->m_gameManager.setDatabase(db);
 }
+
+IDatabase* RequestHandlerFactory::getDatabase()
+{
+    return this->m_database;
+}
