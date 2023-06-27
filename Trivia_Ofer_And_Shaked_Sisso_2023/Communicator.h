@@ -29,5 +29,5 @@ private:
 	void handleNewClient(SOCKET clientSocket);
 	void insertIntToBuffer(Buffer& buffer, const int num, const int bytes);
 	std::vector<int> getUserKeys(SOCKET clientSocket);
-	void sendSeverKeysToClient(SOCKET clientSocket);
+	void sendServerKeysToClient(SOCKET clientSocket);
 };

@@ -27,15 +27,15 @@ namespace Trivia
 
             // Insert code as ASCII value
             InsertIntToBuffer(buffer, code, 1);
-            buffer = RSACryptoAlgorithm.encrypt(buffer.ToArray(), key, modulus).ToList<byte>();
+            buffer = RSACryptoAlgorithm.Encrypt(buffer.ToArray(), key, modulus).ToList<byte>();
 
             string jsonString = System.Text.Json.JsonSerializer.Serialize(jsonObject);
             byte[] jsonStringBytes = System.Text.Encoding.UTF8.GetBytes(jsonString);
-            byte[] encryptedJson = RSACryptoAlgorithm.encrypt(jsonStringBytes, key, modulus);
+            byte[] encryptedJson = RSACryptoAlgorithm.Encrypt(jsonStringBytes, key, modulus);
 
             // Insert JSON string length as ASCII value
             byte[] encryptedLength = { (byte)encryptedJson.Length };
-            byte[] length = RSACryptoAlgorithm.encrypt(encryptedLength, key, modulus);
+            byte[] length = RSACryptoAlgorithm.Encrypt(encryptedLength, key, modulus);
 
             int lengthHeader = length.Length;
             while (lengthHeader < 4)

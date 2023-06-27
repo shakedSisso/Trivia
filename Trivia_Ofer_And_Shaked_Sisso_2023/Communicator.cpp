@@ -80,7 +80,7 @@ void Communicator::bindAndListen()
 	{
 		throw std::exception(__FUNCTION__ " - listen");
 	}
-	this->m_cryptoAlgorithm->createKeys(10);
+	this->m_cryptoAlgorithm->createKeys();
 	while (true)
 	{
 		// this accepts the client and create a specific socket from server to this client
@@ -127,7 +127,7 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 		char docIdArr[LEN_DOCUMENT_ID];
 
 		auto userKeys = getUserKeys(clientSocket);
-		sendSeverKeysToClient(clientSocket);
+		sendServerKeysToClient(clientSocket);
 
 		/*if (!bytesReceived)
 		{
@@ -263,7 +263,7 @@ std::vector<int> Communicator::getUserKeys(SOCKET clientSocket)
 	return keys;
 }
 
-void Communicator::sendSeverKeysToClient(SOCKET clientSocket)
+void Communicator::sendServerKeysToClient(SOCKET clientSocket)
 {
 	std::string serverPublicKeyString;
 	std::string serverModulusString;
