@@ -13,7 +13,6 @@ constexpr char DATABASE_NAME[] = "triviaDB";
 #define USERS_COLLECTION_NAME "users"
 #define QUESTIONS_COLLECTION_NAME "questions"
 #define STATISTICS_COLLECTION_NAME "statistics"
-#define KEYS_COLLECTION_NAME "keys"
 
 #define DEFAULT_STATISTICS_VALUE 0
 
@@ -59,11 +58,6 @@ bool MongoDatabase::open()
 	{
 		this->_client[DATABASE_NAME].create_collection(STATISTICS_COLLECTION_NAME);
 		std::cout << "Created collection: " << STATISTICS_COLLECTION_NAME << std::endl;
-	}
-	if (!this->_db.has_collection(KEYS_COLLECTION_NAME))
-	{
-		this->_client[DATABASE_NAME].create_collection(KEYS_COLLECTION_NAME);
-		std::cout << "Created collection: " << KEYS_COLLECTION_NAME << std::endl;
 	}
 
 	return true;

@@ -62,7 +62,6 @@ void RSACryptoAlgorithm::createKeys()
     long int phi = (p - 1) * (q - 1);
 
     findKeys(phi, p, q);
-    this->m_database->insertServerKeys(this->m_publicKey, this->m_modulus);
 }
 
 void RSACryptoAlgorithm::findKeys(long int phi, long int p, long int q)
