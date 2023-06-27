@@ -21,21 +21,32 @@ namespace Trivia
             }
         }
 
-        public static byte[] GenerateMessage(int code, object jsonObject)
+        public static byte[] GenerateMessage(int code, object jsonObject, int key, int modulus)
         {
             List<byte> buffer = new List<byte>();
 
             // Insert code as ASCII value
             InsertIntToBuffer(buffer, code, 1);
+            buffer = RSACryptoAlgorithm.Encrypt(buffer.ToArray(), key, modulus).ToList<byte>();
 
             string jsonString = System.Text.Json.JsonSerializer.Serialize(jsonObject);
+            byte[] jsonStringBytes = System.Text.Encoding.UTF8.GetBytes(jsonString);
+            byte[] encryptedJson = RSACryptoAlgorithm.Encrypt(jsonStringBytes, key, modulus);
 
             // Insert JSON string length as ASCII value
-            InsertIntToBuffer(buffer, jsonString.Length, 4);
+            byte[] encryptedLength = { (byte)encryptedJson.Length };
+            byte[] length = RSACryptoAlgorithm.Encrypt(encryptedLength, key, modulus);
+
+            int lengthHeader = length.Length;
+            while (lengthHeader < 4)
+            {
+                buffer.Add((byte) 0);
+                lengthHeader++;
+            }
+            buffer.AddRange(length);
 
             // Insert JSON string
-            byte[] jsonStringBytes = System.Text.Encoding.UTF8.GetBytes(jsonString);
-            buffer.AddRange(jsonStringBytes);
+            buffer.AddRange(encryptedJson);
 
             return buffer.ToArray();
         }

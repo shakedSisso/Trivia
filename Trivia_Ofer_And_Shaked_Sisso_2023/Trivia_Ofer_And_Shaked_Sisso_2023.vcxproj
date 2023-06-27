@@ -187,6 +187,7 @@
     <ClCompile Include="RoomAdminRequestHandler.cpp" />
     <ClCompile Include="RoomManager.cpp" />
     <ClCompile Include="RoomMemberRequestHandler.cpp" />
+    <ClCompile Include="RSACryptoAlgorithm.cpp" />
     <ClCompile Include="sqlite3.c" />
     <ClCompile Include="SqliteDatabase.cpp" />
     <ClCompile Include="StatisticsManager.cpp" />
@@ -200,6 +201,7 @@
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameRequestHandler.h" />
     <ClInclude Include="Globals.h" />
+    <ClInclude Include="ICryptoAlgorithm.h" />
     <ClInclude Include="IDatabase.h" />
     <ClInclude Include="IRequestHandler.h" />
     <ClInclude Include="json.hpp" />
@@ -219,6 +221,7 @@
     <ClInclude Include="RoomAdminRequestHandler.h" />
     <ClInclude Include="RoomManager.h" />
     <ClInclude Include="RoomMemberRequestHandler.h" />
+    <ClInclude Include="RSACryptoAlgorithm.h" />
     <ClInclude Include="Server.h" />
     <ClInclude Include="sqlite3.h" />
     <ClInclude Include="SqliteDatabase.h" />
