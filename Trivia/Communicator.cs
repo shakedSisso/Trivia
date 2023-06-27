@@ -44,7 +44,7 @@ namespace Trivia
                 this.socket.Connect(new IPEndPoint(serverIP, serverPort));
                 //rsaAlgorithm = new RSACryptoAlgorithm();
                 //mongoDB = new MongoDB();
-                RSACryptoAlgorithm.createKeys(10);
+                RSACryptoAlgorithm.CreateKeys();
                 sendKeys();
                 getServerKeys();
                 //keysDocId = mongoDB.insertKeys(rsaAlgorithm.getPublicKey(), rsaAlgorithm.getModulus());
