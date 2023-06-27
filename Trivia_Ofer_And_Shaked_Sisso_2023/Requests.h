@@ -31,12 +31,23 @@ typedef struct JoinRoomRequest
 	RoomID roomId;
 }JoinRoomRequest;
 
+typedef struct AddQuestionRequest
+{
+	std::string author;
+	std::string question;
+	std::string correctAnswer;
+	std::string ans2;
+	std::string ans3;
+	std::string ans4;
+}AddQuestionRequest;
+
 typedef struct CreateRoomRequest
 {
 	std::string roomName;
 	unsigned int maxUsers;
 	unsigned int questionCount;
 	unsigned int answerTimeout;
+	bool includeUserQuestion;
 }CreateRoomRequest;
 
 typedef struct SubmitAnswerRequest

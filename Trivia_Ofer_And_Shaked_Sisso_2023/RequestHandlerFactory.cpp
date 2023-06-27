@@ -19,7 +19,7 @@ LoginRequestHandler* RequestHandlerFactory::createLoginRequestHandler()
 
 MenuRequestHandler* RequestHandlerFactory::createMenuRequestHandler(LoggedUser& user)
 {
-    return new MenuRequestHandler(*this, user, this->m_roomManager, this->m_statisticsManager);
+    return new MenuRequestHandler(*this,this->m_database, user, this->m_roomManager, this->m_statisticsManager);
 }
 
 RoomAdminRequestHandler* RequestHandlerFactory::createRoomAdminRequestHandler(LoggedUser& user, Room* room)

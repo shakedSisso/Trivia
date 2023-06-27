@@ -13,6 +13,7 @@ using namespace curlpp::options;
 using json = nlohmann::json;
 
 #define FIELDS_OF_QUESTION 6
+#define FIELDS_OF_USER_QUESTION (FIELDS_OF_QUESTION + 1)
 
 SqliteDatabase::SqliteDatabase() : _db(), _dbFileName("triviaDB.sqlite")
 {
@@ -59,15 +60,48 @@ void SqliteDatabase::addQuestionsToDatabase()
 	}
 }
 
-int SqliteDatabase::addQuestion(const QuestionStruct& q)
+int SqliteDatabase::addQuestion(QuestionStruct& q)
 {
-	std::string sqlStatement = "INSERT INTO t_questions VALUES (" + std::to_string(q.id) + ", '" + q.question + "', '" + q.correct_ans + "', '" + q.ans2 + "', '" + q.ans3 + "', '" + q.ans4 + "'); ";
+	fixValue(q.question);
+	fixValue(q.correct_ans);
+	fixValue(q.ans2);
+	fixValue(q.ans3);
+	fixValue(q.ans4);
+	std::string sqlStatement = "INSERT INTO t_questions (question_id, question, correct_ans, ans2, ans3, ans4) VALUES (" + std::to_string(q.id) + ", \"" + q.question + "\", \"" + q.correct_ans + "\", \"" + q.ans2 + "\", \"" + q.ans3 + "\", \"" + q.ans4 + "\"); ";
 	int res = sqlite3_exec(this->_db, sqlStatement.c_str(), nullptr, nullptr, nullptr);
 	if (res != SQLITE_OK)
 	{
 		throw std::exception("Error- sqlite3_exec functions failed");
 	}
 	return 0;
+}
+
+int SqliteDatabase::addQuestion(UserQuestionStruct& q)
+{
+	fixValue(q.question);
+	fixValue(q.correct_ans);
+	fixValue(q.ans2);
+	fixValue(q.ans3);
+	fixValue(q.ans4);
+	std::string sqlStatement = "INSERT INTO t_user_questions (question_id, author, question, correct_ans, ans2, ans3, ans4) VALUES (" + std::to_string(q.id) + ", \"" + q.author+ "\", \"" + q.question + "\", \"" + q.correct_ans + "\", \"" + q.ans2 + "\", \"" + q.ans3 + "\", \"" + q.ans4 + "\"); ";
+	int res = sqlite3_exec(this->_db, sqlStatement.c_str(), nullptr, nullptr, nullptr);
+	if (res != SQLITE_OK)
+	{
+		throw std::exception("Error- sqlite3_exec functions failed");
+	}
+	return 0;
+}
+
+void SqliteDatabase::fixValue(std::string& value)
+{
+	std::string entity = "\"";
+	std::string replacement = "\'";
+	size_t pos = value.find(entity);
+	while (pos != std::string::npos)
+	{
+		value.replace(pos, entity.length(), replacement);
+		pos = value.find(entity, pos + replacement.length());
+	}
 }
 
 bool SqliteDatabase::createTables(int& res)
@@ -78,6 +112,11 @@ bool SqliteDatabase::createTables(int& res)
 	if (res != SQLITE_OK)
 		return false;
 	sqlStatemant = "CREATE TABLE IF NOT EXISTS t_questions (question_id integer NOT NULL UNIQUE, question text NOT NULL, correct_ans text NOT NULL, ans2 text NOT NULL, ans3 text NOT NULL, ans4 text NOT NULL, PRIMARY KEY(question_id AUTOINCREMENT));";
+	errMessage = nullptr;
+	res = sqlite3_exec(this->_db, sqlStatemant.c_str(), nullptr, nullptr, errMessage);
+	if (res != SQLITE_OK)
+		return false;
+	sqlStatemant = "CREATE TABLE IF NOT EXISTS t_user_questions (question_id integer NOT NULL UNIQUE, author text NOT NULL, question text NOT NULL, correct_ans text NOT NULL, ans2 text NOT NULL, ans3 text NOT NULL, ans4 text NOT NULL, PRIMARY KEY(question_id AUTOINCREMENT));";
 	errMessage = nullptr;
 	res = sqlite3_exec(this->_db, sqlStatemant.c_str(), nullptr, nullptr, errMessage);
 	if (res != SQLITE_OK)
@@ -134,6 +173,29 @@ int SqliteDatabase::callbackQuestions(void* list, int argc, char** argv, char** 
 		q.ans2 = argv[currentPlace + 3];
 		q.ans3 = argv[currentPlace + 4];
 		q.ans4 = argv[currentPlace + 5];
+
+		((std::list<Question>*)list)->push_back(Question(q.question, std::vector<std::string>{q.correct_ans, q.ans2, q.ans3, q.ans4}, std::rand() % ANSWER_COUNT + 1));
+	}
+	return 0;
+}
+
+int SqliteDatabase::callbackUserQuestions(void* list, int argc, char** argv, char** azColName)
+{
+	std::srand(static_cast<unsigned int>(std::time(nullptr)));
+	QuestionStruct q;
+	int i = 0; 
+	int currentPlace = 0;
+	for (i = 0; i < argc/FIELDS_OF_USER_QUESTION; i++)
+	{
+		currentPlace = i * FIELDS_OF_USER_QUESTION;
+
+		//Accessing all the fields of each question
+		q.id = std::atoi(argv[currentPlace]);
+		q.question = argv[currentPlace + 2];
+		q.correct_ans = argv[currentPlace + 3];
+		q.ans2 = argv[currentPlace + 4];
+		q.ans3 = argv[currentPlace + 5];
+		q.ans4 = argv[currentPlace + 6];
 
 		((std::list<Question>*)list)->push_back(Question(q.question, std::vector<std::string>{q.correct_ans, q.ans2, q.ans3, q.ans4}, std::rand() % ANSWER_COUNT + 1));
 	}
@@ -219,15 +281,61 @@ int SqliteDatabase::addNewUser(const std::string username, const std::string pas
     return 0;
 }
 
-std::list<Question> SqliteDatabase::getQuestions(const int amountOfQuestions)
+std::list<Question> SqliteDatabase::getQuestions(const int amountOfQuestions, const bool includeUserQuestions)
 {
-	std::list<Question> questions;
-	std::string sqlStatement = "SELECT * FROM t_questions ORDER BY RANDOM() LIMIT " + std::to_string(amountOfQuestions)+ ";";
-	int res = sqlite3_exec(this->_db, sqlStatement.c_str(), callbackQuestions ,&questions, nullptr);
-	if (questions.empty() || questions.size() < amountOfQuestions)
+	std::list<std::string> list;
+	std::list<Question> questions, temp;
+	int regularQuestions = amountOfQuestions, res = 0;
+	std::string sqlStatement;
+	if (includeUserQuestions)
+	{
+		int questionCount = 0, userQuestions = 0;
+		sqlStatement = "SELECT COUNT(*) FROM t_user_questions;";
+		res = sqlite3_exec(this->_db, sqlStatement.c_str(), callbackString, &list, nullptr);
+		if (res != SQLITE_OK)
+		{
+			throw std::exception("Error- sqlite3_exec functions failed");
+		}
+		questionCount = std::atoi(list.begin()->c_str());
+		if (questionCount != 0)
+		{
+			do
+			{
+				userQuestions = std::rand() % amountOfQuestions;
+			} while (userQuestions >= questionCount || userQuestions == 0);
+			regularQuestions -= userQuestions;
+		}
+
+		sqlStatement = "SELECT * FROM t_user_questions ORDER BY RANDOM() LIMIT " + std::to_string(userQuestions) + ";";
+		res = sqlite3_exec(this->_db, sqlStatement.c_str(), callbackUserQuestions, &temp, nullptr);
+		if (res != SQLITE_OK)
+		{
+			throw std::exception("Error- sqlite3_exec functions failed");
+		}
+	}
+	sqlStatement = "SELECT * FROM t_questions ORDER BY RANDOM() LIMIT " + std::to_string(regularQuestions)+ ";";
+	res = sqlite3_exec(this->_db, sqlStatement.c_str(), callbackQuestions ,&temp, nullptr);
+	if (res != SQLITE_OK)
+	{
+		throw std::exception("Error- sqlite3_exec functions failed");
+	}
+
+	if (temp.empty() || temp.size() < amountOfQuestions)
 	{
 		throw std::exception("There are not enough questions");
 	}
+
+	//mix the order of the questions for random order of user and regular questions (if chosen to include user questions)
+	int index = 0;
+	while (!temp.empty()) 
+	{
+		index = rand() % temp.size();
+		auto it = temp.begin();
+		std::advance(it, index);
+		questions.push_back(*it);
+		temp.erase(it);
+	}
+
 	return questions;
 }
 
@@ -333,5 +441,28 @@ int SqliteDatabase::submitGameStatistics(const std::string username, const int c
 		throw std::exception("Error- sqlite3_exec functions failed");
 	}
 
+	return 0;
+}
+
+int SqliteDatabase::addUserQuestion(const std::string author, const std::string question, const std::string correctAnswer, const std::string ans2, const std::string ans3, const std::string ans4)
+{
+	int questionCount = 0;
+	std::list<std::string> list;
+	std::string sqlStatement = "SELECT COUNT(*) FROM t_user_questions;";
+	int res = sqlite3_exec(this->_db, sqlStatement.c_str(), callbackString, &list, nullptr);
+	if (res != SQLITE_OK)
+	{
+		throw std::exception("Error- sqlite3_exec functions failed");
+	}
+	questionCount = std::atoi(list.begin()->c_str());
+	UserQuestionStruct q;
+	q.id = questionCount + 1;
+	q.author = author;
+	q.question = question;
+	q.correct_ans = correctAnswer;
+	q.ans2 = ans2;
+	q.ans3 = ans3;
+	q.ans4 = ans4;
+	addQuestion(q);
 	return 0;
 }

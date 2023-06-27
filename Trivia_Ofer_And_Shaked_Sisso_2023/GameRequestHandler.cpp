@@ -195,7 +195,7 @@ RequestResult GameRequestHandler::leaveGame(const RequestInfo& info)
     try
     {
         this->m_game.removePlayer(this->m_user);
-        if (this->m_game.isGameFinished())
+        if (this->m_game.areAllPlayersLoggedOut())
         {
             GameManager& gameManager = this->m_handlerFactory.getGameManager();
             gameManager.deleteGame(this->m_game.getGameId());

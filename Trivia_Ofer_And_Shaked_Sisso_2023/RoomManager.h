@@ -12,7 +12,7 @@ class RoomManager
 {
 
 public:
-	void createRoom(const LoggedUser& loggedUser, RoomData roomMetadata);
+	void createRoom(const LoggedUser& loggedUser, RoomData roomMetadata, const bool includeUserQuestions);
 	void deleteRoom(RoomID roomId);
 	unsigned int getRoomState(RoomID roomId) const;
 	vector<RoomData> getRooms() const;

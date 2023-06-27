@@ -14,7 +14,8 @@ void ApiEntity::checkForHtmlEntity(std::string& str)
 void ApiEntity::replaceHtmlEntity(std::string& str, const std::string& entity, const std::string& replacement)
 {
 	size_t pos = str.find(entity);
-	while (pos != std::string::npos) {
+	while (pos != std::string::npos) 
+	{
 		str.replace(pos, entity.length(), replacement);
 		pos = str.find(entity, pos + replacement.length());
 	}
