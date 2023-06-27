@@ -335,16 +335,3 @@ int SqliteDatabase::submitGameStatistics(const std::string username, const int c
 
 	return 0;
 }
-
-//////////////////////////////////////////////////
-//not implemented since sqlite is an extension not necessary
-std::list<int> SqliteDatabase::getUserKeys(const std::string userDocId)
-{
-	return std::list<int>();
-}
-
-std::string SqliteDatabase::insertServerKeys(const int publicKey, const int modulus)
-{
-	return std::string();
-}
-//////////////////////////////////////////////////

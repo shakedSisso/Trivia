@@ -23,8 +23,6 @@ public:
 	int getPlayerScore(const std::string username) override;
 	std::vector<std::string> getHighScores() override;
 	int submitGameStatistics(const std::string username, const int correctAnswerCount, const int wrongAnswerCount, const float averageAnswerTime) override;
-	std::list<int> getUserKeys(const std::string userDocId) override;
-	std::string insertServerKeys(const int publicKey, const int modulus) override;
 private:
 	sqlite3* _db;
 	std::string _dbFileName;
