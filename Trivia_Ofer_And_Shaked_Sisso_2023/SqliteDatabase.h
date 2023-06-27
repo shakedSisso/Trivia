@@ -29,10 +29,36 @@ private:
 	std::string _dbFileName;
 
 	void fixValue(std::string& value);
-
+	/*
+	* Function: addQuestionToDatabase
+	* ----------------------------
+	*   The function uses curl and gets questions from the API and inserts them to the database
+	*
+	*   input: none
+	*
+	*   returns: void.
+	*/
 	void addQuestionsToDatabase();
+	/*
+	* Function: addQuestion
+	* ----------------------------
+	*   The function gets a QuestionStruct refernce and inserts the question to the database in the questions table
+	*
+	*   const QuestionStruct& q: The refernce to the question to add
+	*
+	*   returns: int.
+	*/
 	int addQuestion(QuestionStruct& q);
 
+	/*
+	* Function: addUserQuestion
+	* ----------------------------
+	*   The function gets a UserQuestionStruct refernce and inserts the question to the database in the user questions table
+	*
+	*   const QuestionStruct& q: The refernce to the question to add
+	*
+	*   returns: int.
+	*/
 	int addQuestion(UserQuestionStruct& q);
 
 	bool createTables(int& res);
